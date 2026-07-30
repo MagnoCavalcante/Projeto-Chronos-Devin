@@ -255,22 +255,13 @@ export default function TimeTravelView({ onComplete, targetYear = -10000 }: Time
   }, [isLanding]);
 
   useEffect(() => {
-    // Carrossel de Curiosidades: ciclo a cada 2200ms atualizando o factIndex
+    // Uma curiosidade por login: sorteia um fato aleatório que fica durante toda a animação
     const allFacts = Object.values(eraFacts).flat();
     if (allFacts.length > 0) {
-      // Pick a random starting fact
-      const randomStart = Math.floor(Math.random() * allFacts.length);
-      factIndexRef.current = randomStart;
-      setFactIndex(randomStart);
-      setCurrentFact(allFacts[randomStart]);
-
-      const interval = setInterval(() => {
-        factIndexRef.current = (factIndexRef.current + 1) % allFacts.length;
-        setFactIndex(factIndexRef.current);
-        setCurrentFact(allFacts[factIndexRef.current]);
-      }, 2200);
-
-      return () => clearInterval(interval);
+      const randomIdx = Math.floor(Math.random() * allFacts.length);
+      factIndexRef.current = randomIdx;
+      setFactIndex(randomIdx);
+      setCurrentFact(allFacts[randomIdx]);
     }
   }, []);
 
