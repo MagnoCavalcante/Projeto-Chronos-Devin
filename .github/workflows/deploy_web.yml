@@ -5,40 +5,33 @@ on:
     branches: [ main ]
   workflow_dispatch: {}
 
-env:
-  FLUTTER_VERSION: '3.44.7'
-  WORKING_DIRECTORY: app
-
 permissions:
   contents: write
 
 jobs:
   deploy_web:
-    name: Build & Deploy Web (PWA)
+    name: Build & Deploy Web (React/Vite)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Configurar Flutter
-        uses: subosito/flutter-action@v2
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: 'stable'
-          cache: true
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Instalar dependências (flutter pub get)
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: flutter pub get
+      - name: Instalar dependências
+        run: npm ci
 
-      - name: Compilar Web (Release)
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: flutter build web --release --base-href "/$(echo ${GITHUB_REPOSITORY} | cut -d'/' -f2)/"
+      - name: Build (Vite)
+        run: npx vite build
 
       - name: Deploy para GitHub Pages (branch gh-pages)
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ env.WORKING_DIRECTORY }}/build/web
+          publish_dir: ./dist
           publish_branch: gh-pages

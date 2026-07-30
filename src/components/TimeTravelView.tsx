@@ -69,6 +69,7 @@ export default function TimeTravelView({ onComplete, targetYear = -10000 }: Time
   const [progress, setProgress] = useState(0); // 0 to 1
   const [isLanding, setIsLanding] = useState(false);
   const [currentFact, setCurrentFact] = useState('');
+  const [factIndex, setFactIndex] = useState(0);
   const factIndexRef = useRef(0);
 
   const requestRef = useRef<number | null>(null);
@@ -254,11 +255,22 @@ export default function TimeTravelView({ onComplete, targetYear = -10000 }: Time
   }, [isLanding]);
 
   useEffect(() => {
-    // Pick one random historical curiosity on mount and keep it for the entire session
+    // Carrossel de Curiosidades: ciclo a cada 2200ms atualizando o factIndex
     const allFacts = Object.values(eraFacts).flat();
     if (allFacts.length > 0) {
-      const randomIdx = Math.floor(Math.random() * allFacts.length);
-      setCurrentFact(allFacts[randomIdx]);
+      // Pick a random starting fact
+      const randomStart = Math.floor(Math.random() * allFacts.length);
+      factIndexRef.current = randomStart;
+      setFactIndex(randomStart);
+      setCurrentFact(allFacts[randomStart]);
+
+      const interval = setInterval(() => {
+        factIndexRef.current = (factIndexRef.current + 1) % allFacts.length;
+        setFactIndex(factIndexRef.current);
+        setCurrentFact(allFacts[factIndexRef.current]);
+      }, 2200);
+
+      return () => clearInterval(interval);
     }
   }, []);
 
@@ -458,7 +470,7 @@ export default function TimeTravelView({ onComplete, targetYear = -10000 }: Time
             <div className="min-h-[72px] sm:min-h-[56px] flex items-center justify-center bg-slate-900/40 rounded-xl px-4 py-3 border border-slate-800/50 backdrop-blur-xs">
               <AnimatePresence mode="wait">
                 <motion.p
-                  key={currentFact}
+                  key={factIndex}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
