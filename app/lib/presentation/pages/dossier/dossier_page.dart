@@ -3,14 +3,19 @@ import '../../../core/presentation/widgets/widgets.dart';
 import '../../../core/theme/chronos_colors.dart';
 import '../../../core/theme/chronos_typography.dart';
 import '../../../shared/models/history_card.dart';
+import '../../../shared/services/dossier_remote_datasource.dart';
 import '../../../shared/services/gamification_service.dart';
 import '../../../shared/widgets/dossier_card.dart';
 
 /// Tela de Dossiês que demonstra o fluxo de estudo com gamificação.
+///
+/// Aceita um [card] pré-carregado (ex: vindo da lista de dossiês) ou um [cardId]
+/// para buscar o conteúdo diretamente da tabela `dossiers` no Supabase.
 class DossierPage extends StatefulWidget {
   final HistoryCard? card;
+  final String? cardId;
 
-  const DossierPage({super.key, this.card});
+  const DossierPage({super.key, this.card, this.cardId});
 
   @override
   State<DossierPage> createState() => _DossierPageState();
@@ -18,38 +23,72 @@ class DossierPage extends StatefulWidget {
 
 class _DossierPageState extends State<DossierPage> {
   final GamificationService _gamification = GamificationService();
+  final DossierRemoteDataSource _dataSource = DossierRemoteDataSource();
 
-  late final HistoryCard _card = widget.card ?? _sampleCard();
+  late Future<HistoryCard> _cardFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.card != null) {
+      _cardFuture = Future.value(widget.card);
+    } else if (widget.cardId != null) {
+      _cardFuture = _dataSource.getDossierById(widget.cardId!);
+    } else {
+      _cardFuture = Future.value(_sampleCard());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return ChronosScaffold(
       title: 'Dossiê',
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            const SizedBox(height: 16),
-            DossierCard(
-              card: _card,
-              isMastered: _gamification.isMastered(_card.id),
-              onMaster: () {
-                final earned = _gamification.masterCard(_card.id);
-                if (earned > 0) {
-                  setState(() {});
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('+$earned XP conquistados!'),
-                      backgroundColor: ChronosColors.success,
-                    ),
-                  );
-                }
-              },
+      body: FutureBuilder<HistoryCard>(
+        future: _cardFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: ChronosLoading(message: 'Carregando dossiê...'));
+          }
+          if (snapshot.hasError || !snapshot.hasData) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  'Não foi possível carregar este dossiê.\n${snapshot.error ?? ''}',
+                  textAlign: TextAlign.center,
+                  style: ChronosTypography.bodyMedium.copyWith(color: ChronosColors.textSecondary),
+                ),
+              ),
+            );
+          }
+          final card = snapshot.data!;
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(),
+                const SizedBox(height: 16),
+                DossierCard(
+                  card: card,
+                  isMastered: _gamification.isMastered(card.id),
+                  onMaster: () {
+                    final earned = _gamification.masterCard(card.id);
+                    if (earned > 0) {
+                      setState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('+$earned XP conquistados!'),
+                          backgroundColor: ChronosColors.success,
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

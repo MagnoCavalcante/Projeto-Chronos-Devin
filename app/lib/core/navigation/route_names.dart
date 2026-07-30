@@ -16,4 +16,6 @@ class RouteNames {
   static const String settings = '/settings';
   static const String about = '/about';
   static const String dossier = '/dossier';
+  static const String dossierList = '/dossiers';
+  static const String mythologies = '/mythologies';
 }

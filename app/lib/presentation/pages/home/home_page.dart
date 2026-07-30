@@ -118,6 +118,20 @@ class HomePage extends StatelessWidget {
   Widget _buildFeatureGrid(BuildContext context) {
     final List<_FeatureItem> features = [
       _FeatureItem(
+        title: 'Dossiês Completos',
+        description: 'Investigações aprofundadas com fatos, interpretações, hipóteses e fontes.',
+        icon: Icons.fact_check_rounded,
+        route: RouteNames.dossierList,
+        accentColor: ChronosColors.accent,
+      ),
+      _FeatureItem(
+        title: 'Mitologias e Folclore',
+        description: 'Panteões mundiais, criaturas lendárias e o folclore brasileiro.',
+        icon: Icons.auto_awesome_rounded,
+        route: RouteNames.mythologies,
+        accentColor: Colors.purpleAccent,
+      ),
+      _FeatureItem(
         title: 'Eras Históricas',
         description: 'Os grandes marcos cronológicos que dividem a odisseia humana.',
         icon: Icons.hourglass_empty_rounded,

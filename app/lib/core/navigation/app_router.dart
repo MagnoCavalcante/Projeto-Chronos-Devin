@@ -6,6 +6,8 @@ import '../../presentation/screens/historical_events_screen.dart';
 import '../../features/historical_characters/presentation/screens/historical_characters_screen.dart';
 import '../../features/civilizations/routes/civilizations_routes.dart';
 import '../../presentation/pages/dossier/dossier_page.dart';
+import '../../presentation/pages/dossier/dossier_list_page.dart';
+import '../../presentation/pages/mythology/mythology_list_page.dart';
 import '../presentation/widgets/widgets.dart';
 import '../theme/theme.dart';
 import 'route_names.dart';
@@ -55,6 +57,8 @@ class AppRouter {
               icon: Icons.info_outline_rounded,
             ),
         RouteNames.dossier: (context) => const DossierPage(),
+        RouteNames.dossierList: (context) => const DossierListPage(),
+        RouteNames.mythologies: (context) => const MythologyListPage(),
       };
 
   /// Gerador de rotas dinâmicas nativo para tratar parâmetros e falhas de rota.
