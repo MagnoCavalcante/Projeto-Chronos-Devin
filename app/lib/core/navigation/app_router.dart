@@ -8,7 +8,6 @@ import '../../features/civilizations/routes/civilizations_routes.dart';
 import '../../presentation/pages/dossier/dossier_page.dart';
 import '../../presentation/pages/dossier/dossier_list_page.dart';
 import '../../presentation/pages/mythology/mythology_list_page.dart';
-import '../../presentation/pages/onboarding/splash_page.dart';
 import '../../presentation/pages/onboarding/welcome_page.dart';
 import '../../presentation/pages/onboarding/login_page.dart';
 import '../presentation/widgets/widgets.dart';
@@ -22,12 +21,8 @@ import 'route_names.dart';
 class AppRouter {
   AppRouter._();
 
-  /// Retorna a rota padrão inicial da aplicação.
-  static String get initialRoute => RouteNames.splash;
-
   /// Retorna o mapa completo de rotas registradas no sistema.
   static Map<String, WidgetBuilder> get routes => {
-        RouteNames.splash: (context) => const SplashPage(),
         RouteNames.welcome: (context) => const WelcomePage(),
         RouteNames.login: (context) => const LoginPage(),
         RouteNames.home: (context) => const AppShell(),

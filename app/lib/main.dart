@@ -5,7 +5,9 @@ import 'core/config/supabase_config.dart';
 import 'core/di/service_locator.dart';
 import 'core/navigation/app_router.dart';
 import 'core/navigation/navigation_service.dart';
+import 'core/navigation/route_names.dart';
 import 'core/theme/theme.dart';
+import 'presentation/pages/onboarding/splash_page.dart';
 
 void main() async {
   // Garante que o binding do Flutter esteja inicializado antes da execução de tarefas assíncronas.
@@ -42,7 +44,8 @@ class ChronosApp extends StatelessWidget {
       title: 'CHRONOS',
       theme: ChronosTheme.darkTheme,
       navigatorKey: locate<NavigationService>().navigatorKey,
-      initialRoute: AppRouter.initialRoute,
+      home: const SplashPage(),
+      routes: AppRouter.routes,
       onGenerateRoute: AppRouter.onGenerateRoute,
       debugShowCheckedModeBanner: false,
     );
