@@ -29,6 +29,10 @@ void main() {
     await tester.pumpWidget(const ChronosApp());
     await tester.pump();
 
+    // Avança o relógio simulado além do atraso de auto-navegação da SplashPage
+    // (3s) para que o Timer interno seja disparado e finalizado dentro do teste.
+    await tester.pump(const Duration(seconds: 4));
+
     expect(tester.takeException(), isNull);
   });
 }
