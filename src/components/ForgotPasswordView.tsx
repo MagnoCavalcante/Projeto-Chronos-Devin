@@ -1,0 +1,241 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useState, FormEvent } from 'react';
+import { motion } from 'motion/react';
+import { Mail, Lock, Eye, EyeOff, Compass, CheckCircle2, ArrowLeft, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Screen } from '../types';
+
+interface ForgotPasswordViewProps {
+  onNavigate: (screen: Screen) => void;
+}
+
+export default function ForgotPasswordView({ onNavigate }: ForgotPasswordViewProps) {
+  const [email, setEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+  const [step, setStep] = useState<'email' | 'reset' | 'done'>('email');
+  const [error, setError] = useState('');
+
+  const handleEmailSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!email) {
+      setError('Por favor, informe seu endereço de e-mail.');
+      return;
+    }
+
+    // Proceed to password reset step
+    setStep('reset');
+  };
+
+  const handleResetSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!newPassword || !confirmNewPassword) {
+      setError('Por favor, preencha a nova senha e a confirmação.');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setError('A nova senha deve ter no mínimo 6 caracteres.');
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setError('As senhas digitadas não coincidem.');
+      return;
+    }
+
+    // Update in localStorage if account exists
+    try {
+      const storedUsersRaw = localStorage.getItem('chronos_registered_accounts');
+      if (storedUsersRaw) {
+        let registeredAccounts: { name: string; email: string; pass: string }[] = JSON.parse(storedUsersRaw);
+        const index = registeredAccounts.findIndex(a => a.email.toLowerCase() === email.toLowerCase());
+        if (index !== -1) {
+          registeredAccounts[index].pass = newPassword;
+        } else {
+          registeredAccounts.push({ name: email.split('@')[0], email, pass: newPassword });
+        }
+        localStorage.setItem('chronos_registered_accounts', JSON.stringify(registeredAccounts));
+      } else {
+        localStorage.setItem('chronos_registered_accounts', JSON.stringify([{ name: email.split('@')[0], email, pass: newPassword }]));
+      }
+    } catch (err) {
+      console.error('Erro ao redefinir senha:', err);
+    }
+
+    setStep('done');
+  };
+
+  return (
+    <div id="forgot-password-container" className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md px-6 relative">
+        <button
+          id="back-to-login"
+          onClick={() => onNavigate('LOGIN')}
+          className="absolute left-6 top-1 text-slate-400 hover:text-slate-600 flex items-center gap-1 text-xs font-mono uppercase tracking-wider font-semibold cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Voltar ao Login</span>
+        </button>
+
+        <div className="flex justify-center mb-4 mt-8 sm:mt-0">
+          <div className="bg-slate-900 text-amber-400 p-3.5 rounded-2xl shadow-md border border-slate-800">
+            <Compass className="w-8 h-8 stroke-[1.2]" />
+          </div>
+        </div>
+        <h2 className="text-center text-3xl font-serif font-bold text-slate-900 tracking-wider">
+          CHRONOS
+        </h2>
+        <p className="mt-2 text-center text-sm text-slate-600 font-serif">
+          Recuperação e Redefinição de Senha
+        </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
+        <div className="bg-white py-8 px-6 shadow-md rounded-2xl border border-slate-100 sm:px-10">
+          {step === 'done' ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-6 space-y-4"
+            >
+              <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto" />
+              <h3 className="text-lg font-serif font-bold text-slate-900">Senha Alterada com Sucesso!</h3>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                Sua nova senha para o e-mail <strong className="text-slate-800">{email}</strong> foi registrada. Você já pode fazer login na plataforma.
+              </p>
+              <div className="pt-4">
+                <button
+                  id="return-login-button"
+                  onClick={() => onNavigate('LOGIN')}
+                  className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium py-2.5 px-6 rounded-xl transition-all shadow-md cursor-pointer"
+                >
+                  <span>Ir para o Login</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          ) : step === 'email' ? (
+            <form id="forgot-password-form" onSubmit={handleEmailSubmit} className="space-y-6">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl text-xs font-medium">
+                  {error}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-slate-600 mb-1">
+                  Endereço de E-mail Cadastrado
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-4 w-4 text-slate-400" />
+                  </div>
+                  <input
+                    id="recovery-email-input"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="seuemail@exemplo.com"
+                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all bg-slate-50/50"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <button
+                  id="forgot-password-submit"
+                  type="submit"
+                  className="w-full bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-medium text-sm py-2.5 px-4 rounded-xl transition-all duration-150 shadow-md shadow-slate-900/10 cursor-pointer"
+                >
+                  Avançar para Redefinir Senha
+                </button>
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={handleResetSubmit} className="space-y-5">
+              <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded-xl flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>E-mail verificado: <strong>{email}</strong></span>
+              </div>
+
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl text-xs font-medium">
+                  {error}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-slate-600 mb-1">
+                  Nova Senha
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-4 w-4 text-slate-400" />
+                  </div>
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Mínimo 6 caracteres"
+                    className="block w-full pl-10 pr-10 py-2.5 border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all bg-slate-50/50"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass(!showPass)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-slate-600 mb-1">
+                  Confirmar Nova Senha
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-4 w-4 text-slate-400" />
+                  </div>
+                  <input
+                    type={showConfirmPass ? 'text' : 'password'}
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    placeholder="Repita a nova senha"
+                    className="block w-full pl-10 pr-10 py-2.5 border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all bg-slate-50/50"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPass(!showConfirmPass)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    {showConfirmPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm py-2.5 px-4 rounded-xl transition-all shadow-md cursor-pointer"
+                >
+                  Salvar Nova Senha
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

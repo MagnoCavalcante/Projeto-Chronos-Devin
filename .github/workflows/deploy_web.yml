@@ -1,0 +1,44 @@
+name: Deploy Web (GitHub Pages)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+env:
+  FLUTTER_VERSION: '3.44.7'
+  WORKING_DIRECTORY: app
+
+permissions:
+  contents: write
+
+jobs:
+  deploy_web:
+    name: Build & Deploy Web (PWA)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Instalar dependências (flutter pub get)
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: flutter pub get
+
+      - name: Compilar Web (Release)
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: flutter build web --release --base-href "/$(echo ${GITHUB_REPOSITORY} | cut -d'/' -f2)/"
+
+      - name: Deploy para GitHub Pages (branch gh-pages)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.WORKING_DIRECTORY }}/build/web
+          publish_branch: gh-pages

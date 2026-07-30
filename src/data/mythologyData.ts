@@ -1,0 +1,926 @@
+/**
+ * Copyright 2026 Google LLC
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { MythologyDetail, folcloreBrasileiroData } from './folcloreData';
+
+export interface MythologyMetadata {
+  name: string;
+  region: string;
+  era: string;
+  pantheon: string;
+  creator: string;
+  deities: { name: string; domain: string; desc: string; symbol: string }[];
+  heroes: { name: string; saga: string; bio: string }[];
+  creatures: { name: string; desc: string; role: string }[];
+  items: { name: string; desc: string; power: string }[];
+  places: { name: string; desc: string; nature: string }[];
+  timeline: string[];
+  genealogy: string[];
+  originMap: string;
+  literature: { title: string; author: string; impact: string }[];
+  modernInfluence: string[];
+  sources: { title: string; author: string; year: string; type: string; details: string }[];
+  bibliography: string[];
+  cosmologyDesc: string;
+  creationDesc: string;
+}
+
+export const worldMythologiesMetadata: Record<string, MythologyMetadata> = {
+  grega: {
+    name: 'Mitologia Grega',
+    region: 'Hélade (Grécia Antiga)',
+    era: 'Século XII a.C. - Século IV d.C.',
+    pantheon: 'Olimpo',
+    creator: 'Caos primordial, o vazio gerador do qual emergiram Gaia (Terra), Tártaro (Abismo) e Eros (Amor)',
+    cosmologyDesc: 'O universo grego é tripartite: o Reino Celeste no topo do Monte Olimpo, o Reino das Águas sob o domínio de Poseidon, e o sombrio Submundo governado por Hades, onde as almas dos mortos são julgadas e residem após cruzar o rio Estige.',
+    creationDesc: 'Da união de Gaia e Urano nasceram os Titãs. Cronos, o Titã do tempo, depôs seu pai, mas foi posteriormente derrotado por seu filho Zeus na Titanomaquia, inaugurando a era dos deuses olímpicos.',
+    deities: [
+      { name: 'Zeus', domain: 'Soberano dos Céus', desc: 'Rei dos deuses, senhor do trovão, dos raios e da justiça cósmica.', symbol: 'Raio e Águia' },
+      { name: 'Poseidon', domain: 'Senhor dos Oceanos', desc: 'Regente das profundezas marítimas, das tempestades e criador dos cavalos.', symbol: 'Tridente e Delfim' },
+      { name: 'Atena', domain: 'Divindade da Sabedoria', desc: 'Protetora das artes civilizatórias, da justiça, da filosofia e da guerra estratégica.', symbol: 'Coruja e Escudo Égide' },
+      { name: 'Apolo', domain: 'Regente das Artes e Profecia', desc: 'Deus do sol, da música, da poesia, da medicina, do arco e da purificação espiritual.', symbol: 'Lira e Arco de Ouro' }
+    ],
+    heroes: [
+      { name: 'Hércules', saga: 'Os Doze Trabalhos', bio: 'Semideus dono de força sobre-humana que conquistou a imortalidade olímpica após cumprir tarefas penitenciais.' },
+      { name: 'Perseu', saga: 'A Decapitação da Medusa', bio: 'Filho de Zeus que utilizou sandálias aladas e o escudo polido de Atena para derrotar a Górgona.' },
+      { name: 'Teseu', saga: 'O Labirinto de Creta', bio: 'Herói ateniense que decifrou o labirinto e derrotou o Minotauro com a ajuda do fio de Ariadne.' }
+    ],
+    creatures: [
+      { name: 'Minotauro', desc: 'Criatura metade homem e metade touro aprisionada no labirinto de Creta.', role: 'Símbolo dos instintos animais e penitência estatal' },
+      { name: 'Medusa', desc: 'Górgona cujos cabelos eram serpentes e cujo olhar transformava seres vivos em pedra.', role: 'Guardia amaldiçoada de portais misticos' },
+      { name: 'Cérbero', desc: 'Cão gigante de três cabeças que guarda os portões do submundo de Hades.', role: 'Sentinela do reino dos mortos' }
+    ],
+    items: [
+      { name: 'O Raio de Zeus', desc: 'Forjado pelos Cíclopes na Titanomaquia, canaliza o poder do trovão absoluto.', power: 'Destruição de deuses e titãs' },
+      { name: 'A Égide de Atena', desc: 'Escudo ou couraça que ostenta a cabeça da Medusa esculpida, inspirando terror.', power: 'Proteção absoluta e paralisia de inimigos' },
+      { name: 'A Caixa de Pandora', desc: 'Vaso enviado pelos deuses contendo todos os males do mundo e a esperança.', power: 'Origem das dores humanas' }
+    ],
+    places: [
+      { name: 'Monte Olimpo', desc: 'A montanha mais alta da Grécia, residência eterna dos doze deuses regentes.', nature: 'Troneira divina e centro cósmico' },
+      { name: 'Oráculo de Delfos', desc: 'Templo sagrado de Apolo onde a sacerdotisa Pitonisa proferia profecias divinas.', nature: 'Centro do destino humano' },
+      { name: 'Campos Elísios', desc: 'Zonas do Submundo reservadas para os heróis e almas puras na vida eterna.', nature: 'Santuário de bem-aventurança' }
+    ],
+    timeline: [
+      'Era de Ouro: Período cosmogônico inicial de paz absoluta sob o império do Titã Cronos.',
+      'Titanomaquia: A guerra de dez anos entre os Titãs e os Deuses Olímpicos liderados por Zeus.',
+      'Era dos Heróis: Época de grandes expedições (como os Argonautas e a Guerra de Troia) documentadas no cânone.'
+    ],
+    genealogy: [
+      'Caos primordial gera Gaia (Terra) e Urano (Céu).',
+      'Gaia e Urano geram Cronos e os Titãs originais.',
+      'Cronos e Reia geram a primeira geração olímpica: Zeus, Poseidon, Hades, Hera, Deméter e Héstia.'
+    ],
+    originMap: 'Concentrada ao redor da bacia do mar Egeu, com santuários nos montes Parnaso e Olimpo, estendendo-se pelas colônias da Magna Grécia.',
+    literature: [
+      { title: 'Teogonia', author: 'Hesíodo', impact: 'O primeiro compêndio sistemático sobre o surgimento dos deuses e do universo grego.' },
+      { title: 'Ilíada', author: 'Homero', impact: 'Epopeia definidora que estabeleceu os arquétipos heroicos e o envolvimento divino na Guerra de Troia.' }
+    ],
+    modernInfluence: [
+      'Psicologia Analítica: Uso dos mitos gregos para formular a teoria dos arquétipos do inconsciente por Carl Jung.',
+      'Ciência e Astronomia: Batismo de planetas, constelações e elementos químicos com nomes de figuras do Olimpo.'
+    ],
+    sources: [
+      { title: 'Biblioteca', author: 'Apolodoro', year: 'Século II a.C.', type: 'document', details: 'Compilação sistemática de genealogia divina' }
+    ],
+    bibliography: [
+      'BRANDÃO, Junito de Souza. Mitologia Grega. Petrópolis: Vozes, 1986.',
+      'GRAVES, Robert. Os Mitos Gregos. Rio de Janeiro: Nova Fronteira, 2008.'
+    ]
+  },
+  romana: {
+    name: 'Mitologia Romana',
+    region: 'Roma Antiga',
+    era: 'Século VIII a.C. - Século V d.C.',
+    pantheon: 'Conselho dos Deuses (Dii Consentes)',
+    creator: 'O Caos primordial integrado ao culto litúrgico de Jano, o deus dos começos e portais',
+    cosmologyDesc: 'Fortemente baseada no conceito de Pax Deorum (a paz com os deuses), onde o equilíbrio do cosmos dependia da execução matemática de rituais públicos comandados pelo Colégio de Pontífices no Capitólio.',
+    creationDesc: 'O universo organizou-se sob a regência de Júpiter após a deposição de Saturno (Titã do tempo), estabelecendo as regras da vida civil romana.',
+    deities: [
+      { name: 'Júpiter', domain: 'Soberano da República', desc: 'Rei dos deuses, guardião do direito público romano, das alianças e do raio cívico.', symbol: 'Águia e Raio' },
+      { name: 'Jano', domain: 'Deus dos Começos', desc: 'Divindade de duas faces que preside sobre as portas, começos, transições e o tempo.', symbol: 'Chaves e Duas Faces' },
+      { name: 'Minerva', domain: 'Protetora do Estado', desc: 'Divindade da sabedoria prática, das artes, da tecelagem, do comércio e da guerra justa.', symbol: 'Coruja e Oliveira' },
+      { name: 'Marte', domain: 'Pai do Povo Romano', desc: 'Deus da agricultura e da guerra viril, protetor das legiões e ancestral mítico de Rômulo.', symbol: 'Lança e Escudo' }
+    ],
+    heroes: [
+      { name: 'Eneias', saga: 'A Fuga de Troia', bio: 'Príncipe troiano ancestral de Roma que cruzou o Mediterrâneo sob as ordens dos deuses para fundar a linhagem latina.' },
+      { name: 'Rômulo e Remo', saga: 'Fundação de Roma', bio: 'Irmãos gêmeos amamentados por uma loba lendária que fundaram a cidade eterna nas margens do Tibre.' },
+      { name: 'Horácio Cocles', saga: 'Defesa da Ponte Sublicia', bio: 'Guerreiro patriota que deteve sozinho o avanço do exército etrusco na entrada de Roma.' }
+    ],
+    creatures: [
+      { name: 'Loba Capitolina', desc: 'Loba mística que resgatou os gêmeos Rômulo e Remo da correnteza do rio Tibre.', role: 'Mãe adotiva da identidade romana' },
+      { name: 'Penates', desc: 'Espíritos domésticos protetores da despensa e da sobrevivência material das famílias.', role: 'Guardiões do fogo doméstico' },
+      { name: 'Larvas', desc: 'Espíritos errantes e amaldiçoados dos mortos que não receberam funerais adequados.', role: 'Fantasmas punitivos e assombrações' }
+    ],
+    items: [
+      { name: 'Ancile (O Escudo Sagrado)', desc: 'Escudo caído dos céus enviado por Júpiter como garantia do império universal romano.', power: 'Proteção eterna da soberania' },
+      { name: 'As Chaves de Jano', desc: 'Artefato metafórico que abre os portões do ano, das guerras e dos começos.', power: 'Governança das transições temporais' },
+      { name: 'O Fogo de Vesta', desc: 'Chama sagrada mantida eternamente acesa pelas sacerdotisas Vestais no fórum.', power: 'Sinal vitalício de existência do império' }
+    ],
+    places: [
+      { name: 'Templo de Júpiter Capitolino', desc: 'Sede suprema do culto cívico romano erguida no cume da colina do Capitólio.', nature: 'Coração político e religioso' },
+      { name: 'Rio Tibre', desc: 'Curso de água sagrado cujas correntes moldaram as origens geográficas da fundação.', nature: 'Fronteira mística de salvação' },
+      { name: 'Campo de Marte', desc: 'Planície consagrada aos ritos militares, treinamentos e consagrações do deus da guerra.', nature: 'Santuário de virtude militar' }
+    ],
+    timeline: [
+      'Era de Saturno: Período mítico de fartura onde o deus Saturno ensinou a agricultura aos latinos nativos.',
+      'Fundação Mítica (753 a.C.): O dia exato em que Rômulo sulcou os muros sagrados de Roma sobre o Palatino.',
+      'Instituição da República: O estabelecimento dos ritos de auspício público controlados pelo Senado.'
+    ],
+    genealogy: [
+      'Jano, o deus primordial, inicia os ciclos geracionais.',
+      'Saturno governa a terra e gera Júpiter, Neptuno e Plutão.',
+      'Júpiter une-se a Juno e gera Marte, Vulcano e as divindades do fórum.'
+    ],
+    originMap: 'Centrada nas Sete Colinas de Roma e no Lácio, espalhando-se gradualmente por toda a bacia do Mediterrâneo romano.',
+    literature: [
+      { title: 'Eneida', author: 'Virgílio', impact: 'A obra de propaganda e arte suprema de Roma que conecta os fundadores latinos ao heroísmo troiano.' },
+      { title: 'Metamorfoses', author: 'Ovídio', impact: 'Grande catálogo lírico de transformações míticas de deuses e humanos do panteão.' }
+    ],
+    modernInfluence: [
+      'Termos Jurídicos e Políticos: O uso de nomes do panteão romano em feriados, instituições (Senado) e leis.',
+      'O Calendário Ocidental: Batismo dos meses do ano em homenagem a deuses romanos (ex: Janeiro para Jano, Março para Marte).'
+    ],
+    sources: [
+      { title: 'Ab Urbe Condita', author: 'Tito Lívio', year: 'Século I a.C.', type: 'book', details: 'Livro I descreve a era dos reis e as origens místicas' }
+    ],
+    bibliography: [
+      'DUMÉZIL, Georges. A Religião Romana Arcaica. São Paulo: Perspectiva, 2012.',
+      'BAYET, Jean. Literatura Romana. Lisboa: Fundação Calouste Gulbenkian, 1990.'
+    ]
+  },
+  nordica: {
+    name: 'Mitologia Nórdica',
+    region: 'Escandinávia',
+    era: 'Século VIII d.C. - Século XI d.C.',
+    pantheon: 'Aesir e Vanir',
+    creator: 'O Ginnungagap, abismo de gelo de Niflheim e fogo de Muspelheim que deu origem ao gigante Ymir',
+    cosmologyDesc: 'O universo é estruturado ao redor de Yggdrasil, o freixo do mundo gigante que interliga nove mundos, incluindo Asgard (deuses guerreiros), Midgard (homens) e Helheim (o gelado reino dos mortos).',
+    creationDesc: 'Odin e seus irmãos derrotaram o gigante primordial Ymir, utilizando seu crânio para fazer a abóbada celeste, seu sangue para os mares e seus ossos para as montanhas.',
+    deities: [
+      { name: 'Odin', domain: 'Pai de Todos e Sabedoria', desc: 'Soberano de Asgard, senhor da magia, das runas, da poesia e da morte heroica no Valhala.', symbol: 'Lança Gungnir e Corvos Huginn e Muninn' },
+      { name: 'Thor', domain: 'Protetor dos Homens', desc: 'Deus do trovão, das tempestades, da força física e guerreiro implacável contra os gigantes de gelo.', symbol: 'Martelo Mjölnir e Luvas de Ferro' },
+      { name: 'Loki', domain: 'Trapaceiro e Metamorfo', desc: 'Gigante adotado pelos Aesir, arquiteto de artimanhas, portador de discórdia e gerador de monstros do fim do mundo.', symbol: 'Duas Serpentes Trançadas' },
+      { name: 'Freya', domain: 'Senhora do Amor e Magia', desc: 'Deusa do amor, da fertilidade, da beleza e do Seidr (magia xamânica), regente de Folkvangr.', symbol: 'Colar Brisingamen e Carruagem puxada por gatos' }
+    ],
+    heroes: [
+      { name: 'Sigurd', saga: 'A Morte do Dragão Fafnir', bio: 'Guerreiro lendário que forjou novamente a espada quebrado de seu pai e banhou-se no sangue do dragão para ficar invulnerável.' },
+      { name: 'Ragnar Lodbrok', saga: 'Invasões e Sagas Nórdicas', bio: 'Rei e guerreiro viking cujas lendas de coragem e conquistas assombraram as cortes da Europa cristã.' },
+      { name: 'Beowulf', saga: 'O Combate contra Grendel', bio: 'Guerreiro escandinavo que enfrentou o monstro devorador Grendel e uma serpente dragão para proteger seu povo.' }
+    ],
+    creatures: [
+      { name: 'Jörmungandr', desc: 'Serpente gigantesca que circunda todo o mundo de Midgard mordendo a própria cauda.', role: 'Monstro herdeiro do fim do mundo' },
+      { name: 'Fenrir', desc: 'Lobo colossal e monstruoso acorrentado misticamente pelos deuses que se libertará no Ragnarök.', role: 'Devorador de deuses' },
+      { name: 'As Valquírias', desc: 'Guerreiras aladas enviadas por Odin para escolher os guerreiros mortos com honra nas batalhas.', role: 'Condutoras de almas para o Valhala' }
+    ],
+    items: [
+      { name: 'Mjölnir', desc: 'O martelo de Thor que retorna à sua mão ao ser arremessado, disparando trovões.', power: 'Esmagamento de montanhas e gigantes' },
+      { name: 'Gungnir', desc: 'A lança sagrada de Odin gravada com runas mágicas de juramento e pontaria perfeita.', power: 'Nunca errar o alvo e selar contratos' },
+      { name: 'Draupnir', desc: 'Anel de ouro místico de Odin que se multiplica gerando outros oito anéis idênticos a cada nove noites.', power: 'Fartura de riqueza ilimitada' }
+    ],
+    places: [
+      { name: 'Asgard', desc: 'O reino fortificado no topo do mundo de Yggdrasil, lar celestial da dinastia dos Aesir.', nature: 'Cidadela divina e celestial' },
+      { name: 'Valhala', desc: 'O grande salão de Odin em Asgard, provido de quinhentas portas, onde os heróis mortos festejam e treinam.', nature: 'Santuário dos mortos em combate' },
+      { name: 'Bifröst', desc: 'A ponte em arco-íris trêmulo de fogo que conecta Midgard a Asgard, guardada por Heimdall.', nature: 'Portal tridimensional de luz' }
+    ],
+    timeline: [
+      'Geração de Ymir: O tempo do gelo primordial e a formação dos primeiros gigantes e vacas cósmicas.',
+      'Fundação de Asgard: O estabelecimento das grandes fortalezas divinas e a muralha construída por Hrimthurs.',
+      'Ragnarök: O crepúsculo inevitável dos deuses, com a batalha final onde o universo será destruído e renascerá.'
+    ],
+    genealogy: [
+      'Ymir gera os primeiros gigantes de gelo a partir do suor.',
+      'Buri (o ancestral divino) é lambido do gelo pela vaca Audumla.',
+      'Buri gera Borr, que gera Odin, Vili e Vé, os pais da criação.'
+    ],
+    originMap: 'Originada na península da Escandinávia, estendendo-se pela Islândia, Dinamarca, Noruega, Suécia e as colônias vikings na Grã-Bretanha.',
+    literature: [
+      { title: 'Edda em Verso', author: 'Autores Anônimos', impact: 'Coleção islandesa de poemas do século XIII que preserva os mitos sagrados e cosmológicos originais.' },
+      { title: 'Edda em Prosa', author: 'Snorri Sturluson', impact: 'Tratado de poética medieval que sistematizou as narrativas folclóricas escandinavas e panteões.' }
+    ],
+    modernInfluence: [
+      'Fantasia Moderna: A mitologia nórdica forneceu a estrutura fundamental de elfos, anões e magos para a obra "O Senhor dos Anéis" de Tolkien.',
+      'Universo Pop: Representações do herói Thor e de Loki em quadrinhos, séries e superproduções cinematográficas contemporâneas.'
+    ],
+    sources: [
+      { title: 'Gesta Danorum', author: 'Saxo Grammaticus', year: 'Século XII d.C.', type: 'book', details: 'História nacional dinamarquesa integrando deuses históricos' }
+    ],
+    bibliography: [
+      'GAIMAN, Neil. Mitologia Nórdica. Rio de Janeiro: Intrínseca, 2017.',
+      'DAVIDSON, H. R. Ellis. Mitos e Lendas Nórdicos. Rio de Janeiro: Ediouro, 2003.'
+    ]
+  },
+  egipcia: {
+    name: 'Mitologia Egípcia',
+    region: 'Vale do Nilo (Egito Antigo)',
+    era: '3100 a.C. - Século IV d.C.',
+    pantheon: 'Enéade de Heliópolis',
+    creator: 'Nun, as águas caóticas escuras originais das quais se ergueu a colina Benben e o deus Atum',
+    cosmologyDesc: 'A terra plana de Geb sob o corpo estrelado de Nut, guiados por Ma\'at (harmonia cósmica). Rá navega sua barca solar diariamente cruzando o céu de dia e combatendo demônios no submundo Duat de noite.',
+    creationDesc: 'Atum gerou Shu (Ar) e Tefnut (Umidade), cujos descendentes Geb (Terra) e Nut (Céu) geraram Osíris, Ísis, Set e Néftis, os pilares da civilização no Nilo.',
+    deities: [
+      { name: 'Rá', domain: 'Pai do Sol', desc: 'Criador do universo material, governante do dia e regente absoluto da barca solar.', symbol: 'Disco Solar e Falcão' },
+      { name: 'Osíris', domain: 'Juiz dos Mortos', desc: 'Deus da ressurreição, da vegetação, da agricultura e soberano supremo do submundo Duat.', symbol: 'Cetros Heka e Nekhakha' },
+      { name: 'Ísis', domain: 'Mãe Protetora', desc: 'Grande deusa da magia, do amor maternal, dos mistérios domésticos e restauradora de corpos.', symbol: 'Trono ou Chifres de Vaca com Disco Solar' },
+      { name: 'Anúbis', domain: 'Guardião do Embalsamamento', desc: 'Deus com cabeça de chacal encarregado de mumificar corpos e pesar corações no Salão de Ma\'at.', symbol: 'Balança e Chacal' }
+    ],
+    heroes: [
+      { name: 'Imhotep', saga: 'A Construção de Saqqara', bio: 'Arquiteto e médico real cujas sabedorias excepcionais em ciência o levaram a ser divinizado no panteão.' },
+      { name: 'Sinuhe', saga: 'A Saga de Sinuhe', bio: 'Oficial egípcio cuja jornada de exílio e reconciliação mística inspirou contos de bravura nacional.' },
+      { name: 'Príncipe Setna', saga: 'A Busca pelo Livro de Thoth', bio: 'Sacerdote que desceu aos túmulos secretos para resgatar o manuscrito proibido contendo as magias do deus da sabedoria.' }
+    ],
+    creatures: [
+      { name: 'Ammit', desc: 'Criatura híbrida com corpo de jacaré, leão e hipopótamo que devora corações condenados.', role: 'Executor de almas impuras' },
+      { name: 'Apófise', desc: 'Serpente gigantesca do caos eterno que tenta devorar a barca solar de Rá no submundo.', role: 'Inimigo cósmico da harmonia' },
+      { name: 'Esfinge', desc: 'Leão com cabeça humana encarregado de vigiar pirâmides, túmulos e portais sagrados.', role: 'Sentry de sabedoria' }
+    ],
+    items: [
+      { name: 'Olho de Hórus (Wedjat)', desc: 'Símbolo de visão mística, saúde física e poder real absoluto após o combate contra Set.', power: 'Proteção contra energias negativas' },
+      { name: 'Ankh', desc: 'A cruz ansata que representa o sopro vital divino e a imortalidade da alma na vida eterna.', power: 'Concessão de vida eterna e energia' },
+      { name: 'A Pena de Ma\'at', desc: 'Pena de avestruz colocada na balança cósmica contra o coração do morto no julgamento.', power: 'Medição da integridade moral' }
+    ],
+    places: [
+      { name: 'Heliópolis', desc: 'A mítica cidade de sol onde residia o centro teológico de adoração a Rá e Atum.', nature: 'Berço da criação cósmica' },
+      { name: 'Duat', desc: 'O submundo misterioso repleto de portais guardados por demônios onde as almas viajam.', nature: 'Reino de julgamento e morte' },
+      { name: 'Templo de Karnak', desc: 'Maior santuário do império novo consagrado aos mistérios das dinastias e cultos imperiais.', nature: 'Canal de poder imperial' }
+    ],
+    timeline: [
+      'Zep Tepi: A era de ouro original onde os deuses caminhavam fisicamente entre as areias do Egito.',
+      'O Assassinato de Osíris: O cataclismo geracional onde o usurpador Set esquartejou seu irmão.',
+      'A Dinastização Sagrada: O momento em que Hórus assume o trono terrestre, unificando o Baixo e o Alto Egito.'
+    ],
+    genealogy: [
+      'Atum (Rá) autogera-se das águas de Nun.',
+      'Atum gera Shu (Ar) e Tefnut (Umidade).',
+      'Shu e Tefnut geram Geb (Terra) e Nut (Céu), que dão origem aos deuses Osíris, Ísis, Set e Néftis.'
+    ],
+    originMap: 'Desenvolvida ao longo das férteis margens do Rio Nilo, com polos teológicos em Heliópolis, Mênfis, Tebas e Abidos.',
+    literature: [
+      { title: 'Livro dos Mortos', author: 'Sacerdotes Imperiais', impact: 'Rico manual de magias e fórmulas fúnebres colocado em túmulos para orientar as almas no Duat.' },
+      { title: 'Textos das Pirâmides', author: 'Chancelaria do Império Antigo', impact: 'Inscrições litúrgicas hieroglíficas entalhadas nos muros de câmaras reais para consagrar faraós.' }
+    ],
+    modernInfluence: [
+      'Arquitetura Monumental: Influência das pirâmides, esfinges e obeliscos em monumentos urbanos globais.',
+      'Estudos de Ocultismo: Adoção de hieróglifos e divindades nos rituais de sociedades esotéricas contemporâneas.'
+    ],
+    sources: [
+      { title: 'Sobre Ísis e Osíris', author: 'Plutarco', year: '100 d.C.', type: 'myth', details: 'Primeiro relato em prosa contínua da ressurreição de Osíris' }
+    ],
+    bibliography: [
+      'PINCH, Geraldine. Manual de Mitologia Egípcia. Porto Alegre: Zahar, 2005.',
+      'BUDGE, E. A. Wallis. O Livro dos Mortos do Antigo Egito. São Paulo: Pensamento, 1993.'
+    ]
+  },
+  celta: {
+    name: 'Mitologia Celta',
+    region: 'Europa Ocidental (Irlanda, Bretanha)',
+    era: 'Século VI a.C. - Século VI d.C.',
+    pantheon: 'Tuatha Dé Danann',
+    creator: 'Danu, a grande deusa-mãe de cujas entranhas nasceu a tribo divina de soberanos',
+    cosmologyDesc: 'Dividida entre o mundo físico dos humanos e o Outro Mundo místico (Tír na nÓg), um reino de eterna juventude, saúde e riqueza que se sobrepõe ao plano terreno.',
+    creationDesc: 'Da fertilidade da deusa Danu e da sabedoria de Dagda originaram-se as quatro grandes dinastias mágicas que conquistaram as terras sagradas da Irlanda.',
+    deities: [
+      { name: 'Lugh', domain: 'Senhor de Todas as Artes', desc: 'Deus guerreiro, protetor da criatividade, da inteligência, da luz e mestre da lança cósmica.', symbol: 'Lança de Fogo e Harpa' },
+      { name: 'Dagda', domain: 'O Deus Bom', desc: 'Divindade soberana da fartura, da agricultura, da sabedoria elemental e portador de um caldeirão inesgotável.', symbol: 'Caldeirão e Clava de Ferro' },
+      { name: 'The Morrigan', domain: 'Soberana do Destino e Guerra', desc: 'Deusa tríplice do destino, da batalha e da morte, manifestando-se como corvo nos campos de batalha.', symbol: 'Corvo Preto e Espadas' },
+      { name: 'Cernunnos', domain: 'Senhor da Natureza Selvagem', desc: 'Deus com chifres de cervo, regente dos animais, das florestas, do ciclo vital e das riquezas materiais.', symbol: 'Chifres de Cervo e Torque' }
+    ],
+    heroes: [
+      { name: 'Cú Chulainn', saga: 'A Invasão de Gado de Cooley', bio: 'O maior guerreiro do Ciclo do Ulster que entrava em fúria mágica na batalha, derrotando exércitos inteiros.' },
+      { name: 'Fionn mac Cumhaill', saga: 'O Ciclo Feniano', bio: 'Líder dos guerreiros Fianna que conquistou sabedoria absoluta ao comer o Salmão do Conhecimento.' },
+      { name: 'Taliesin', saga: 'O Canto das Sabedorias', bio: 'Bardo místico gales que renasceu provido de domínios proféticos universais absolutos.' }
+    ],
+    creatures: [
+      { name: 'Banshee', desc: 'Espírito feminino cujo choro melancólico à noite anuncia a morte iminente de membros de uma linhagem.', role: 'Heraldo do destino trágico' },
+      { name: 'Kelpie', desc: 'Espírito das águas que assume a forma de cavalo para seduzir viajantes a montá-lo e afogá-los.', role: 'Predador de estuários' },
+      { name: 'Leprechaun', desc: 'Pequenos seres fantásticos encarregados de consertar calçados e ocultar tesouros dourados no arco-íris.', role: 'Duendes do folclore doméstico' }
+    ],
+    items: [
+      { name: 'A Lança de Lugh', desc: 'Forjada na lendária cidade mística de Gorias, nunca falha ao ser disparada com fúria.', power: 'Chama ardente indomável' },
+      { name: 'O Caldeirão do Dagda', desc: 'Artefato trazido de Murias do qual ninguém se retira insatisfeito ou faminto.', power: 'Fartura de alimento e regeneração' },
+      { name: 'A Pedra de Fal (Lia Fáil)', desc: 'Monólito mágico trazido de Falias que grita quando o rei legítimo do pampa pisa nela.', power: 'Sinalização e legitimação real' }
+    ],
+    places: [
+      { name: 'Tír na nÓg', desc: 'O Outro Mundo místico situado além do horizonte atlântico, onde o tempo não corre.', nature: 'Reino dos bem-aventurados' },
+      { name: 'Colina de Tara', desc: 'O umbigo espiritual da Irlanda antiga e sede tradicional das coroações dos Altos Reis.', nature: 'Santuário nacional político' },
+      { name: 'Floresta de Brocéliande', desc: 'Densas matas mágicas habitadas por espíritos de fadas e druidas ancestrais.', nature: 'Mata mágica druídica' }
+    ],
+    timeline: [
+      'Invasão de Partholón: O tempo mítico em que os primeiros exploradores colonizaram a Irlanda após o dilúvio.',
+      'Segunda Batalha de Mag Mell: O embate onde a tribo divina dos Tuatha derrotou os gigantes opressores Fomorianos.',
+      'A Era dos Milésios: A chegada dos humanos mortais que forçaram os Tuatha a viver nos montes invisíveis Sídhe.'
+    ],
+    genealogy: [
+      'Danu, a grande deusa-mãe, origina as dinastias divinas.',
+      'Danu gera Dagda, Nuada e as rainhas da fertilidade e guerra.',
+      'Dagda e Morrigan geram os heróis e artífices da tribo mística.'
+    ],
+    originMap: 'Espalhada pelas nações celtas da Europa Ocidental, concentrada na Irlanda, País de Gales, Escócia e Bretanha francesa.',
+    literature: [
+      { title: 'O Mabinogion', author: 'Coletores Galeses Medievais', impact: 'Compêndio de histórias em prosa preservando a mitologia e literatura celta britânica.' },
+      { title: 'Livro das Invasões', author: 'Monges Irlandeses Medievais', impact: 'Crônica pseudo-histórica que detalha as sucessivas colonizações míticas da ilha.' }
+    ],
+    modernInfluence: [
+      'Música e Cultura Folk: Adoção de harpas, símbolos célticos (Triskelion) e festividades juninas europeias.',
+      'O Halloween Contemporâneo: Evolução direta do festival sagrado Samhain praticado pelos antigos druidas.'
+    ],
+    sources: [
+      { title: 'Cântico de Amergin', author: 'Atribuído ao Bardo Amergin', year: 'Século VI a.C.', type: 'document', details: 'Poema cosmológico sagrado da chegada celta' }
+    ],
+    bibliography: [
+      'ELLIS, Peter Berresford. Mitologia Celta. Lisboa: Publicações Europa-América, 1999.',
+      'SQUIRE, Charles. Mitos e Lendas Celtas. São Paulo: Madras, 2003.'
+    ]
+  },
+  mesopotamica: {
+    name: 'Mitologia Mesopotâmica',
+    region: 'Crescente Fértil (Suméria, Babilônia)',
+    era: '3500 a.C. - Século VI a.C.',
+    pantheon: 'Anunnaki',
+    creator: 'A união das águas doces de Apsu e salgadas de Tiamat, matriz do caos aquático original',
+    cosmologyDesc: 'Um universo tripartite composto pelo Céu (An), Terra (Ki) e o Submundo de cinzas de Kur, governados pelos decretos divinos "Me" que controlavam o destino das sociedades.',
+    creationDesc: 'O deus babilônico Marduk derrotou a serpente primordial Tiamat, dividindo seu corpo para erguer a cúpula do céu e o relevo das montanhas.',
+    deities: [
+      { name: 'Enki', domain: 'Deus da Sabedoria e Água Doce', desc: 'Soberano das águas doces profundas (Abzu), padroeiro do intelecto, da cura e da criação humana.', symbol: 'Tartaruga e Cabra com Cauda de Peixe' },
+      { name: 'Inanna (Ishtar)', domain: 'Senhora do Amor e Guerra', desc: 'Soberana celeste da paixão sensual, da fertilidade, da agressividade bélica e das metamorfoses sociais.', symbol: 'Estrela de Oito Pontas e Leão' },
+      { name: 'Enlil', domain: 'Senhor do Vento e Destino', desc: 'Deus supremo das tempestades, do ar, da atmosfera e guardião das tabuletas de destino universal.', symbol: 'Coroa de Chifres' },
+      { name: 'Marduk', domain: 'Soberano da Babilônia', desc: 'Deus tutelar da capital imperial que assumiu o comando do panteão após derrotar o dragão Tiamat.', symbol: 'Dragão Mushkhushshu' }
+    ],
+    heroes: [
+      { name: 'Gilgamesh', saga: 'A Epopeia de Gilgamesh', bio: 'Rei de Uruk que viajou pelos confins da terra buscando o segredo da imortalidade após a morte de Enkidu.' },
+      { name: 'Enkidu', saga: 'O Homem Selvagem', bio: 'Criatura moldada do barro pelos deuses para ser o rival e amigo mais fiel de Gilgamesh.' },
+      { name: 'Utnapishtim', saga: 'A Sobrevivência ao Dilúvio', bio: 'Homem sábio que salvaguardou as sementes da vida em uma arca e foi agraciado com imortalidade eterna.' }
+    ],
+    creatures: [
+      { name: 'Humbaba', desc: 'Gigante monstruoso com rosto feito de entranhas que guardava a Floresta de Cedros divina.', role: 'Guardião dos recursos sagrados' },
+      { name: 'Pazuzu', desc: 'Rei dos demônios do vento com corpo híbrido de leão e asas, usado como amuleto contra pragas.', role: 'Defensor contra ventos malignos' },
+      { name: 'Lamassu', desc: 'Touro alado com cabeça humana esculpido nos portais de palácios para deter energias negativas.', role: 'Sentinela imperial' }
+    ],
+    items: [
+      { name: 'As Tabuletas do Destino', desc: 'Placas sagradas de argila contendo os planos futuros absolutos e os papéis dos deuses no cosmos.', power: 'Soberania universal absoluta' },
+      { name: 'Os Me', desc: 'Cânone de regras espirituais e tecnológicas que ditam as leis da civilização e da cultura humana.', power: 'Estruturação da sociedade civil' },
+      { name: 'O Cetro de Marduk', desc: 'Arma divina usada pelo deus babilônico para fustigar e subjugar a deusa Tiamat.', power: 'Domínio das correntes de água' }
+    ],
+    places: [
+      { name: 'Uruk', desc: 'A grandiosa cidade de muros de tijolos de barro fundada por Gilgamesh na planície meridional.', nature: 'Berço urbano e tecnológico' },
+      { name: 'Abzu', desc: 'O abismo profundo de águas doces e límpidas situado abaixo da terra, domínio eterno de Enki.', nature: 'Santuário de sabedoria líquida' },
+      { name: 'Zigurates de Ur', desc: 'Torres monumentais escalonadas de tijolos de argila erguidas para conectar os sacerdotes ao céu.', nature: 'Canal de adoração celeste' }
+    ],
+    timeline: [
+      'Gênese das Águas: O período em que apenas Apsu e Tiamat existiam em fusão silenciosa caótica.',
+      'Revolta dos Jovens Deuses: A rebelião liderada por Enki e Marduk para impor ordem ao caos.',
+      'O Grande Dilúvio: O cataclismo meteorológico enviado por Enlil para silenciar o barulho barulhento humano.'
+    ],
+    genealogy: [
+      'Apsu (Água doce) e Tiamat (Água salgada) geram Lahmu e Lahamu.',
+      'Lahmu gera Anshar e Kishar, os horizontes do universo.',
+      'Anshar gera Anu (Céu), pai de Enlil e Enki.'
+    ],
+    originMap: 'Espalhada pelo vale dos rios Tigre e Eufrates (Mesopotâmia), com centros cívicos religiosos em Ur, Eridu, Uruk, Nipur e Babilônia.',
+    literature: [
+      { title: 'A Epopeia de Gilgamesh', author: 'Escriba Sin-leqi-unninni', impact: 'A obra literária mais antiga da humanidade que discute a mortalidade, amizade e limites humanos.' },
+      { title: 'Enuma Elish', author: 'Sacerdotes da Babilônia', impact: 'O hino de criação cosmogônico que exalta a supremacia imperial de Marduk.' }
+    ],
+    modernInfluence: [
+      'Arquitetura de Torres: O modelo piramidal e escalonado dos zigurates inspirou projetos monumentais contemporâneos.',
+      'Arquétipos Literários: A amizade heroica de Gilgamesh e Enkidu estabeleceu o molde para sagas modernas.'
+    ],
+    sources: [
+      { title: 'Babyloniaca', author: 'Beroso', year: 'Século III a.C.', type: 'document', details: 'Fragmentos históricos compilados em grego da tradição babilônica' }
+    ],
+    bibliography: [
+      'BOTTÉRO, Jean. No Começo Eram os Deuses. Rio de Janeiro: Bertrand Brasil, 2011.',
+      'KRAMER, Samuel Noah. A História Começa na Suméria. Lisboa: Europa-América, 1997.'
+    ]
+  },
+  japonesa: {
+    name: 'Mitologia Japonesa',
+    region: 'Arquipélago Japonês (Xintoísmo)',
+    era: 'Século VII d.C. - Presente',
+    pantheon: 'Oito Milhões de Kami (Kami-gami)',
+    creator: 'Izanagi e Izanami, o casal divino primordial que moldou as ilhas sagradas com a lança celeste',
+    cosmologyDesc: 'Uma estrutura xintoísta animista composta por Takamagahara (a planície celestial dos deuses), Ashihara no Nakatsukuni (a planície terrestre humana) e Yomi no Kuni (o sombrio reino subterrâneo dos mortos).',
+    creationDesc: 'Ao agitar o oceano lamacento cósmico primordial, Izanagi e Izanami geraram as ilhas do arquipélago, as florestas, os relevos e as divindades protetoras locais.',
+    deities: [
+      { name: 'Amaterasu Omikami', domain: 'Senhora do Sol e Realeza', desc: 'Deusa suprema do sol, matriz da linhagem imperial japonesa e governante de Takamagahara.', symbol: 'Espelho Yata no Kagami e Sol Nascente' },
+      { name: 'Susanoo no Mikoto', domain: 'Senhor das Tempestades e Mares', desc: 'Deus guerreiro impetuoso do vento, das tempestades e purificador de monstros na terra.', symbol: 'Espada Kusanagi e Ondas' },
+      { name: 'Tsukuyomi no Mikoto', domain: 'Regente da Lua', desc: 'Deus da noite, da lua e do tempo silencioso, irmão de Amaterasu com quem divide os céus.', symbol: 'Lua Crescente e Chaves da Noite' },
+      { name: 'Inari Okami', domain: 'Kami da Agricultura e Fartura', desc: 'Kami da fertilidade do solo, do arroz, da indústria, da prosperidade material e dos ferreiros.', symbol: 'Raposa Kitsune e Ramo de Arroz' }
+    ],
+    heroes: [
+      { name: 'Yamato Takeru', saga: 'A Conquista das Províncias do Leste', bio: 'Príncipe guerreiro lendário que utilizou disfarces estratégicos e a espada mágica Kusanagi para subjugar rebeldes.' },
+      { name: 'Momotaro', saga: 'A Ilha dos Demônios Oni', bio: 'Menino nascido de dentro de um pêssego gigante que recrutou animais para derrotar demônios assombradores.' },
+      { name: 'Urashima Taro', saga: 'O Palácio de Dragão do Mar', bio: 'Pescador humilde que resgatou uma tartaruga e viajou para os reinos marinhos sagrados de Ryujin.' }
+    ],
+    creatures: [
+      { name: 'Kyuubi (Kitsune)', desc: 'Raposa mística de nove caudas dotada de inteligência absoluta, portadora de fogo e ilusionismo.', role: 'Espírito mensageiro celestial e mutante' },
+      { name: 'Tengu', desc: 'Kami com asas e bico ou nariz avantajado, mestre de artes marciais e protetor de florestas montanhosas.', role: 'Sábio guerreiro das montanhas' },
+      { name: 'Oni', desc: 'Demônios robustos dotados de chifres e porretes de ferro que habitam as cavernas escuras e o inferno.', role: 'Força destrutiva caótica' }
+    ],
+    items: [
+      { name: 'A Espada Kusanagi no Tsurugi', desc: 'Retirada da cauda da serpente gigante de oito cabeças Orochi por Susanoo.', power: 'Purificação cósmica e comando de ventos' },
+      { name: 'O Espelho Yata no Kagami', desc: 'Espelho usado para atrair Amaterasu para fora da caverna escura de Iwato.', power: 'Reflexo da verdade universal absoluta' },
+      { name: 'A Joia Yasakani no Magatama', desc: 'Contas sagradas de jade de forte poder espiritual herdadas pela família imperial.', power: 'Sinal de linhagem e luz espiritual' }
+    ],
+    places: [
+      { name: 'Grande Santuário de Ise', desc: 'O local mais sagrado do arquipélago consagrado à adoração direta de Amaterasu.', nature: 'Epicentro espiritual cívico' },
+      { name: 'Caverna Ame no Iwato', desc: 'A fenda escura das rochas onde a deusa do sol escondeu-se mergulhando o cosmos na escuridão.', nature: 'Portal de renascimento solar' },
+      { name: 'Monte Fuji', desc: 'Montanha sagrada e vulcão ativo considerado o umbigo de contato com os Kami celestes.', nature: 'Santuário natural colossal' }
+    ],
+    timeline: [
+      'Gênese das Planícies: O surgimento espontâneo das divindades da criação do vácuo original.',
+      'O Conflito de Susanoo: A revolta do deus das tempestades contra os campos celestes de Amaterasu.',
+      'A Descida de Ninigi: O momento em que o neto de Amaterasu descende à terra trazendo as insígnias imperiais.'
+    ],
+    genealogy: [
+      'Izanagi e Izanami emergem do plano celestial e moldam as ilhas.',
+      'Do olho esquerdo de Izanagi nasce Amaterasu; do direito Tsukuyomi; do nariz Susanoo.',
+      'Amaterasu outorga a Ninigi as insígnias de regência terrestre.'
+    ],
+    originMap: 'Distribuída pelas ilhas principais de Honshu, Kyushu e Shikoku, com eixos de poder espiritual em Yamato e Ise.',
+    literature: [
+      { title: 'Kojiki', author: 'O no Yasumaro', impact: 'A crônica mais antiga do Japão compilando a criação e as lendas da realeza sob as ordens da corte.' },
+      { title: 'Nihon Shoki', author: 'Príncipe Toneri', impact: 'Anais de crônicas oficiais históricas e mitológicas de forte detalhamento cosmogônico.' }
+    ],
+    modernInfluence: [
+      'Jogos e Entretenimento: O xintoísmo e os Kami definem as narrativas e monstros de animes, mangás e franquias de jogos globais.',
+      'Estética Minimalista: A preservação de portais Torii e santuários em meio a metrópoles hiperpovoadas no Japão.'
+    ],
+    sources: [
+      { title: 'Fudoki', author: 'Sacerdotes Provinciais', year: '713 d.C.', type: 'document', details: 'Relatórios geográficos e culturais detalhando lendas locais' }
+    ],
+    bibliography: [
+      'NAUMANN, Nelly. Antigos Mitos Japoneses. São Paulo: Cultrix, 2002.',
+      'PIGEOT, Jacqueline. História da Literatura Japonesa. São Paulo: Martins Fontes, 1995.'
+    ]
+  },
+  chinesa: {
+    name: 'Mitologia Chinesa',
+    region: 'Planície do Rio Amarelo (China)',
+    era: '2000 a.C. - Presente',
+    pantheon: 'Burocracia Celestial',
+    creator: 'Pangu, que despertou do ovo cósmico primordial separando o céu e a terra',
+    cosmologyDesc: 'A harmonia tripartite composta pelo Palácio Celestial do Imperador de Jade, a planície terrestre e as cortes subterrâneas de Diyu, regidos pelas leis do Yin-Yang e os Cinco Elementos.',
+    creationDesc: 'Após a morte de Pangu, seu hálito tornou-se o vento, sua voz o trovão, seus olhos o sol e a lua, e seu corpo as grandes cordilheiras cordilheiras chinesas.',
+    deities: [
+      { name: 'Imperador de Jade', domain: 'Administrador Supremo', desc: 'Governante absoluto do palácio celestial, das cortes de deuses e das leis do destino social.', symbol: 'Selo Imperial e Vestes de Dragão' },
+      { name: 'Nuwa', domain: 'Mãe Criadora', desc: 'Deusa ancestral metade serpente que moldou os primeiros humanos de argila e reparou os pilares quebrados do céu.', symbol: 'Compasso e Argila' },
+      { name: 'Sun Wukong (Rei Macaco)', domain: 'Guerreiro Transcendente', desc: 'Macaco imortal dotado de setenta e duas transformações, portador de força colossal e mestre das trapaças.', symbol: 'Bastão de Ferro e Nuvem Voadora' },
+      { name: 'Guan Yin', domain: 'Senhora da Compaixão', desc: 'Bodhisattva da misericórdia sagrada, protetora dos navegantes, crianças e mística curadora.', symbol: 'Vaso de Água Pura e Lótus' }
+    ],
+    heroes: [
+      { name: 'Houyi', saga: 'A Derrubada dos Dez Sóis', bio: 'Arqueiro cósmico que disparou flechas de fogo contra nove sóis falsos que assolavam a terra em queima severa.' },
+      { name: 'Yu o Grande', saga: 'O Controle das Grandes Cheias', bio: 'Imperador mítico que passou décadas escavando vales para drenar águas, fundando a dinastia Xia.' },
+      { name: 'Oito Imortais', saga: 'A Travessia do Mar do Leste', bio: 'Sábios que alcançaram a iluminação taoista portando artefatos de poder e auxiliando marginalizados.' }
+    ],
+    creatures: [
+      { name: 'Dragão Chinês (Long)', desc: 'Serpente colossal portando garras e chifres, regente absoluto das chuvas, ventos e rios.', role: 'Matriz de poder imperial benévolo' },
+      { name: 'Fenghuang', desc: 'Pássaro lendário unindo traços de fênix e pavão, símbolo supremo de beleza feminina e união real.', role: 'Heraldo de harmonia imperial' },
+      { name: 'Qilin', desc: 'Criatura unindo corpo de cervo e escamas de dragão, cuja aparição sinaliza nascimento de sábios.', role: 'Sinalizador de virtude cívica' }
+    ],
+    items: [
+      { name: 'Bastão Ruyi Jingu Bang', desc: 'Bastão de ferro usado por Sun Wukong que pode crescer até os céus ou encolher até virar agulha.', power: 'Ajuste de densidade e impacto absoluto' },
+      { name: 'Os Pêssegos da Imortalidade', desc: 'Frutas colhidas a cada três mil anos nos pomares reais da Rainha Mãe do Oeste.', power: 'Concessão de longevidade divina' },
+      { name: 'O Arco Cósmico de Houyi', desc: 'Arco divino capaz de disparar projéteis de energia estelar a distâncias absolutas.', power: 'Destruição de astros estelares' }
+    ],
+    places: [
+      { name: 'Monte Kunlun', desc: 'A gigantesca cadeia de montanhas considerada o palácio terrestre e residência da Rainha do Oeste.', nature: 'Eixo terrestre místico' },
+      { name: 'Palácio de Cristal de Ryujin', desc: 'As grandes fortalezas situadas no fundo do oceano onde residem os Reis Dragões.', nature: 'Reino aquático imperial' },
+      { name: 'Diyu', desc: 'O complexo sistema subterrâneo composto por dez tribunais onde as almas pagam penitências.', nature: 'Reino de julgamento moral' }
+    ],
+    timeline: [
+      'Gênese de Pangu: O surgimento cósmico da terra e dos ciclos de ordenamento material original.',
+      'A Época de Três Soberanos: O tempo místico onde deuses ensinaram a escrita, medicina e tecelagem.',
+      'Jornada ao Oeste: O ciclo literário onde Sun Wukong escolta o monge Tang rumo aos manuscritos sagrados.'
+    ],
+    genealogy: [
+      'Pangu divide a dualidade original de Yin e Yang.',
+      'Fuxi e Nuwa geram as primeiras gerações de famílias e clãs da planície.',
+      'O Imperador de Jade assume a burocracia governamental absoluta celestial.'
+    ],
+    originMap: 'Desenvolvida ao longo do curso dos rios Amarelo e Yangtzé, estendendo-se por todo o império das dinastias clássicas.',
+    literature: [
+      { title: 'Shan Hai Jing', author: 'Autores Anônimos Antigos', impact: 'Rico compêndio enciclopédico de geografia, plantas fantásticas e monstros folclóricos.' },
+      { title: 'Jornada ao Oeste', author: 'Wu Cheng\'en', impact: 'Uma das quatro grandes obras clássicas que consolidou a fama do Rei Macaco e da busca mística.' }
+    ],
+    modernInfluence: [
+      'Medicina Tradicional: Uso da teoria cosmológica dos fluxos de energia (Qi) e meridianos de acupuntura.',
+      'Cinema de Artes Marciais: Filmes do gênero Wuxia que reimaginam imortais cruzando céus e canalizando energias cósmicas.'
+    ],
+    sources: [
+      { title: 'Shiji', author: 'Sima Qian', year: 'Século I a.C.', type: 'book', details: 'Primeiras seções narram a época mística do Imperador Amarelo' }
+    ],
+    bibliography: [
+      'WERNER, E. T. C. Mitos e Lendas da China. São Paulo: Edições 70, 2004.',
+      'PANG, Guan. Cosmologia e Cultura Chinesa. Lisboa: Caminho, 1999.'
+    ]
+  },
+  maia: {
+    name: 'Mitologia Maia',
+    region: 'Mesoamérica (Península de Iucatã)',
+    era: '2000 a.C. - Século XVI d.C.',
+    pantheon: 'Senhores de Xibalba e Divindades Celestes',
+    creator: 'Tepeu e Gucumatz (Kukulkán), os progenitores que moldaram os homens a partir da massa de milho',
+    cosmologyDesc: 'O cosmos é estruturado em treze céus estrelados e nove níveis do sombrio submundo de Xibalba (o lugar de medo), interconectados no centro pela árvore colossal Ceiba (Yaxche).',
+    creationDesc: 'Após tentativas fracassadas de esculpir humanos em argila e madeira, os deuses encontraram o milho amarelo e branco, gerando homens capazes de proferir preces.',
+    deities: [
+      { name: 'Itzamná', domain: 'Soberano Celeste', desc: 'Kami supremo dos céus, criador da escrita cívica, padroeiro da ciência e da conservação da colheita.', symbol: 'Iguana e Velho Sábio' },
+      { name: 'Chaac', domain: 'Senhor das Chuvas', desc: 'Divindade das chuvas, das tempestades e do ciclo agrícola de sobrevivência das planícies.', symbol: 'Machado de Raio e Presas de Serpente' },
+      { name: 'Kukulkán', domain: 'Serpente Emplumada', desc: 'Deus portador de sabedoria civilizatória, regente dos ventos, do calendário solar e do comércio de trocas.', symbol: 'Serpente Emplumada' },
+      { name: 'Hunab Ku', domain: 'O Coração do Céu', desc: 'Divindade invisível considerada o centro dinâmico do movimento criador do universo.', symbol: 'Espiral Galáctica Cósmica' }
+    ],
+    heroes: [
+      { name: 'Hunahpú', saga: 'O Jogo Cósmico contra Xibalba', bio: 'Um dos Gêmeos Heróis que decifrou as casas de tortura do submundo e ascendeu aos céus após derrotar os mortos.' },
+      { name: 'Xbalanqué', saga: 'O Julgamento de Xibalba', bio: 'Gêmeo herói de Hunahpú, mestre da caça, do jogo de bola e místico capaz de ressuscitar seu irmão.' },
+      { name: 'Popol Vuh', saga: 'As Tarefas de Sobrevivência', bio: 'Os heróis tribais ancestrais que enfrentaram e depuseram o orgulhoso pássaro gigante Vucub Caquix.' }
+    ],
+    creatures: [
+      { name: 'Camazotz', desc: 'Morcego gigante das trevas que habitava o submundo de Xibalba decapitando invasores.', role: 'Executor e monstro noturno' },
+      { name: 'Serpente de Visão', desc: 'Entidade de serpente de duas cabeças que atua como canal espiritual durante ritos de oferendas reais.', role: 'Canal de visões místicas' },
+      { name: 'Jaguar da Noite', desc: 'Grande predador felino que carrega as manchas das constelações, símbolo de poder imperial xamânico.', role: 'Guardia noturno celestial' }
+    ],
+    items: [
+      { name: 'Bola Cósmica de Borracha', desc: 'Bola de resina elástica usada no jogo ritual de bola que simbolizava a órbita do sol e da lua.', power: 'Interconexão cósmica de planos' },
+      { name: 'Faca de Obsidiana', desc: 'Lâmina de vidro vulcânico negro usada em ritos rituais para liberar o sangue sagrado.', power: 'Portal de conexão com deuses' },
+      { name: 'Os Códices de Bark', desc: 'Manuscritos de cortiça de árvore dobrados em sanfona contendo as tabelas do calendário lunar.', power: 'Controle matemático do destino' }
+    ],
+    places: [
+      { name: 'Xibalba', desc: 'O submundo sombrio e hostil composto por rios de sangue, pus e casas de tormento de obsidiana.', nature: 'Reino de morte e provações' },
+      { name: 'Chichén Itzá', desc: 'A metrópole sagrada dominada pela pirâmide de El Castillo consagrada aos mistérios do sol.', nature: 'Centro cívico e astronômico' },
+      { name: 'Ceiba Sagrada (Yaxche)', desc: 'Árvore colossal cujas raízes penetram em Xibalba e cujos ramos sustentam o plano celeste.', nature: 'Eixo cosmológico de ligação' }
+    ],
+    timeline: [
+      'Idade dos Homens de Lama: A primeira tentativa de criação onde os seres derretiam na água.',
+      'Destruição dos Homens de Madeira: O dilúvio de resina enviado para extinguir os humanos imperfeitos.',
+      'Era do Milho: O estabelecimento do ciclo dinástico e do atual calendário solar de contagem longa.'
+    ],
+    genealogy: [
+      'Xpiyacoc e Xmucane, os avós cósmicos primordiais, iniciam os planos.',
+      'Os Gêmeos originais Hun-Hunahpú e Vucub-Hunahpú são enterrados no submundo.',
+      'O sangue de Hun-Hunahpú fecunda Ixquic, que gera os Gêmeos Heróis.'
+    ],
+    originMap: 'Concentrada na floresta tropical da península de Iucatã, Chiapas, Guatemala, Belize e Honduras ocidentais.',
+    literature: [
+      { title: 'Popol Vuh', author: 'Sacerdotes K\'iche\'', impact: 'O documento literário mais importante da Mesoamérica detalhando a gênese e aventuras dos gêmeos heróis.' },
+      { title: 'Livros de Chilam Balam', author: 'Escribas de Yucatán', impact: 'Tradições proféticas, astronômicas e históricas copiadas após a chegada espanhola.' }
+    ],
+    modernInfluence: [
+      'O Calendário de Contagem Longa: Fascínio contemporâneo global sobre os ciclos do calendário maia e fim de eras.',
+      'A Cultura do Milho: Preservação de técnicas de milpa e ritos de fertilidade em comunidades agrícolas tradicionais.'
+    ],
+    sources: [
+      { title: 'Relación de las cosas de Yucatán', author: 'Diego de Landa', year: '1566 d.C.', type: 'book', details: 'Primeiro registro europeu contendo glifos e lendas locais' }
+    ],
+    bibliography: [
+      'COE, Michael D. Os Maias. Lisboa: Editorial Verbo, 1990.',
+      'LEÓN-PORTILLA, Miguel. A Filosofia Maia. Cidade do México: UNAM, 1980.'
+    ]
+  },
+  asteca: {
+    name: 'Mitologia Asteca',
+    region: 'Mesoamérica (Vale do México)',
+    era: 'Século XIII d.C. - Século XVI d.C.',
+    pantheon: 'Divindades do Império Asteca',
+    creator: 'Ometeotl, a entidade dual suprema que gerou os quatro Tezcatlipocas coloridos',
+    cosmologyDesc: 'A crença na sucessão infinita de cinco eras solares (Cinco Sóis). O sol atual (Quinto Sol) exige oferendas contínuas de sangue para manter sua órbita e repelir os demônios estelares Tzitzimime.',
+    creationDesc: 'Para erguer a terra, os deuses Quetzalcóatl e Tezcatlipoca transformaram-se em serpentes e dividiram o monstro jacaré Cipactli ao meio.',
+    deities: [
+      { name: 'Quetzalcóatl', domain: 'Serpente Emplumada', desc: 'Kami da sabedoria, do vento, da metalurgia, do aprendizado civil e restaurador da humanidade.', symbol: 'Serpente e Concha de Vento' },
+      { name: 'Huitzilopochtli', domain: 'Soberano da Guerra', desc: 'Tutelar dos astecas, padroeiro da guerra militar e personificação solar exigindo nutrição vitalícia.', symbol: 'Beija-flor e Serpente de Fogo' },
+      { name: 'Tezcatlipoca', domain: 'Espelho Fumegante', desc: 'Kami do destino, da noite, dos ventos frios, da discórdia e dono do espelho mágico de obsidiana.', symbol: 'Jaguar e Espelho de Obsidiana' },
+      { name: 'Tlaloc', domain: 'Senhor da Terra e Chuva', desc: 'Kami das montanhas, da umidade, do trovão e das tempestades cruciais para a semeadura de grãos.', symbol: 'Olhos de Argola e Presas' }
+    ],
+    heroes: [
+      { name: 'Ce Acatl Topiltzin', saga: 'A Refundação de Tula', bio: 'Rei e sacerdote histórico que se tornou sinônimo de Quetzalcóatl liderando sua corte utópica de sabedoria.' },
+      { name: 'Popocatepetl', saga: 'O Amor das Montanhas', bio: 'Guerreiro patriota cuja dor pela morte da princesa Iztaccihuatl o transformou em um vulcão ativo de cinzas.' },
+      { name: 'Mixcoatl', saga: 'O Caçador das Estrelas', bio: 'Líder guerreiro ancestral divinizado que ensinou as artes da caça e do arco às tribos.' }
+    ],
+    creatures: [
+      { name: 'Cipactli', desc: 'Monstro aquático devorador metade crocodilo e metade peixe cuja pele deu origem ao solo terrestre.', role: 'Fera primordial da fundação' },
+      { name: 'Tzitzimime', desc: 'Demônios esqueléticos estelares que tentam descer do céu para devorar os homens durante eclipses.', role: 'Pesadelo de fim de mundo' },
+      { name: 'Xiuhcoatl', desc: 'Serpente mística azul de turquesa usada como arma divina de fogo por Huitzilopochtli.', role: 'Canhão e raio solar' }
+    ],
+    items: [
+      { name: 'O Espelho Fumegante', desc: 'Espelho de obsidiana polido usado por Tezcatlipoca para espionar os pensamentos e destinos.', power: 'Visão onisciente e discórdia mística' },
+      { name: 'A Pedra do Sol', desc: 'Monólito de basalto colossal esculpido detalhando as eras dos Cinco Sóis e o calendário.', power: 'Ordenação matemática cósmica' },
+      { name: 'O Cetro Ehécatl', desc: 'Cetro de concha usado por Quetzalcóatl para impulsionar e afastar os ventos.', power: 'Comando do vento civilizador' }
+    ],
+    places: [
+      { name: 'Teotihuacan', desc: 'A cidade mítica ancestral onde os deuses se reuniram em sacrifício próprio para criar o Quinto Sol.', nature: 'Berço solar sagrado' },
+      { name: 'Tenochtitlan', desc: 'A capital imperial asteca fundada em um ilhote no lago Texcoco sob a sinalização divina da águia.', nature: 'Coração político militar' },
+      { name: 'Templo Mayor', desc: 'A grande pirâmide dupla consagrada conjuntamente a Tlaloc e Huitzilopochtli no centro urbano.', nature: 'Canal de sacrifício cósmico' }
+    ],
+    timeline: [
+      'Sol de Terra: A primeira era cósmica onde gigantes habitaram e foram devorados por jaguares.',
+      'Sol de Vento: Período encerrado por furacões colossais que transformaram os humanos em macacos.',
+      'O Quinto Sol (4-Ollin): A era cósmica atual, destinada a terminar por terremotos globais.'
+    ],
+    genealogy: [
+      'Ometeotl, a força dual cósmica, gera os quatro Tezcatlipocas originais.',
+      'O Tezcatlipoca Branco (Quetzalcóatl) e o Negro disputam o ordenamento das eras.',
+      'Coatlicue (deusa da terra) dá luz de forma mística a Huitzilopochtli.'
+    ],
+    originMap: 'Concentrada no Vale do México, com epicentro urbano nas cidades ao redor do Lago Texcoco e as capitais da Tríplice Aliança.',
+    literature: [
+      { title: 'Cantares Mexicanos', author: 'Sábios Cantores Astecas', impact: 'Rica coleção de canções líricas de poetas astecas expressando filosofias de vida.' },
+      { title: 'Códice Florentino', author: 'Bernardino de Sahagún', impact: 'Enciclopédia ilustrada de doze volumes compilando a cultura, mitos e leis astecas pós-invasão.' }
+    ],
+    modernInfluence: [
+      'Identidade Mexicana: A águia asteca sobre o cacto devorando uma serpente estampa a bandeira nacional contemporânea.',
+      'O Dia dos Mortos: Mistura de rituais astecas consagrados a Mictecacihuatl com a liturgia católica romana.'
+    ],
+    sources: [
+      { title: 'Códice Aubin', author: 'Escribas de Tenochtitlan', year: '1576 d.C.', type: 'document', details: 'Detalha a jornada mítica de migração guiada por Huitzilopochtli' }
+    ],
+    bibliography: [
+      'TAUBE, Karl. Mitos Astecas e Maias. Madrid: Akal, 1996.',
+      'LEÓN-PORTILLA, Miguel. A Filosofia Náuatle. São Paulo: USP, 1965.'
+    ]
+  },
+  inca: {
+    name: 'Mitologia Inca',
+    region: 'Região Andina (América do Sul)',
+    era: 'Século XII d.C. - Século XVI d.C.',
+    pantheon: 'Divindades Imperiais Andinas',
+    creator: 'Viracocha, o criador supremo que emergiu das profundezas do Lago Titicaca',
+    cosmologyDesc: 'Dividida em três planos morais e espaciais: Hanan Pacha (o mundo celeste de cima), Kay Pacha (o mundo imediato terrestre humano) e Uku Pacha (o submundo subterrâneo interno das sementes).',
+    creationDesc: 'Do Lago Titicaca, Viracocha ordenou a luz do sol, as estrelas e moldou as primeiras populações de argila e pedra, enviando-as a povoar o vale.',
+    deities: [
+      { name: 'Inti', domain: 'Pai do Sol', desc: 'Kami solar protetor direto das dinastias imperiais incas, doador de calor e energia vital às colheitas.', symbol: 'Disco Solar Dourado de Ouro' },
+      { name: 'Pachamama', domain: 'Mãe Terra', desc: 'Deusa da fertilidade, da terra produtiva, dos terremotos e matriz vital de todos os seres vivos.', symbol: 'Solo Arado e Flores' },
+      { name: 'Mama Quilla', domain: 'Mãe da Lua', desc: 'Deusa prateada da lua, protetora do casamento, das mulheres e regente do calendário religioso.', symbol: 'Disco de Prata' },
+      { name: 'Illapa', domain: 'Senhor do Trovão', desc: 'Divindade das tempestades, do relâmpago e das chuvas torrenciais, portador de uma funda de ouro.', symbol: 'Funda e Arco-Íris' }
+    ],
+    heroes: [
+      { name: 'Manco Cápac', saga: 'A Fundação de Cusco', bio: 'O primeiro imperador místico enviado por Inti que portava um cajado de ouro para encontrar o solo fértil de Cusco.' },
+      { name: 'Mama Ocllo', saga: 'A Instituição do Lar', bio: 'Irmã e consorte de Manco Cápac, enviada para ensinar as mulheres a fiar, tecer e organizar a vida doméstica.' },
+      { name: 'Pachacuti', saga: 'A Defesa contra os Chancas', bio: 'Imperador real cujas vitórias místicas (onde pedras se transformaram em soldados Pururaucas) iniciaram o império.' }
+    ],
+    creatures: [
+      { name: 'Amaru', desc: 'Serpente gigantesca alada com cabeça de lhama que transita entre os planos celestes e subterrâneos.', role: 'Canal de água e fertilidade andina' },
+      { name: 'Puma Sagrado', desc: 'Grande felino andino que personifica a força terrestre de Kay Pacha, moldando o desenho da cidade de Cusco.', role: 'Símbolo de poder militar terrestre' },
+      { name: 'Condor dos Andes', desc: 'Ave colossal mensageira direta dos céus de Hanan Pacha, portadora de mensagens divinas.', role: 'Condutor celestial' }
+    ],
+    items: [
+      { name: 'O Cajado de Manco Cápac', desc: 'Cajado dourado sagrado dado por Inti que afundava totalmente apenas na terra mais rica andina.', power: 'Sinalização e fertilidade agrícola' },
+      { name: 'O Disco Solar de Coricancha', desc: 'Disco colossal de ouro puro entalhado com a imagem de Inti que refletia os raios matinais no templo.', power: 'Canalização solar absoluta' },
+      { name: 'Quipus Dourados', desc: 'Cordas de algodão coloridas com nós dourados que guardavam as leis do império e cronologias místicas.', power: 'Registro matemático do destino' }
+    ],
+    places: [
+      { name: 'Lago Titicaca', desc: 'O lago navegável mais alto considerado o santuário e berço místico da criação de Viracocha.', nature: 'Berço da criação universal' },
+      { name: 'Cusco', desc: 'A capital imperial andina projetada na forma de um puma, considerada o umbigo do universo.', nature: 'Centro cosmológico político' },
+      { name: 'Templo de Coricancha', desc: 'O templo do sol revestido com placas de ouro onde residia o centro litúrgico do panteão.', nature: 'Canal de adoração imperial' }
+    ],
+    timeline: [
+      'Gênese de Viracocha: O surgimento das luzes divinas das águas frias do Titicaca primordial.',
+      'A Época de Manco Cápac: A saída das cavernas de Pacaritambo das primeiras linhagens divinas incas.',
+      'A Era de Ouro de Cusco: A expansão imperial e pavimentação da grande rede de estradas Qhapaq Ñan.'
+    ],
+    genealogy: [
+      'Viracocha cria o Sol (Inti) e a Lua (Mama Quilla).',
+      'Inti e Mama Quilla geram Manco Cápac e Mama Ocllo para civilizar os homens.',
+      'Os imperadores incas seguintes governam como filhos legítimos de Inti.'
+    ],
+    originMap: 'Espalhada ao longo da Cordilheira dos Andes, estendendo-se do Peru, Bolívia, Equador, até partes do Chile, Argentina e Colômbia.',
+    literature: [
+      { title: 'Manuscrito de Huarochirí', author: 'Escribas Provinciais', impact: 'A única coleção preservada que detalha os mitos locais de criação e deuses rurais antes do colapso.' },
+      { title: 'Comentários Reais dos Incas', author: 'Inca Garcilaso de la Vega', impact: 'Crônica de grande prestígio detalhando as linhagens e costumes imperiais andinos.' }
+    ],
+    modernInfluence: [
+      'O Culto à Pachamama: Preservação de oferendas (Pago a la Tierra) e respeito ecológico em países andinos.',
+      'Inti Raymi: O festival solar do solstício de inverno celebrado anualmente em Cusco como marco identitário.'
+    ],
+    sources: [
+      { title: 'Suma y Narración de los Incas', author: 'Juan de Betanzos', year: '1551 d.C.', type: 'book', details: 'Primeiras traduções de cantos andinos históricos' }
+    ],
+    bibliography: [
+      'BAUER, Brian S. Os Mitos de Cusco. Cusco: Centro Bartolomé de las Casas, 2004.',
+      'ROSTWOROWSKI, Maria. História do Império Inca. São Paulo: USP, 2013.'
+    ]
+  },
+  hindu: {
+    name: 'Mitologia Hindu',
+    region: 'Subcontinente Indiano (Vedas)',
+    era: '1500 a.C. - Presente',
+    pantheon: 'O Trimurti e Divindades Védicas',
+    creator: 'Brahma, o deus que emergiu da flor de lótus originada do umbigo de Vishnu',
+    cosmologyDesc: 'Um universo de ciclos infinitos (Kalpas) divididos em quatro eras (Yugas). É governado pela Trimurti (Brahma o criador, Vishnu o mantenedor, Shiva o destruidor da ilusão de Samsara).',
+    creationDesc: 'Da respiração e meditação cósmica divina surge a ilusão material do universo (Maya), onde as almas reencarnam buscando a libertação de Moksha.',
+    deities: [
+      { name: 'Vishnu', domain: 'Mantenedor do Cosmos', desc: 'Deus da preservação cívica, da ordem moral (Dharma), manifestando-se como avatares terrestres.', symbol: 'Concha e Disco Sudarshana' },
+      { name: 'Shiva', domain: 'O Destruidor da Ilusão', desc: 'Deus da destruição regeneradora, da dança cósmica do tempo, da ascese e protetor dos iogues.', symbol: 'Tridente Trishula e Serpente no Pescoço' },
+      { name: 'Ganesha', domain: 'Removedor de Obstáculos', desc: 'Deus com cabeça de elefante, padroeiro do intelecto, da sabedoria, das escritas e novos começos.', symbol: 'Cabeça de Elefante e Modaka' },
+      { name: 'Brahma', domain: 'O Criador Supremo', desc: 'Divindade da criação universal material, provido de quatro cabeças que recitam as escrituras sagradas.', symbol: 'Vedas e Cetro de Lótus' }
+    ],
+    heroes: [
+      { name: 'Rama', saga: 'O Ramayana', bio: 'O sétimo avatar de Vishnu que viajou até o reino de Lanka para resgatar sua esposa Sita das garras do demônio Ravana.' },
+      { name: 'Arjuna', saga: 'A Batalha de Kurukshetra', bio: 'Príncipe guerreiro arqueiro cujos diálogos éticos com Krishna formam a escritura Bhagavad Gita.' },
+      { name: 'Hanuman', saga: 'A Saga da Lealdade', bio: 'Deus macaco dono de força e velocidade absolutas que personifica a devoção moral suprema (Bhakti).' }
+    ],
+    creatures: [
+      { name: 'Garuda', desc: 'Criatura colossal metade homem e metade águia solar, montaria eterna do deus Vishnu.', role: 'Protetor contra serpentes' },
+      { name: 'Airavata', desc: 'Elefante branco gigante com múltiplas presas que carrega o deus do trovão Indra.', role: 'Canal de nuvens e chuvas' },
+      { name: 'Nagas', desc: 'Serpentes sagradas guardiãs de tesouros escondidos em rios profundos e templos subterrâneos.', role: 'Guardiões de sabedoria' }
+    ],
+    items: [
+      { name: 'O Tridente Trishula', desc: 'Tridente de Shiva que representa os três aspectos da existência: criação, manutenção e destruição.', power: 'Dissolução da ilusão mental' },
+      { name: 'O Sudarshana Chakra', desc: 'Disco de fogo giratório de Vishnu com cento e oito dentes afiados que extermina a injustiça.', power: 'Destruição de demônios e ordem' },
+      { name: 'O Arco Gandiva', desc: 'Arco sagrado de Arjuna forjado por Brahma que emite raios celestes ao ser armado.', power: 'Vitória invencível em batalha' }
+    ],
+    places: [
+      { name: 'Rio Gange', desc: 'Curso de água sagrado que corre do céu através dos cabelos de Shiva para purificar as almas.', nature: 'Fronteira líquida purificadora' },
+      { name: 'Monte Kailash', desc: 'A montanha de gelo considerada a morada eterna e local de meditação de Shiva.', nature: 'Santuário de meditação cósmica' },
+      { name: 'Ayodhya', desc: 'A cidade mítica de ouro cívico e berço do imperador exemplar Rama.', nature: 'Centro dinástico de Dharma' }
+    ],
+    timeline: [
+      'Satya Yuga: A era de ouro cósmica onde a virtude moral Dharma operava em plenitude absoluta.',
+      'Treta Yuga: Período onde a mentira surge, exigindo a vinda do herói e imperador Rama.',
+      'Kali Yuga: A era cósmica atual, caracterizada por discórdia, desequilíbrio e materialismo.'
+    ],
+    genealogy: [
+      'Vishnu repousa sobre o oceano primordial Ananta.',
+      'De seu umbigo brota uma flor de lótus de onde nasce Brahma.',
+      'Brahma gera os sábios Prajapatis para povoar os deuses e humanos.'
+    ],
+    originMap: 'Concentrada ao longo da bacia do Rio Indo e Gange, espalhando-se por todo o subcontinente indiano e Sudeste Asiático.',
+    literature: [
+      { title: 'Mahabharata', author: 'Sábio Vyasa', impact: 'A maior epopeia literária do mundo que detalha a grande guerra civil e os ensinamentos éticos.' },
+      { title: 'Ramayana', author: 'Sábio Valmiki', impact: 'Poema heróico clássico que consolidou os valores de Dharma e dever real.' }
+    ],
+    modernInfluence: [
+      'O Yoga e Meditação: Práticas corporais e espirituais integradas globalmente no cotidiano contemporâneo.',
+      'A Não-Violência (Ahimsa): Princípio mitológico hindu que guiou a resistência civil de Mahatma Gandhi.'
+    ],
+    sources: [
+      { title: 'Rigveda', author: 'Sábios Rishis', year: '1500 a.C.', type: 'document', details: 'A coleção de hinos rituais sagrados mais antiga preservada' }
+    ],
+    bibliography: [
+      'ZIMMER, Heinrich. Mitos e Símbolos na Arte e Civilização da Índia. São Paulo: Pensamento, 1989.',
+      'WILKINS, W. J. Mitologia Hindu. São Paulo: Madras, 2005.'
+    ]
+  }
+};
+
+export function getSpecificMythologySection(mythologyId: string, sectionTitle: string): MythologyDetail {
+  if (mythologyId === 'brasileiro') {
+    return folcloreBrasileiroData[sectionTitle] || folcloreBrasileiroData['Introdução'];
+  }
+
+  const meta = worldMythologiesMetadata[mythologyId];
+  if (!meta) {
+    // Fallback if metadata not found
+    return {
+      title: `${sectionTitle} de ${mythologyId}`,
+      details: `A estrutura conceitual da seção ${sectionTitle} está definida para a tradição de ${mythologyId}. Nossos pesquisadores estão consolidando os pergaminhos literários.`,
+      bullets: [
+        'Análise comparativa das fontes originais e preservação arqueológica do mito.',
+        'Contextualização do imaginário sobrenatural e sua fusão com o cotidiano político.'
+      ],
+      scientificNote: 'O CHRONOS mapeia a história das culturas respeitando as tradições acadêmicas e as evidências literárias.'
+    };
+  }
+
+  // Procedural content assembler matching high-fidelity, academically rigorous tone
+  switch (sectionTitle) {
+    case 'Introdução':
+      return {
+        title: `Introdução à ${meta.name}`,
+        details: `A ${meta.name} é o complexo sistema de crenças, práticas religiosas, ritos cívicos e tradições literárias que floresceu na região de ${meta.region} durante a época de ${meta.era}. Trata-se de uma das expressões mais sofisticadas da alma de seu povo, onde as forças insondáveis da natureza e os conflitos sociais eram interpretados como manifestações diretas do panteão dos ${meta.pantheon}. Estas narrativas serviam como códigos morais estruturantes para a coesão social e a ordenação do cotidiano.`,
+        bullets: [
+          `Contexto Territorial: Emergência e consolidação geográfica na região de ${meta.region}.`,
+          `Função Pedagógica e Moral: Consolidação de valores éticos, tabus sociais e deveres cívicos transmitidos intergeracionalmente.`,
+          `Identidade Literária: Desenvolvimento de epopeias, ritos dramáticos e liturgias rituais que preservaram o imaginário nacional.`
+        ],
+        scientificNote: `A sistematização contemporânea da ${meta.name} é embasada por monumentos epigráficos e manuscritos literários históricos de elevado prestígio, constituindo um documento antropológico fundamental para decifrar a organização sociopolítica antiga.`
+      };
+
+    case 'Cosmologia':
+      return {
+        title: `Cosmologia e Espaço Sagrado de ${meta.name}`,
+        details: `Na tradição da ${meta.name}, a organização do universo não é meramente física, mas um território sagrado profundamente integrado. ${meta.cosmologyDesc} O equilíbrio cósmico exige a manutenção de pactos morais e cultos rituais, de forma que o comportamento humano reflete-se na harmonia das forças climáticas e astronômicas de seu meio de sobrevivência.`,
+        bullets: [
+          `Divisão Espacial Cósmica: Estruturação tridimensional compreendendo o reino superior, o plano terreno humano e as profundezas escuras.`,
+          `As Leis da Harmonia: Regulação moral mística onde a transgressão de tabus ou o desrespeito sagrado precipitam a ira divina imediata.`,
+          `Portais e Encruzilhadas: Pontos de sobreposição mística onde humanos interagem e invocam a proteção das divindades por meio de preces.`
+        ],
+        scientificNote: `A arquitetura cosmológica andina, helênica ou oriental espelha de forma brilhante os limites práticos e os eixos de navegação e agricultura de cada civilização, traduzindo o conhecimento geográfico e climático imediato em ontologia sagrada.`
+      };
+
+    case 'Origem do mundo':
+      return {
+        title: `Gênese e Mitos de Criação de ${meta.name}`,
+        details: `O mito da criação original (teogonia/cosmogonia) da ${meta.name} narra que o universo consolidou-se a partir de ${meta.creator}. ${meta.creationDesc} Este ato de sacrifício original e divisão das águas ou elementos primordiais fundou as leis físicas indestrutíveis e a governança cósmica regida pelas grandes divindades.`,
+        bullets: [
+          `O Despertar Primordial: O surgimento espontâneo ou ordenado do cosmos a partir de ${meta.creator.split(',')[0]}.`,
+          `Sacrifício e Separação: A necessidade de derrotar ou processar forças caóticas originais para abrir espaço físico à vida humana.`,
+          `O Ciclo das Eras: O estabelecimento da soberania da dinastia dos deuses do panteão dos ${meta.pantheon} para reprimir as trevas.`
+        ],
+        scientificNote: `Estudos estruturalistas demonstram que as lendas de criação mesopotâmicas, mesoamericanas ou escandinavas operavam como justificativa sagrada das estruturas de soberania política real, apresentando os reis como executores legítimos das leis originais dos deuses.`
+      };
+
+    case 'Principais deuses':
+      return {
+        title: `Divindades e Forças Celestiais de ${meta.name}`,
+        details: `O panteão da ${meta.name} é composto por deuses antropomórficos ou zoomórficos de forte personalidade que personificam esferas de atividade civilizatória e elementos meteorológicos. Estes seres governam a partir dos deuses dos ${meta.pantheon} influenciando e decidindo os caminhos humanos.`,
+        bullets: meta.deities.map(d => `${d.name} (${d.symbol}): ${d.domain} — ${d.desc}`),
+        scientificNote: `A especialização de cada divindade em esferas profissionais ou naturais precisas (como metalurgia, escrita ou agricultura) reflete o avanço técnico e a divisão do trabalho social das civilizações que lhes prestavam culto.`
+      };
+
+    case 'Heróis':
+      return {
+        title: `Heróis e Sagas de Superação de ${meta.name}`,
+        details: `Os heróis da ${meta.name} personificam a coragem, a astúcia e a resistência ética em face de forças colossais. Portadores de linhagens sagradas ou abençoados pelosKami, eles ultrapassam os limites mundanos para conquistar justiça cívica ou redimir falhas geracionais.`,
+        bullets: meta.heroes.map(h => `${h.name} (${h.saga}): ${h.bio}`),
+        scientificNote: `A saga heroica andina ou europeia opera como modelo de virtudes pedagógicas na educação da juventude da época, instruindo sobre o sacrifício pessoal, lealdade à coroa e honra em combate.`
+      };
+
+    case 'Criaturas':
+      return {
+        title: `Bestiário de Monstros e Seres de ${meta.name}`,
+        details: `O imaginário místico da ${meta.name} é repleto de criaturas fantásticas, guardiões territoriais e monstros mitológicos que desafiam a expansão humana ou punem pecadores. Estes seres habitam os limites geográficos desconhecidos de matas, pântanos e mares.`,
+        bullets: meta.creatures.map(c => `${c.name}: ${c.desc} — ${c.role}`),
+        scientificNote: `A proliferação de feras do bestiário nos limites do mapa antigo representava de forma alegórica os perigos e hostilidades de biomas inexplorados, desencorajando o avanço desordenado fora das fronteiras controladas pela civilização.`
+      };
+
+    case 'Objetos lendários':
+      return {
+        title: `Artefatos de Poder e Relíquias de ${meta.name}`,
+        details: `Os objetos míticos da ${meta.name} concentram magias celestes e são ferramentas cruciais de deuses e guerreiros. Portar estas armas, cálices ou selos garante hegemonia e dita o destino das guerras e disputas do panteão.`,
+        bullets: meta.items.map(i => `${i.name} (${i.power}): ${i.desc}`),
+        scientificNote: `Artefatos misticos de metais divinos ou pedras sagradas representavam a fascinação com o avanço tecnológico metalúrgico do período de Bronze e Ferro, divinizando invenções que alteraram de forma absoluta as táticas militares reais.`
+      };
+
+    case 'Locais sagrados':
+      return {
+        title: `Geografia Mística e Santuários de ${meta.name}`,
+        details: `Os santuários e pontos geográficos da ${meta.name} são áreas rituais de forte presença mística onde se concentravam as orações, rituais públicos e peregrinações cívicas da antiguidade.`,
+        bullets: meta.places.map(p => `${p.name} (${p.nature}): ${p.desc}`),
+        scientificNote: `A demarcação de florestas, picos de montanhas ou nascentes de rios como territórios sagrados funcionava na prática como zonas de conservação ecológica restritas onde a extração predatória era proibida pela jurisdição sacerdotal.`
+      };
+
+    case 'Linha do tempo da tradição':
+      return {
+        title: `Ciclos e Eras Mitológicas de ${meta.name}`,
+        details: `A evolução mística da ${meta.name} é dividida em idades ou eras cósmicas sucessivas, narrando desde a plenitude cósmica dos primórdios até a perda progressiva de virtudes no plano material.`,
+        bullets: meta.timeline,
+        scientificNote: `A estruturação cronológica cíclica reflete a observação astronômica e agrícola das sociedades agrárias, ensinando que a existência humana é regida por ciclos de decadência, purificação e ressurreição necessários.`
+      };
+
+    case 'Árvore genealógica dos deuses':
+      return {
+        title: `Linhagens e Parentesco do Panteão de ${meta.name}`,
+        details: `As dynastias divinas da ${meta.name} estabelecem a hierarquia de poder moral do panteão, detalhando casamentos, consórcios celestes e linhagens geracionais que dividiam as esferas de autoridade no cosmos.`,
+        bullets: meta.genealogy,
+        scientificNote: `O parentesco místico dos deuses servia como espelho para legitimar as dinastias reais humanas, justificando governos oligárquicos ou monárquicos como prolongamentos diretos de linhagens consagradas no céu.`
+      };
+
+    case 'Mapa de origem':
+      return {
+        title: `Cartografia Mística Territorial de ${meta.name}`,
+        details: `A distribuição física e espacial do culto cívico da ${meta.name} revela como o relevo, o clima e as bacias hidrográficas moldaram a imaginação religiosa do povo de ${meta.region}.`,
+        bullets: [
+          `Foco de Ocupação: ${meta.originMap}`,
+          `Eixos Hidrográficos e Montanhas: Estabelecimento de centros de devoção acompanhando os principais rios e cadeias montanhosas.`,
+          `Difusão Cultural: Expansão das narrativas acompanhando as rotas mercantis e migrações militares provinciais.`
+        ],
+        scientificNote: `Arqueólogos utilizam a cartografia dos santuários para mapear as correntes migratórias e unificações tribais que geraram as confederações civis, provando que o folclore evoluía em simbiose direta com a história material.`
+      };
+
+    case 'Obras literárias relacionadas':
+      return {
+        title: `O Cânone Literário de ${meta.name}`,
+        details: `A preservação das narrativas místicas e das preces litúrgicas da ${meta.name} dependeu diretamente de obras poéticas, códices e anais históricos gravados por escribas de grande sabedoria.`,
+        bullets: meta.literature.map(l => `${l.title} (${l.author}): ${l.impact}`),
+        scientificNote: `A codificação escrita da tradição oral representou o surgimento da autocrítica estética de cada civilização, convertendo os mitos rituais originais em alta literatura e filosofia clássica indestrutível.`
+      };
+
+    case 'Influência na cultura moderna':
+      return {
+        title: `Preservação e Impacto Moderno de ${meta.name}`,
+        details: `No século XXI, a ${meta.name} continua a exercer poderosa influência na cultura contemporânea, servindo como base conceitual para o desenvolvimento de mídias de entretenimento, artes plásticas e psicologia analítica.`,
+        bullets: meta.modernInfluence.map((mi, idx) => `Ponto #${idx + 1}: ${mi}`),
+        scientificNote: `A resiliência das narrativas mitológicas na modernidade destaca o valor imortal das estruturas de arquétipos psicológicos mapeados originalmente pelas sociedades antigas como chaves para entender os anseios humanos.`
+      };
+
+    case 'Fontes':
+      return {
+        title: `Fontes de Evidência e Testemunhos de ${meta.name}`,
+        details: `A fundamentação acadêmica das nossas investigações mitológicas sobre a ${meta.name} repousa na análise rigorosa de fontes primárias históricas recuperadas de escavações e arquivos de prestígio global.`,
+        bullets: meta.sources.map(s => `${s.title} (${s.author} — ${s.year}): Compêndio do tipo "${s.type}" detalhando ${s.details || 'as bases religiosas práticos'}.`),
+        scientificNote: `A crítica historiográfica contemporânea estuda as fontes originais despojando-as de camadas de preconceito moral jesuítico, europeu ou tardio para redescobrir as raízes puras animistas originais das práticas devocionais.`
+      };
+
+    case 'Bibliografia':
+      return {
+        title: `Bibliografia Científica Recomendada para ${meta.name}`,
+        details: `Para aprofundar as investigações estruturais e etnográficas sobre as narrativas da ${meta.name}, os cientistas sociais recomendam o estudo sistemático das seguintes monografias científicas de referência:`,
+        bullets: meta.bibliography,
+        scientificNote: `Estas obras demonstram que as lendas não eram ilusões ingênuas, mas sim códigos lógicos e morais complexos criados pelas primeiras sociedades humanas para ordenar o caos social, político e natural de seu tempo.`
+      };
+
+    default:
+      return folcloreBrasileiroData['Introdução'];
+  }
+}
