@@ -964,6 +964,15 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
     return saved ? JSON.parse(saved) : [];
   });
 
+  // Merge custom timeline steps into TIMELINE_STEPS, sorted by year
+  const mergedTimelineSteps = [...TIMELINE_STEPS];
+  customTimelineSteps.forEach(customStep => {
+    if (!mergedTimelineSteps.some(s => s.id === customStep.id)) {
+      mergedTimelineSteps.push(customStep);
+    }
+  });
+  mergedTimelineSteps.sort((a, b) => a.year - b.year);
+
   const handleAddCardFromAdmin = (card: HistoryCard, timelineStep?: any, kgNodes?: any[]) => {
     const updatedCards = [card, ...customCards];
     setCustomCards(updatedCards);
@@ -990,14 +999,14 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
   const [currentTimelineIndex, setCurrentTimelineIndex] = useState<number>(() => {
     if (typeof initialYear === 'number') {
-      const idx = TIMELINE_STEPS.findIndex(step => step.year === initialYear);
+      const idx = mergedTimelineSteps.findIndex(step => step.year === initialYear);
       if (idx !== -1) return idx;
     }
     return 2; // Default is 49 a.C. or 476 d.C.
   });
   const [viewingDossier, setViewingDossier] = useState<boolean>(() => {
     if (typeof initialYear === 'number') {
-      const idx = TIMELINE_STEPS.findIndex(step => step.year === initialYear);
+      const idx = mergedTimelineSteps.findIndex(step => step.year === initialYear);
       return idx !== -1;
     }
     return false;
@@ -1005,7 +1014,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
   useEffect(() => {
     if (typeof initialYear === 'number') {
-      const idx = TIMELINE_STEPS.findIndex(step => step.year === initialYear);
+      const idx = mergedTimelineSteps.findIndex(step => step.year === initialYear);
       if (idx !== -1) {
         setCurrentTimelineIndex(idx);
         setViewingDossier(true);
@@ -2539,7 +2548,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
   // Get nodes for current timeline step dynamically from CKE
   const stepNodes = (() => {
     const all = kgEngine.getAllNodes();
-    const step = TIMELINE_STEPS[currentTimelineIndex];
+    const step = mergedTimelineSteps[currentTimelineIndex];
     if (!step) return [];
 
     // Explicit mappings for key steps
@@ -2612,7 +2621,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
       const nodeYear = kgEngine['parseEraToComparableYear'](node.era);
       let closestIdx = 0;
       let minDiff = Infinity;
-      TIMELINE_STEPS.forEach((step, idx) => {
+      mergedTimelineSteps.forEach((step, idx) => {
         const diff = Math.abs(step.year - nodeYear);
         if (diff < minDiff) {
           minDiff = diff;
@@ -2684,7 +2693,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
                   <div className="text-right">
                     <span className="text-[10px] font-mono font-bold text-amber-800 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200/30">
-                      {TIMELINE_STEPS[currentTimelineIndex].era}
+                      {mergedTimelineSteps[currentTimelineIndex].era}
                     </span>
                   </div>
                 </div>
@@ -2694,16 +2703,16 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                   <div className="absolute right-0 bottom-0 top-0 w-1/4 bg-gradient-to-l from-amber-500/10 to-transparent pointer-events-none" />
                   <span className="text-amber-400 font-mono text-[9px] uppercase tracking-widest font-bold">Investigação Histórica Ativa</span>
                   <h2 className="text-2xl sm:text-3xl font-serif font-bold text-amber-50 mt-1">
-                    Dossiê: {TIMELINE_STEPS[currentTimelineIndex].title} ({TIMELINE_STEPS[currentTimelineIndex].label})
+                    Dossiê: {mergedTimelineSteps[currentTimelineIndex].title} ({mergedTimelineSteps[currentTimelineIndex].label})
                   </h2>
                   <p className="text-slate-300 text-xs sm:text-sm font-serif mt-2 leading-relaxed">
-                    {TIMELINE_STEPS[currentTimelineIndex].description}
+                    {mergedTimelineSteps[currentTimelineIndex].description}
                   </p>
                 </div>
 
                 {/* ConceptCard or fallback */}
                 {(() => {
-                  const currentStep = TIMELINE_STEPS[currentTimelineIndex];
+                  const currentStep = mergedTimelineSteps[currentTimelineIndex];
                   const card = allCards.find(c => c.id === currentStep.id) ||
                                allCards.find(c => c.title.toLowerCase().includes(currentStep.title.toLowerCase()) || currentStep.title.toLowerCase().includes(c.title.toLowerCase()));
                   if (card) {
@@ -2734,13 +2743,13 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                   </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {TIMELINE_STEPS[currentTimelineIndex].meanwhile.map((item, idx) => (
+                    {mergedTimelineSteps[currentTimelineIndex].meanwhile?.map((item, idx) => (
                       <button
                         key={idx}
                         onClick={() => setSelectedMeanwhileItem({
                           region: item.region,
                           event: item.event,
-                          eraLabel: TIMELINE_STEPS[currentTimelineIndex].label
+                          eraLabel: mergedTimelineSteps[currentTimelineIndex].label
                         })}
                         className="p-4 bg-white border border-slate-200/80 hover:border-amber-500 rounded-xl space-y-1.5 shadow-3xs hover:shadow-2xs transition-all border-l-4 border-l-amber-600 text-left cursor-pointer group focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                       >
@@ -2820,9 +2829,9 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                   animate={{ x: `calc(50% - ${(currentTimelineIndex * 150) + 75}px)` }}
                   transition={{ type: "spring", stiffness: 260, damping: 28 }}
                   drag="x"
-                  dragConstraints={{ left: -((TIMELINE_STEPS.length - 1) * 150), right: 0 }}
+                  dragConstraints={{ left: -((mergedTimelineSteps.length - 1) * 150), right: 0 }}
                   onDragEnd={(_, info) => {
-                    if (info.offset.x < -30 && currentTimelineIndex < TIMELINE_STEPS.length - 1) {
+                    if (info.offset.x < -30 && currentTimelineIndex < mergedTimelineSteps.length - 1) {
                       setCurrentTimelineIndex(prev => prev + 1);
                       setSelectedNodeDetailsId(null);
                     } else if (info.offset.x > 30 && currentTimelineIndex > 0) {
@@ -2832,7 +2841,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                   }}
                 >
                   {/* Axis Line behind steps */}
-                  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-slate-800 z-0" style={{ width: `${TIMELINE_STEPS.length * 150}px` }} />
+                  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-slate-800 z-0" style={{ width: `${mergedTimelineSteps.length * 150}px` }} />
                   
                   {/* Progress fill up to current timeline index */}
                   <div 
@@ -2840,7 +2849,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                     style={{ width: `${(currentTimelineIndex * 150) + 75}px` }}
                   />
 
-                  {TIMELINE_STEPS.map((step, idx) => {
+                  {mergedTimelineSteps.map((step, idx) => {
                     const isActive = currentTimelineIndex === idx;
                     return (
                       <button
@@ -2900,15 +2909,15 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                 </button>
                 
                 <div className="text-center min-w-0 flex-1 mx-1 sm:mx-2">
-                  <span className="text-[8px] sm:text-[10px] font-mono font-bold text-amber-800 uppercase tracking-widest bg-amber-50 px-2 sm:px-2.5 py-1 rounded-full border border-amber-200/30 truncate block max-w-full" title={TIMELINE_STEPS[currentTimelineIndex].era}>
-                    {TIMELINE_STEPS[currentTimelineIndex].era}
+                  <span className="text-[8px] sm:text-[10px] font-mono font-bold text-amber-800 uppercase tracking-widest bg-amber-50 px-2 sm:px-2.5 py-1 rounded-full border border-amber-200/30 truncate block max-w-full" title={mergedTimelineSteps[currentTimelineIndex].era}>
+                    {mergedTimelineSteps[currentTimelineIndex].era}
                   </span>
                 </div>
 
                 <button
-                  disabled={currentTimelineIndex === TIMELINE_STEPS.length - 1}
+                  disabled={currentTimelineIndex === mergedTimelineSteps.length - 1}
                   onClick={() => {
-                    if (currentTimelineIndex < TIMELINE_STEPS.length - 1) {
+                    if (currentTimelineIndex < mergedTimelineSteps.length - 1) {
                       setCurrentTimelineIndex(prev => prev + 1);
                       setSelectedNodeDetailsId(null);
                     }
@@ -2925,20 +2934,20 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                 <div className="md:col-span-2 space-y-3">
                   <div className="flex items-baseline gap-2.5">
                     <span className="text-3xl font-mono font-extrabold tracking-tight text-slate-900">
-                      {TIMELINE_STEPS[currentTimelineIndex].label}
+                      {mergedTimelineSteps[currentTimelineIndex].label}
                     </span>
                     <span className="text-lg font-serif font-bold text-slate-800">
-                      • {TIMELINE_STEPS[currentTimelineIndex].title}
+                      • {mergedTimelineSteps[currentTimelineIndex].title}
                     </span>
                   </div>
                   <p className="text-xs sm:text-sm text-slate-600 font-serif leading-relaxed">
-                    {TIMELINE_STEPS[currentTimelineIndex].description}
+                    {mergedTimelineSteps[currentTimelineIndex].description}
                   </p>
                   
                   {onEnterEpoch && (
                     <button
                       id="enter-epoch-btn"
-                      onClick={() => onEnterEpoch(TIMELINE_STEPS[currentTimelineIndex].year)}
+                      onClick={() => onEnterEpoch(mergedTimelineSteps[currentTimelineIndex].year)}
                       className="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 active:scale-[0.98] text-white rounded-xl shadow-md font-mono text-xs uppercase tracking-wider font-bold transition-all border border-amber-400/40 cursor-pointer"
                     >
                       <Compass className="w-3.5 h-3.5 animate-spin [animation-duration:8s]" />
@@ -2961,14 +2970,14 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                   </div>
                   <div className="w-full relative h-24 bg-slate-200 overflow-hidden">
                     <img 
-                      src={TIMELINE_STEPS[currentTimelineIndex].mapUrl} 
+                      src={mergedTimelineSteps[currentTimelineIndex].mapUrl} 
                       alt="Mapa histórico conceitual" 
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover grayscale opacity-80 group-hover:scale-105 group-hover:grayscale-0 transition-all duration-300" 
                     />
                     <div className="absolute inset-0 bg-slate-900/35 flex items-center justify-center p-2">
                       <span className="text-[10px] font-sans font-extrabold tracking-wider text-white uppercase text-center bg-slate-950/85 px-2 py-1 rounded border border-slate-700 shadow-sm">
-                        {TIMELINE_STEPS[currentTimelineIndex].mapLabel}
+                        {mergedTimelineSteps[currentTimelineIndex].mapLabel}
                       </span>
                     </div>
                   </div>
@@ -3232,7 +3241,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
             {/* DYNAMIC HISTORICAL MAP DETAILS MODAL OVERLAY */}
             <AnimatePresence>
               {selectedMapDetails && (() => {
-                const step = TIMELINE_STEPS[currentTimelineIndex];
+                const step = mergedTimelineSteps[currentTimelineIndex];
                 const detail = MAP_DETAILS_REGISTRY[step.id] || {
                   title: step.mapLabel,
                   locations: [],
@@ -3480,7 +3489,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
                               <button
                                 onClick={() => {
-                                  const stepIdx = TIMELINE_STEPS.findIndex(s => s.id === matchingCard?.id || s.title.toLowerCase().includes(matchingCard?.title.toLowerCase() || ''));
+                                  const stepIdx = mergedTimelineSteps.findIndex(s => s.id === matchingCard?.id || s.title.toLowerCase().includes(matchingCard?.title.toLowerCase() || ''));
                                   if (stepIdx !== -1) {
                                     setCurrentTimelineIndex(stepIdx);
                                     setViewingDossier(true);
@@ -3561,13 +3570,13 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {TIMELINE_STEPS[currentTimelineIndex].meanwhile.map((item, idx) => (
+                {mergedTimelineSteps[currentTimelineIndex].meanwhile?.map((item, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedMeanwhileItem({
                       region: item.region,
                       event: item.event,
-                      eraLabel: TIMELINE_STEPS[currentTimelineIndex].label
+                      eraLabel: mergedTimelineSteps[currentTimelineIndex].label
                     })}
                     className="p-4 bg-white border border-slate-200/80 hover:border-amber-500 rounded-xl space-y-1.5 shadow-3xs hover:shadow-2xs transition-all border-l-4 border-l-amber-600 text-left cursor-pointer group focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                   >
@@ -3858,12 +3867,12 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                       <div
                         key={card.id}
                         onClick={() => {
-                          const stepIdx = TIMELINE_STEPS.findIndex(step => step.id === card.id);
+                          const stepIdx = mergedTimelineSteps.findIndex(step => step.id === card.id);
                           if (stepIdx !== -1) {
                             setCurrentTimelineIndex(stepIdx);
                           } else {
                             // Fallback to title match
-                            const fallbackIdx = TIMELINE_STEPS.findIndex(step => 
+                            const fallbackIdx = mergedTimelineSteps.findIndex(step => 
                               step.title.toLowerCase().includes(card.title.toLowerCase()) || 
                               card.title.toLowerCase().includes(step.title.toLowerCase())
                             );

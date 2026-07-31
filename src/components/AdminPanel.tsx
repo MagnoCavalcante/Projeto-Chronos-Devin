@@ -191,6 +191,7 @@ export default function AdminPanel({
         }
       } catch (fetchErr: any) {
         // Fallback: gerar conteúdo no lado do cliente quando backend não está disponível
+        await new Promise(resolve => setTimeout(resolve, 1500));
         const slug = promptText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         const promptLower = promptText.toLowerCase();
         
@@ -286,6 +287,13 @@ export default function AdminPanel({
       }
 
       setAiResult(resData.data);
+      // Rolar até o resultado após renderizar
+      setTimeout(() => {
+        const resultEl = document.querySelector('[data-ai-result="true"]');
+        if (resultEl) {
+          resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     } catch (err: any) {
       setAiError(err.message || 'Erro ao gerar conteúdo com a IA. Verifique sua conexão.');
     } finally {
@@ -764,7 +772,7 @@ export default function AdminPanel({
 
             {/* AI Result Verification for Existing Content */}
             {aiResult && aiResult.existingCheck && (
-              <div className={`p-4 sm:p-5 rounded-2xl border ${
+              <div data-ai-result="true" className={`p-4 sm:p-5 rounded-2xl border ${
                 aiResult.existingCheck.hasExactOrDirectMatch
                   ? 'bg-amber-950/60 border-amber-500/80 text-amber-100'
                   : 'bg-slate-900/90 border-slate-700 text-slate-200'

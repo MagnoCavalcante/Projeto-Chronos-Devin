@@ -25,10 +25,24 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const handleAddCard = (card: HistoryCard) => {
+  const handleAddCard = (card: HistoryCard, timelineStep?: any, kgNodes?: any[]) => {
     const updated = [card, ...customCards];
     setCustomCards(updated);
     localStorage.setItem('chronos_custom_cards', JSON.stringify(updated));
+
+    if (timelineStep) {
+      const savedTimeline = localStorage.getItem('chronos_custom_timeline');
+      const existingTimeline = savedTimeline ? JSON.parse(savedTimeline) : [];
+      const updatedTimeline = [...existingTimeline, timelineStep];
+      localStorage.setItem('chronos_custom_timeline', JSON.stringify(updatedTimeline));
+    }
+
+    if (kgNodes && kgNodes.length > 0) {
+      const savedKg = localStorage.getItem('chronos_custom_kg_nodes');
+      const existingKg = savedKg ? JSON.parse(savedKg) : [];
+      const updatedKg = [...existingKg, ...kgNodes];
+      localStorage.setItem('chronos_custom_kg_nodes', JSON.stringify(updatedKg));
+    }
   };
 
   const handleDeleteCard = (cardId: string) => {
