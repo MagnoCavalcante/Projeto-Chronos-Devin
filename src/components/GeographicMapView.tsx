@@ -152,11 +152,47 @@ export default function GeographicMapView({ data, height = '320px', isExpanded =
           <div style="font-size:10px;color:#94a3b8;font-family:monospace;">${point.lat.toFixed(2)}°, ${point.lng.toFixed(2)}°</div>
         </div>
       `);
+      // Rótulo permanente em português sobre o marcador
+      marker.bindTooltip(point.name, {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -10],
+        className: 'chronos-map-label',
+      });
       markersRef.current.push(marker);
     });
 
     setTimeout(() => map.invalidateSize(), 100);
   }, [data]);
+
+  // Estilos dos rótulos permanentes (injetados uma vez)
+  useEffect(() => {
+    const styleId = 'chronos-map-label-style';
+    if (document.getElementById(styleId)) return;
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.textContent = `
+      .chronos-map-label {
+        background: rgba(15, 23, 42, 0.85) !important;
+        border: 1px solid rgba(245, 158, 11, 0.4) !important;
+        border-radius: 4px !important;
+        color: #f1f5f9 !important;
+        font-family: 'Georgia', serif !important;
+        font-size: 10px !important;
+        font-weight: 600 !important;
+        padding: 1px 6px !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.5) !important;
+        white-space: nowrap !important;
+      }
+      .chronos-map-label::before {
+        border-top-color: rgba(15, 23, 42, 0.85) !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.getElementById(styleId)?.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const map = mapRef.current;
