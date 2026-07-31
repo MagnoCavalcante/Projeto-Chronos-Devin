@@ -132,6 +132,7 @@ export default function AdminPanel({
   const [aiPrompt, setAiPrompt] = useState('Adicione um módulo sobre o Império Bizantino e inclua 3 livros nas fontes');
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiResult, setAiResult] = useState<any | null>(null);
+  const [aiNote, setAiNote] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [publishingSuccess, setPublishingSuccess] = useState(false);
 
@@ -158,6 +159,7 @@ export default function AdminPanel({
     setIsGenerating(true);
     setAiError(null);
     setAiResult(null);
+    setAiNote(null);
     setPublishingSuccess(false);
 
     try {
@@ -196,7 +198,13 @@ export default function AdminPanel({
           const geminiData = await generateContentWithGemini(promptText, existingCardsSummary);
           resData = { success: true, data: geminiData };
         } catch (geminiErr: any) {
-          // Se a API key não está configurada ou a IA falhou, usar gerador fallback local
+          const errMsg = geminiErr?.message || '';
+          if (errMsg === 'API_KEY_NOT_CONFIGURED') {
+            setAiError('Chave da API Gemini não configurada. Crie um arquivo .env com VITE_GEMINI_API_KEY=sua_chave. Veja .env.example para instruções.');
+            setIsGenerating(false);
+            return;
+          }
+          // Outros erros da IA — usar fallback mas avisar o usuário
           await new Promise(resolve => setTimeout(resolve, 1500));
           const slug = promptText.toLowerCase()
             .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -290,12 +298,13 @@ export default function AdminPanel({
                 }
               ]
             },
-            note: 'Gerado com estrutura historiográfica padrão (IA não conectada).'
+            note: 'AVISO: A IA Gemini não respondeu. Este conteúdo foi gerado com um template fixo e NÃO contém pesquisa real. Verifique a chave da API.'
           };
         }
       }
 
       setAiResult(resData.data);
+      if (resData.note) setAiNote(resData.note);
       // Rolar até o resultado após renderizar
       setTimeout(() => {
         const resultEl = document.querySelector('[data-ai-result="true"]');
@@ -319,6 +328,7 @@ export default function AdminPanel({
     setTimeout(() => {
       setPublishingSuccess(false);
       setAiResult(null);
+      setAiNote(null);
     }, 2500);
   };
 
@@ -776,6 +786,13 @@ export default function AdminPanel({
               <div className="p-4 bg-emerald-950/60 border border-emerald-500 rounded-xl flex items-center gap-3 text-emerald-300 text-xs sm:text-sm animate-bounce">
                 <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
                 <span className="font-bold">Módulo e Livros publicados com sucesso! Já estão ativos no acervo do aplicativo.</span>
+              </div>
+            )}
+
+            {/* AI Note / Warning */}
+            {aiNote && (
+              <div className="p-3 rounded-xl border border-amber-500/60 bg-amber-950/40 text-amber-200 text-xs font-mono animate-fade-in">
+                {aiNote}
               </div>
             )}
 
