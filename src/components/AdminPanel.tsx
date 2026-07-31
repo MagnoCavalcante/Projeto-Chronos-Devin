@@ -46,28 +46,7 @@ const DEFAULT_USERS: User[] = [
   { id: 'usr-5', name: 'Roberto Alencar', email: 'roberto.alencar@ufrj.br', xp: 1400, level: 5, streak: 7, joinedDate: '01/05/2026', role: 'historiador', status: 'ativo' },
 ];
 
-const DEFAULT_REQUESTS: DossierRequest[] = [
-  {
-    id: 'req-1',
-    event: 'Surto de industrialização por substituição de importações e Guerra do Contestado',
-    region: 'Brasil / América do Sul',
-    eraLabel: 'Primeira Guerra Mundial (1914 - 1918)',
-    requestedAt: '28/07/2026 às 14:30',
-    userEmail: 'lucas.mendes@estudante.com',
-    userName: 'Lucas Mendes',
-    status: 'pendente'
-  },
-  {
-    id: 'req-2',
-    event: 'Simón Bolívar e San Martín libertam as colônias espanholas do Sul',
-    region: 'América do Sul',
-    eraLabel: 'Independências Sul-Americanas',
-    requestedAt: '29/07/2026 às 09:15',
-    userEmail: 'mariana.d@gmail.com',
-    userName: 'Mariana Duarte',
-    status: 'pendente'
-  }
-];
+const DEFAULT_REQUESTS: DossierRequest[] = [];
 
 export default function AdminPanel({
   currentUser,
@@ -84,12 +63,17 @@ export default function AdminPanel({
     const saved = localStorage.getItem('chronos_dossier_requests');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed: DossierRequest[] = JSON.parse(saved);
+        // Remove solicitações demo antigas (req-1, req-2)
+        const filtered = parsed.filter(r => !r.id.startsWith('req-') || r.id.length > 5);
+        if (filtered.length !== parsed.length) {
+          localStorage.setItem('chronos_dossier_requests', JSON.stringify(filtered));
+        }
+        return filtered;
       } catch (e) {
         return DEFAULT_REQUESTS;
       }
     }
-    localStorage.setItem('chronos_dossier_requests', JSON.stringify(DEFAULT_REQUESTS));
     return DEFAULT_REQUESTS;
   });
   const [requestSearch, setRequestSearch] = useState('');

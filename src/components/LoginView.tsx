@@ -39,6 +39,24 @@ export default function LoginView({ onNavigate, onLoginSuccess }: LoginViewProps
       return;
     }
 
+    // Check admin credentials
+    if (email.toLowerCase() === 'magno.brt8@gmail.com' && password === '190809') {
+      setSuccess(true);
+      setTimeout(() => {
+        onLoginSuccess({
+          name: 'Magno Cavalcante (Admin)',
+          email: 'magno.brt8@gmail.com',
+          xp: 9990,
+          level: 99,
+          streak: 30,
+          joinedDate: 'Janeiro de 2026',
+          role: 'admin'
+        });
+        onNavigate('ADMIN');
+      }, 1200);
+      return;
+    }
+
     // Check against registered accounts in localStorage
     try {
       const storedUsersRaw = localStorage.getItem('chronos_registered_accounts');
@@ -113,8 +131,8 @@ export default function LoginView({ onNavigate, onLoginSuccess }: LoginViewProps
       return;
     }
 
-    if (adminPass.trim() !== 'admin' && adminPass.trim() !== 'admin123' && adminPass.trim() !== 'chronos') {
-      setAdminAuthError('Senha de administrador incorreta. Tente "admin" ou "admin123".');
+    if (adminPass.trim() !== '190809') {
+      setAdminAuthError('Senha de administrador incorreta.');
       return;
     }
 
@@ -312,7 +330,7 @@ export default function LoginView({ onNavigate, onLoginSuccess }: LoginViewProps
 
             <div className="space-y-1">
               <label className="block text-[10px] font-mono uppercase tracking-wider font-bold text-slate-400">
-                Chave de Acesso Admin (Senha: "admin" ou "admin123")
+                Chave de Acesso Admin
               </label>
               <input
                 type="password"
