@@ -122,7 +122,7 @@ export default function AdminPanel({
   const [userSearch, setUserSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'historiador' | 'user'>('all');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const [newUserForm, setNewUserForm] = useState({ name: '', email: '', role: 'user' as const });
+  const [newUserForm, setNewUserForm] = useState({ name: '', email: '', role: 'user' as const, password: '' });
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [userActionNotice, setUserActionNotice] = useState<string | null>(null);
@@ -205,7 +205,12 @@ export default function AdminPanel({
   // User Actions
   const handleAddUser = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newUserForm.name || !newUserForm.email) return;
+    if (!newUserForm.name || !newUserForm.email || !newUserForm.password) return;
+    if (newUserForm.password.length < 6) {
+      setUserActionNotice('A senha deve ter no mínimo 6 caracteres.');
+      setTimeout(() => setUserActionNotice(null), 3000);
+      return;
+    }
 
     const newUser: User = {
       id: `usr-${Date.now()}`,
@@ -222,9 +227,16 @@ export default function AdminPanel({
     const updatedUsers = [newUser, ...users];
     setUsers(updatedUsers);
     localStorage.setItem('chronos_admin_users', JSON.stringify(updatedUsers));
-    setNewUserForm({ name: '', email: '', role: 'user' });
+
+    // Salva também nas contas registradas para permitir login
+    const storedAccountsRaw = localStorage.getItem('chronos_registered_accounts');
+    const existingAccounts: { name: string; email: string; pass: string }[] = storedAccountsRaw ? JSON.parse(storedAccountsRaw) : [];
+    const updatedAccounts = [...existingAccounts.filter(a => a.email.toLowerCase() !== newUserForm.email.toLowerCase()), { name: newUserForm.name, email: newUserForm.email, pass: newUserForm.password }];
+    localStorage.setItem('chronos_registered_accounts', JSON.stringify(updatedAccounts));
+
+    setNewUserForm({ name: '', email: '', role: 'user', password: '' });
     setShowAddUserModal(false);
-    setUserActionNotice(`Usuário "${newUser.name}" cadastrado com sucesso!`);
+    setUserActionNotice(`Usuário "${newUser.name}" cadastrado com sucesso! Senha definida.`);
     setTimeout(() => setUserActionNotice(null), 3000);
   };
 
@@ -962,6 +974,19 @@ export default function AdminPanel({
                         <option value="historiador">Historiador (Curador de fontes)</option>
                         <option value="admin">Administrador (Controle total)</option>
                       </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-mono mb-1">Senha de Acesso (mín. 6 caracteres)</label>
+                      <input
+                        type="password"
+                        required
+                        minLength={6}
+                        value={newUserForm.password}
+                        onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
+                        placeholder="Define a senha do usuário..."
+                        className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500"
+                      />
                     </div>
                   </div>
 

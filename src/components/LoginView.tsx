@@ -52,7 +52,7 @@ export default function LoginView({ onNavigate, onLoginSuccess }: LoginViewProps
           joinedDate: 'Janeiro de 2026',
           role: 'admin'
         });
-        onNavigate('ADMIN');
+        onNavigate('TIME_TRAVEL');
       }, 1200);
       return;
     }
