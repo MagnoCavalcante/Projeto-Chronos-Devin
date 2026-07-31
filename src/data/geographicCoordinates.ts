@@ -116,7 +116,7 @@ const GEO_MAP_REGISTRY: Record<string, TopicGeoData> = {
     ],
     routes: [
       { name: 'Importação de grãos do Mar Negro', coordinates: [[37.97, 23.73], [41.01, 29.05]] },
-      { name: 'Metais preciosos de Laurion', coordinates: [[37.97, 23.73], [37.72, 24.03]] },
+      { name: 'Metais preciosos de Láurion', coordinates: [[37.97, 23.73], [37.72, 24.03]] },
     ],
   },
   'alexandria': {
@@ -435,7 +435,7 @@ const GEO_MAP_REGISTRY: Record<string, TopicGeoData> = {
   },
   'revolucao-industrial': {
     title: 'Revolução Industrial Britânica',
-    regionName: 'Inglaterra',
+    regionName: 'Grã-Bretanha',
     center: [53.0, -2.0],
     zoom: 6,
     description: 'A mecanização a vapor e o tear mecânico transformaram as relações de trabalho e o capitalismo global.',
@@ -522,6 +522,58 @@ const GEO_MAP_REGISTRY: Record<string, TopicGeoData> = {
     ],
     routes: [
       { name: 'Ferrovia Transiberiana', coordinates: [[55.75, 37.62], [56.01, 92.85]] },
+    ],
+  },
+  'rota-da-seda-imperio-mongol': {
+    title: 'Rota da Seda e Império Mongol',
+    regionName: 'Ásia Central e Oriental',
+    center: [40.0, 70.0],
+    zoom: 3,
+    description: 'A teia de rotas caravaneiras conectando a Ásia Oriental ao Mediterrâneo, unificada sob a Pax Mongolica de Gengis Khan e Kublai Khan.',
+    points: [
+      { name: 'Karakorum', lat: 47.19, lng: 102.82, description: 'Capital do Império Mongol de Gengis Khan.', type: 'capital' },
+      { name: 'Samarcanda', lat: 39.65, lng: 66.97, description: 'Cruzada comercial da Rota da Seda na Ásia Central.', type: 'capital' },
+      { name: 'Bagdá', lat: 33.31, lng: 44.36, description: 'Centro do Califado Abássida, saqueado pelos mongóis em 1258.', type: 'capital' },
+      { name: 'Pequim', lat: 39.90, lng: 116.40, description: 'Capital da dinastia Yuan sob Kublai Khan.', type: 'capital' },
+      { name: 'Cafa', lat: 45.03, lng: 35.38, description: 'Porto genovês no Mar Negro, epicentro da Peste Negra.', type: 'porto' },
+    ],
+    routes: [
+      { name: 'Rota da Seda do Norte', coordinates: [[39.90, 116.40], [47.19, 102.82], [39.65, 66.97], [33.31, 44.36]] },
+      { name: 'Rota da Seda Marítima', coordinates: [[39.90, 116.40], [22.27, 114.17], [12.79, 45.04]] },
+    ],
+  },
+  'restauracao-meiji-japao': {
+    title: 'Restauração Meiji no Japão',
+    regionName: 'Japão',
+    center: [35.5, 137.5],
+    zoom: 5,
+    description: 'A transição do isolamento feudal do Xogunato Tokugawa (Bakumatsu) para um império moderno industrializado.',
+    points: [
+      { name: 'Tóquio (Edo)', lat: 35.68, lng: 139.69, description: 'Sede do Xogunato Tokugawa, depois capital imperial.', type: 'capital' },
+      { name: 'Quioto', lat: 35.01, lng: 135.77, description: 'Sede da Corte Imperial, onde o poder foi restaurado ao imperador.', type: 'capital' },
+      { name: 'Yokohama', lat: 35.44, lng: 139.64, description: 'Porto aberto ao comércio exterior após 1859.', type: 'porto' },
+      { name: 'Satsuma', lat: 31.56, lng: 130.56, description: 'Domínio do sul, líder da restauração imperial.', type: 'evento' },
+      { name: 'Choshu', lat: 34.18, lng: 131.47, description: 'Domínio do sul, aliado de Satsuma contra o Xogunato.', type: 'evento' },
+    ],
+    routes: [
+      { name: 'Linha Férrea Tóquio-Yokohama', coordinates: [[35.68, 139.69], [35.44, 139.64]] },
+    ],
+  },
+  'independencia-eua-1776': {
+    title: 'Independência dos Estados Unidos',
+    regionName: 'Treze Colônias, América do Norte',
+    center: [40.0, -75.0],
+    zoom: 5,
+    description: 'O teatro de operações da Guerra de Independência Americana e os focos de debate Iluminista das Treze Colônias.',
+    points: [
+      { name: 'Filadélfia', lat: 39.95, lng: -75.17, description: 'Onde a Declaração de Independência foi assinada em 1776.', type: 'capital' },
+      { name: 'Boston', lat: 42.36, lng: -71.06, description: 'Centro da resistência colonial, Festa do Chá de Boston.', type: 'evento' },
+      { name: 'Nova York', lat: 40.71, lng: -74.01, description: 'Ocupada pelos britânicos durante a guerra.', type: 'capital' },
+      { name: 'Yorktown', lat: 37.23, lng: -76.51, description: 'Cerco final que levou à rendição britânica em 1781.', type: 'batalha' },
+      { name: 'Lexington', lat: 42.45, lng: -71.23, description: 'Local dos primeiros tiros da guerra em 1775.', type: 'batalha' },
+    ],
+    routes: [
+      { name: 'Linha Marítima de Suprimentos Franceses', coordinates: [[48.86, 2.35], [37.23, -76.51]] },
     ],
   },
 };

@@ -159,7 +159,7 @@ const MAP_DETAILS_REGISTRY: Record<string, MapDetail> = {
   },
   'guerra-civil-espanhola': {
     title: 'Espanha Dividida e o Conflito Ideológico',
-    locations: ['Madri', 'Barcelona', 'Guernica', 'Sevilha', 'Valencia'],
+    locations: ['Madri', 'Barcelona', 'Guernica', 'Sevilha', 'Valência'],
     description: 'O confronto trágico entre Republicanos e as forças franquistas apoiadas pelas potências fascistas.',
     routes: ['Linha de comboios das Brigadas Internacionais', 'Rotas de apoio aéreo da Legião Condor']
   },
@@ -179,7 +179,7 @@ const MAP_DETAILS_REGISTRY: Record<string, MapDetail> = {
     title: 'Hélade Clássica e Cidades-Estado',
     locations: ['Atenas', 'Esparta', 'Tebas', 'Mileto', 'Siracusa'],
     description: 'A bacia do Mar Egeu conectava centenas de cidades-estado independentes (póleis) que compartilhavam o mesmo universo cultural e religioso.',
-    routes: ['Importação de grãos do Mar Negro', 'Metais preciosos de Laurion', 'Exportação de cerâmicas e azeite']
+    routes: ['Importação de grãos do Mar Negro', 'Metais preciosos de Láurion', 'Exportação de cerâmicas e azeite']
   },
   'alexandria': {
     title: 'Mundo Helenístico e Bacia do Mediterrâneo Oriental',
@@ -236,7 +236,7 @@ const MAP_DETAILS_REGISTRY: Record<string, MapDetail> = {
     routes: ['Eixos de distribuição de imprensa de Gutenberg', 'Rotas mercantes da Liga Hanseática']
   },
   'revolucao-industrial': {
-    title: 'Gra-Bretanha e a Bacia do Carvão',
+    title: 'Grã-Bretanha e a Bacia do Carvão',
     locations: ['Manchester', 'Birmingham', 'Londres', 'Liverpool'],
     description: 'A mecanização a vapor e o tear mecânico transformaram as relações de trabalho e o capitalismo global.',
     routes: ['Rede de canais fluviais britânicos', 'Primeiras ferrovias de locomotivas']
@@ -285,8 +285,8 @@ const MAP_DETAILS_REGISTRY: Record<string, MapDetail> = {
   },
   'rota-da-seda-imperio-mongol': {
     title: 'Rota da Seda e a Expansão do Império Mongol',
-    locations: ['Karakorum', 'Chang’an', 'Samarcanda', 'Bagdá', 'Pequim', 'Caffa'],
-    description: 'A teia de rotas caravaneiras conectando a Ásia Oriental ao Mediterrâneo, unificada sob a Pax Mongolica de Genghis Khan e Kublai Khan.',
+    locations: ['Karakorum', 'Chang’an', 'Samarcanda', 'Bagdá', 'Pequim', 'Cafa'],
+    description: 'A teia de rotas caravaneiras conectando a Ásia Oriental ao Mediterrâneo, unificada sob a Pax Mongolica de Gengis Khan e Kublai Khan.',
     routes: ['Rota da Seda do Norte', 'Rota da Seda Marítima', 'Caminhos de Correio Imperial Yam']
   },
   'restauracao-meiji-japao': {
