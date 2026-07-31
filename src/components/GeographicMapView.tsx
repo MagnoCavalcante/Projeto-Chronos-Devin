@@ -20,32 +20,23 @@ type LayerStyle = 'dark' | 'satellite' | 'light';
 
 // Usamos tiles SEM texto (nolabels) para evitar nomes em árabe/idioma local.
 // Os nomes em português vêm dos nossos marcadores e popups.
-const LAYER_CONFIG: Record<LayerStyle, { url: string; attribution: string; label: string; hasLabelOverlay: boolean }> = {
+const LAYER_CONFIG: Record<LayerStyle, { url: string; attribution: string; label: string }> = {
   dark: {
     url: 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
     attribution: '&copy; CARTO, &copy; OpenStreetMap contributors',
     label: 'Mapa',
-    hasLabelOverlay: true,
   },
   satellite: {
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: '&copy; Esri, Maxar, Earthstar Geographics',
     label: 'Satélite',
-    hasLabelOverlay: true,
   },
   light: {
     url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
     attribution: '&copy; CARTO, &copy; OpenStreetMap contributors',
     label: 'Claro',
-    hasLabelOverlay: true,
   },
 };
-
-// Overlay de fronteiras e nomes de países/cidades da Esri (em inglês neutro internacional)
-const LABEL_OVERLAY_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}';
-
-// Overlay de fronteiras apenas (sem texto) para o modo satélite
-const BORDERS_OVERLAY_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer/tile/{z}/{y}/{x}';
 
 const MARKER_ICONS: Record<GeoPointType, string> = {
   capital: '🏛️',
@@ -79,7 +70,6 @@ export default function GeographicMapView({ data, height = '320px', isExpanded =
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const baseLayerRef = useRef<L.TileLayer | null>(null);
-  const labelOverlayRef = useRef<L.TileLayer | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const routesRef = useRef<L.Polyline[]>([]);
   const [activeLayer, setActiveLayer] = useState<LayerStyle>('dark');
@@ -101,12 +91,6 @@ export default function GeographicMapView({ data, height = '320px', isExpanded =
     baseLayerRef.current = L.tileLayer(layerCfg.url, {
       attribution: layerCfg.attribution,
       maxZoom: 18,
-    }).addTo(map);
-
-    // Sempre adiciona overlay de fronteiras/nomes por cima do tile base
-    labelOverlayRef.current = L.tileLayer(LABEL_OVERLAY_URL, {
-      maxZoom: 18,
-      opacity: 0.9,
     }).addTo(map);
 
     L.control.zoom({ position: 'topright' }).addTo(map);
@@ -136,14 +120,6 @@ export default function GeographicMapView({ data, height = '320px', isExpanded =
       maxZoom: 18,
     }).addTo(map);
 
-    // Re-adiciona o overlay de fronteiras por cima do novo tile base
-    if (labelOverlayRef.current) {
-      map.removeLayer(labelOverlayRef.current);
-    }
-    labelOverlayRef.current = L.tileLayer(LABEL_OVERLAY_URL, {
-      maxZoom: 18,
-      opacity: 0.9,
-    }).addTo(map);
   }, [activeLayer]);
 
   useEffect(() => {
