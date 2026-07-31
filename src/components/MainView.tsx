@@ -961,7 +961,20 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
   const [customTimelineSteps, setCustomTimelineSteps] = useState<any[]>(() => {
     const saved = localStorage.getItem('chronos_custom_timeline');
-    return saved ? JSON.parse(saved) : [];
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Clean up old steps with mismatched IDs (step- prefix from previous bug)
+        const cleaned = parsed.filter((s: any) => !s.id?.startsWith('step-'));
+        if (cleaned.length !== parsed.length) {
+          localStorage.setItem('chronos_custom_timeline', JSON.stringify(cleaned));
+        }
+        return cleaned;
+      } catch {
+        return [];
+      }
+    }
+    return [];
   });
 
   // Merge custom timeline steps into TIMELINE_STEPS, sorted by year
@@ -3871,10 +3884,9 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                           if (stepIdx !== -1) {
                             setCurrentTimelineIndex(stepIdx);
                           } else {
-                            // Fallback to title match
+                            // Fallback: exact title match only
                             const fallbackIdx = mergedTimelineSteps.findIndex(step => 
-                              step.title.toLowerCase().includes(card.title.toLowerCase()) || 
-                              card.title.toLowerCase().includes(step.title.toLowerCase())
+                              step.title.toLowerCase() === card.title.toLowerCase()
                             );
                             if (fallbackIdx !== -1) setCurrentTimelineIndex(fallbackIdx);
                           }

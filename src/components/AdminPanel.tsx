@@ -192,7 +192,9 @@ export default function AdminPanel({
       } catch (fetchErr: any) {
         // Fallback: gerar conteúdo no lado do cliente quando backend não está disponível
         await new Promise(resolve => setTimeout(resolve, 1500));
-        const slug = promptText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        const slug = promptText.toLowerCase()
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         const promptLower = promptText.toLowerCase();
         
         const matchedCard = existingCardsSummary.find((c: any) => 
@@ -250,7 +252,7 @@ export default function AdminPanel({
               ]
             },
             timelineStep: {
-              id: slug || `step-${Date.now()}`,
+              id: slug || `modulo-${Date.now()}`,
               label: 'Século V - XV',
               title: promptText.includes('Bizantino') ? 'Império Bizantino' : promptText,
               year: 527,
