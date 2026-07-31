@@ -28,6 +28,7 @@ import {
   Inbox
 } from 'lucide-react';
 import { User, HistoryCard, Source, DossierRequest } from '../types';
+import { generateContentWithGemini } from '../lib/geminiClient';
 
 interface AdminPanelProps {
   currentUser: User;
@@ -190,102 +191,108 @@ export default function AdminPanel({
           throw new Error(resData.error || 'Falha ao comunicar com o servidor de IA.');
         }
       } catch (fetchErr: any) {
-        // Fallback: gerar conteúdo no lado do cliente quando backend não está disponível
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        const slug = promptText.toLowerCase()
-          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-          .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        const promptLower = promptText.toLowerCase();
-        
-        const matchedCard = existingCardsSummary.find((c: any) => 
-          c.title && (c.title.toLowerCase().includes(promptLower) || promptLower.includes(c.title.toLowerCase()))
-        );
+        // Backend não disponível — tentar Gemini API diretamente do cliente
+        try {
+          const geminiData = await generateContentWithGemini(promptText, existingCardsSummary);
+          resData = { success: true, data: geminiData };
+        } catch (geminiErr: any) {
+          // Se a API key não está configurada ou a IA falhou, usar gerador fallback local
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          const slug = promptText.toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+          const promptLower = promptText.toLowerCase();
+          
+          const matchedCard = existingCardsSummary.find((c: any) => 
+            c.title && (c.title.toLowerCase().includes(promptLower) || promptLower.includes(c.title.toLowerCase()))
+          );
 
-        const relatedCards = existingCardsSummary.filter((c: any) =>
-          c.title !== matchedCard?.title
-        ).slice(0, 3);
+          const relatedCards = existingCardsSummary.filter((c: any) =>
+            c.title !== matchedCard?.title
+          ).slice(0, 3);
 
-        resData = {
-          success: true,
-          data: {
-            existingCheck: {
-              hasExactOrDirectMatch: !!matchedCard,
-              existingMatchTitle: matchedCard ? matchedCard.title : '',
-              analysisNote: matchedCard 
-                ? `A IA verificou o acervo e identificou que o assunto "${promptText}" já possui o módulo "${matchedCard.title}" cadastrado. O novo dossiê foi estruturado como um aprofundamento historiográfico conectado a este registro.`
-                : `A IA analisou os módulos já existentes no app. ${relatedCards.length > 0 ? `Identificados ${relatedCards.length} módulos correlacionados no acervo para vinculação no Grafo.` : 'Este é um tema inédito no acervo.'}`,
-              relatedExistingTitles: relatedCards.map((c: any) => c.title)
-            },
-            card: {
-              id: slug || `modulo-${Date.now()}`,
-              category: 'História',
-              period: 'Idade Média',
-              title: promptText.includes('Bizantino') ? 'O Império Bizantino e a Herança de Constantinopla' : `Módulo: ${promptText}`,
-              era: 'Século V - Século XV',
-              evidenceLevel: 'high',
-              summary: `Dossiê historiográfico gerado sobre "${promptText}", abordando evidências primárias, análises documentais e bibliografia recomendada.`,
-              fact: {
-                title: 'Evidências Documentais e Arqueológicas',
-                description: 'Registros administrativos, registros diplomáticos e achados epigráficos corroboram a cronologia e estrutura social deste período.'
+          resData = {
+            success: true,
+            data: {
+              existingCheck: {
+                hasExactOrDirectMatch: !!matchedCard,
+                existingMatchTitle: matchedCard ? matchedCard.title : '',
+                analysisNote: matchedCard 
+                  ? `A IA verificou o acervo e identificou que o assunto "${promptText}" já possui o módulo "${matchedCard.title}" cadastrado. O novo dossiê foi estruturado como um aprofundamento historiográfico conectado a este registro.`
+                  : `A IA analisou os módulos já existentes no app. ${relatedCards.length > 0 ? `Identificados ${relatedCards.length} módulos correlacionados no acervo para vinculação no Grafo.` : 'Este é um tema inédito no acervo.'}`,
+                relatedExistingTitles: relatedCards.map((c: any) => c.title)
               },
-              interpretation: {
-                title: 'Análise Historiográfica',
-                description: 'Historiadores analisam os impactos culturais, econômicos e geopolíticos no contexto de intercâmbio entre civilizações.'
-              },
-              hypothesis: {
-                title: 'Hipóteses e Debates Acadêmicos',
-                description: 'Pesquisas recentes investigam rotas comerciais secundárias e trocas tecnológicas no litoral mediterrâneo e continental.'
-              },
-              timeline: [
-                { year: '527 d.C.', event: 'Consolidação de estruturas administrativas e codificação do direito.' },
-                { year: '1054 d.C.', event: 'Reconfiguração diplomática e religiosa nas fronteiras regionais.' },
-                { year: '1453 d.C.', event: 'Transição historiográfica com profundos impactos na Europa e na Ásia.' }
-              ],
-              characters: [
-                { name: 'Justiniano I', role: 'Imperador / Liderança', bio: 'Líder reconhecido pela codificação legal e patronato de grandes obras arquitetônicas.' },
-                { name: 'Teodora', role: 'Imperatriz / Conselheira', bio: 'Atuou decisivamente nas políticas sociais, diplomáticas e na estabilização do governo.' }
-              ],
-              sources: [
-                { id: `src-${Date.now()}-1`, title: 'História do Império Bizantino', author: 'Alexander Vasiliev', year: 1952, type: 'book', details: 'Volume I, Cap. II' },
-                { id: `src-${Date.now()}-2`, title: 'A Civilização Bizantina', author: 'Steven Runciman', year: 1933, type: 'book', details: 'Estudo Crítico de História' },
-                { id: `src-${Date.now()}-3`, title: 'Corpus Juris Civilis', author: 'Comissão Imperial de Triboniano', year: 534, type: 'book', details: 'Códice e Digesto de Leis' }
-              ]
-            },
-            timelineStep: {
-              id: slug || `modulo-${Date.now()}`,
-              label: 'Século V - XV',
-              title: promptText.includes('Bizantino') ? 'Império Bizantino' : promptText,
-              year: 527,
-              description: `Avanços, registros históricos e fontes documentais de ${promptText}.`,
-              mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
-              mapLabel: 'Constantinopla & Bósforo',
-              era: 'Idade Média',
-              meanwhile: [
-                { region: 'Europa Ocidental', event: 'Expansão dos reinos medievais e consolidação de feudos.' },
-                { region: 'Oriente Médio', event: 'Intenso fluxo comercial e cultural pela Rota da Seda.' }
-              ]
-            },
-            kgNodes: [
-              {
-                id: `civ-${slug}`,
-                type: 'CIVILIZACAO',
-                name: promptText.includes('Bizantino') ? 'Império Bizantino' : promptText,
-                summary: `Módulo e fonte histórica gerada para ${promptText}`,
-                description: `História, fontes e legado documental de ${promptText}`,
-                era: 'Século V - XV',
+              card: {
+                id: slug || `modulo-${Date.now()}`,
+                category: 'História',
+                period: 'Idade Média',
+                title: promptText.includes('Bizantino') ? 'O Império Bizantino e a Herança de Constantinopla' : `Módulo: ${promptText}`,
+                era: 'Século V - Século XV',
                 evidenceLevel: 'high',
-                tags: ['História', 'Fontes', 'Educação'],
-                keywords: [promptText, 'Livros', 'Historiografia'],
+                summary: `Dossiê historiográfico gerado sobre "${promptText}", abordando evidências primárias, análises documentais e bibliografia recomendada.`,
+                fact: {
+                  title: 'Evidências Documentais e Arqueológicas',
+                  description: 'Registros administrativos, registros diplomáticos e achados epigráficos corroboram a cronologia e estrutura social deste período.'
+                },
+                interpretation: {
+                  title: 'Análise Historiográfica',
+                  description: 'Historiadores analisam os impactos culturais, econômicos e geopolíticos no contexto de intercâmbio entre civilizações.'
+                },
+                hypothesis: {
+                  title: 'Hipóteses e Debates Acadêmicos',
+                  description: 'Pesquisas recentes investigam rotas comerciais secundárias e trocas tecnológicas no litoral mediterrâneo e continental.'
+                },
+                timeline: [
+                  { year: '527 d.C.', event: 'Consolidação de estruturas administrativas e codificação do direito.' },
+                  { year: '1054 d.C.', event: 'Reconfiguração diplomática e religiosa nas fronteiras regionais.' },
+                  { year: '1453 d.C.', event: 'Transição historiográfica com profundos impactos na Europa e na Ásia.' }
+                ],
+                characters: [
+                  { name: 'Justiniano I', role: 'Imperador / Liderança', bio: 'Líder reconhecido pela codificação legal e patronato de grandes obras arquitetônicas.' },
+                  { name: 'Teodora', role: 'Imperatriz / Conselheira', bio: 'Atuou decisivamente nas políticas sociais, diplomáticas e na estabilização do governo.' }
+                ],
                 sources: [
-                  { id: `src-${Date.now()}-1`, title: 'História do Império Bizantino', author: 'Alexander Vasiliev', year: 1952, type: 'book' },
-                  { id: `src-${Date.now()}-2`, title: 'A Civilização Bizantina', author: 'Steven Runciman', year: 1933, type: 'book' },
-                  { id: `src-${Date.now()}-3`, title: 'Corpus Juris Civilis', author: 'Comissão Imperial', year: 534, type: 'book' }
+                  { id: `src-${Date.now()}-1`, title: 'História do Império Bizantino', author: 'Alexander Vasiliev', year: 1952, type: 'book', details: 'Volume I, Cap. II' },
+                  { id: `src-${Date.now()}-2`, title: 'A Civilização Bizantina', author: 'Steven Runciman', year: 1933, type: 'book', details: 'Estudo Crítico de História' },
+                  { id: `src-${Date.now()}-3`, title: 'Corpus Juris Civilis', author: 'Comissão Imperial de Triboniano', year: 534, type: 'book', details: 'Códice e Digesto de Leis' }
                 ]
-              }
-            ]
-          },
-          note: 'Gerado com estrutura historiográfica padrão (backend não conectado).'
-        };
+              },
+              timelineStep: {
+                id: slug || `modulo-${Date.now()}`,
+                label: 'Século V - XV',
+                title: promptText.includes('Bizantino') ? 'Império Bizantino' : promptText,
+                year: 527,
+                description: `Avanços, registros históricos e fontes documentais de ${promptText}.`,
+                mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
+                mapLabel: 'Constantinopla & Bósforo',
+                era: 'Idade Média',
+                meanwhile: [
+                  { region: 'Europa Ocidental', event: 'Expansão dos reinos medievais e consolidação de feudos.' },
+                  { region: 'Oriente Médio', event: 'Intenso fluxo comercial e cultural pela Rota da Seda.' }
+                ]
+              },
+              kgNodes: [
+                {
+                  id: `civ-${slug}`,
+                  type: 'CIVILIZACAO',
+                  name: promptText.includes('Bizantino') ? 'Império Bizantino' : promptText,
+                  summary: `Módulo e fonte histórica gerada para ${promptText}`,
+                  description: `História, fontes e legado documental de ${promptText}`,
+                  era: 'Século V - XV',
+                  evidenceLevel: 'high',
+                  tags: ['História', 'Fontes', 'Educação'],
+                  keywords: [promptText, 'Livros', 'Historiografia'],
+                  sources: [
+                    { id: `src-${Date.now()}-1`, title: 'História do Império Bizantino', author: 'Alexander Vasiliev', year: 1952, type: 'book' },
+                    { id: `src-${Date.now()}-2`, title: 'A Civilização Bizantina', author: 'Steven Runciman', year: 1933, type: 'book' },
+                    { id: `src-${Date.now()}-3`, title: 'Corpus Juris Civilis', author: 'Comissão Imperial', year: 534, type: 'book' }
+                  ]
+                }
+              ]
+            },
+            note: 'Gerado com estrutura historiográfica padrão (IA não conectada).'
+          };
+        }
       }
 
       setAiResult(resData.data);
