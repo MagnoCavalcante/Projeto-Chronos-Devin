@@ -20,9 +20,12 @@ import {
   Users,
   FileText,
   Info,
+  Globe,
   X
 } from 'lucide-react';
 import { HistoryCard, EvidenceLevel } from '../types';
+import GeographicMapView from './GeographicMapView';
+import { getGeoMapDataForTopic } from '../data/geographicCoordinates';
 
 interface ConceptCardProps {
   card: HistoryCard;
@@ -31,7 +34,7 @@ interface ConceptCardProps {
   key?: string;
 }
 
-type CardTab = 'resumo' | 'fatos' | 'interpretacoes' | 'linha' | 'personagens' | 'fontes';
+type CardTab = 'resumo' | 'fatos' | 'interpretacoes' | 'linha' | 'personagens' | 'fontes' | 'mapa';
 
 export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptCardProps) {
   const [activeTab, setActiveTab] = useState<CardTab>('resumo');
@@ -182,6 +185,17 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
           }`}
         >
           Fontes
+        </button>
+        <button
+          onClick={() => setActiveTab('mapa')}
+          className={`flex-1 min-w-[80px] py-3 text-center border-b-2 transition-all ${
+            activeTab === 'mapa' ? 'border-amber-500 text-amber-900 bg-white font-bold' : 'border-transparent hover:text-slate-800'
+          }`}
+        >
+          <span className="flex items-center justify-center gap-1">
+            <Globe className="w-3 h-3" />
+            Mapa Real
+          </span>
         </button>
       </div>
 
@@ -354,6 +368,22 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'mapa' && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">
+                  <Globe className="w-4 h-4 text-amber-600" />
+                  <span>Mapa Geográfico Interativo</span>
+                </div>
+                <GeographicMapView
+                  data={getGeoMapDataForTopic(card.id, card.title)}
+                  height="300px"
+                />
+                <p className="text-[11px] font-serif text-slate-500 italic leading-relaxed">
+                  {getGeoMapDataForTopic(card.id, card.title).description}
+                </p>
               </div>
             )}
           </motion.div>

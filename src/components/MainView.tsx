@@ -39,6 +39,8 @@ import { Tab, User, HistoryCard, Screen, KGNode, KGRelationship, EntityType, Evi
 import ConceptCard from './ConceptCard';
 import BottomNav from './BottomNav';
 import AdminPanel from './AdminPanel';
+import GeographicMapView from './GeographicMapView';
+import { getGeoMapDataForTopic } from '../data/geographicCoordinates';
 import { CHRONOSKnowledgeEngine } from '../lib/knowledgeGraphEngine';
 import { getSpecificMythologySection } from '../data/mythologyData';
 
@@ -3287,6 +3289,12 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
                       {/* Modal Body (Scrollable content) */}
                       <div className="p-6 pt-0 space-y-5 overflow-y-auto max-h-[45vh] scrollbar-thin flex-1 pr-4">
+                        {/* Interactive Geographic Map */}
+                        <GeographicMapView
+                          data={getGeoMapDataForTopic(step.id, detail.title)}
+                          height="240px"
+                        />
+
                         {/* Geopolitical description */}
                         <div className="space-y-1.5">
                           <span className="text-[8px] font-mono font-bold text-amber-400 uppercase tracking-widest block font-semibold">Geografia & Dinâmica Geopolítica</span>
