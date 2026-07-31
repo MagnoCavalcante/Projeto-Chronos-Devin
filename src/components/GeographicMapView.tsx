@@ -54,6 +54,119 @@ const MARKER_COLORS: Record<GeoPointType, string> = {
   evento: '#10b981',
 };
 
+// Catálogo de países e regiões com nomes em português do Brasil e coordenadas aproximadas
+const COUNTRY_LABELS_PT: { name: string; lat: number; lng: number }[] = [
+  // Oriente Médio e Ásia Menor
+  { name: 'Iraque', lat: 33.3, lng: 44.4 },
+  { name: 'Irã', lat: 32.4, lng: 53.7 },
+  { name: 'Síria', lat: 34.8, lng: 38.9 },
+  { name: 'Turquia', lat: 39.0, lng: 35.2 },
+  { name: 'Arábia Saudita', lat: 23.9, lng: 45.1 },
+  { name: 'Israel', lat: 31.5, lng: 34.8 },
+  { name: 'Palestina', lat: 31.9, lng: 35.3 },
+  { name: 'Jordânia', lat: 30.6, lng: 36.2 },
+  { name: 'Líbano', lat: 33.9, lng: 35.9 },
+  { name: 'Iêmen', lat: 15.6, lng: 48.5 },
+  { name: 'Omã', lat: 21.5, lng: 55.9 },
+  // Norte da África
+  { name: 'Egito', lat: 26.8, lng: 30.8 },
+  { name: 'Líbia', lat: 26.3, lng: 17.2 },
+  { name: 'Tunísia', lat: 33.9, lng: 9.5 },
+  { name: 'Argélia', lat: 28.0, lng: 1.7 },
+  { name: 'Marrocos', lat: 31.8, lng: -7.1 },
+  { name: 'Sudão', lat: 12.9, lng: 30.2 },
+  // Europa
+  { name: 'Portugal', lat: 39.4, lng: -8.2 },
+  { name: 'Espanha', lat: 40.0, lng: -3.7 },
+  { name: 'França', lat: 46.2, lng: 2.2 },
+  { name: 'Reino Unido', lat: 54.0, lng: -2.0 },
+  { name: 'Irlanda', lat: 53.4, lng: -8.2 },
+  { name: 'Alemanha', lat: 51.2, lng: 10.5 },
+  { name: 'Itália', lat: 42.8, lng: 12.6 },
+  { name: 'Grécia', lat: 39.0, lng: 22.0 },
+  { name: 'Bélgica', lat: 50.5, lng: 4.5 },
+  { name: 'Holanda', lat: 52.1, lng: 5.3 },
+  { name: 'Suíça', lat: 46.8, lng: 8.2 },
+  { name: 'Áustria', lat: 47.5, lng: 14.6 },
+  { name: 'Polônia', lat: 51.9, lng: 19.1 },
+  { name: 'Rússia', lat: 61.5, lng: 105.3 },
+  { name: 'Ucrânia', lat: 48.4, lng: 31.2 },
+  { name: 'Suécia', lat: 60.1, lng: 18.6 },
+  { name: 'Noruega', lat: 64.5, lng: 11.5 },
+  { name: 'Dinamarca', lat: 56.3, lng: 9.5 },
+  { name: 'Finlândia', lat: 61.9, lng: 25.7 },
+  { name: 'Tchéquia', lat: 49.8, lng: 15.5 },
+  { name: 'Hungria', lat: 47.2, lng: 19.5 },
+  { name: 'Romênia', lat: 45.9, lng: 24.9 },
+  { name: 'Bulgária', lat: 42.7, lng: 25.5 },
+  { name: 'Sérvia', lat: 44.0, lng: 21.0 },
+  { name: 'Croácia', lat: 45.1, lng: 15.2 },
+  // Ásia
+  { name: 'China', lat: 35.0, lng: 104.0 },
+  { name: 'Índia', lat: 22.6, lng: 78.9 },
+  { name: 'Japão', lat: 36.2, lng: 138.3 },
+  { name: 'Coreia do Sul', lat: 36.5, lng: 127.8 },
+  { name: 'Coreia do Norte', lat: 40.3, lng: 127.5 },
+  { name: 'Mongólia', lat: 46.9, lng: 103.8 },
+  { name: 'Vietnã', lat: 16.0, lng: 107.8 },
+  { name: 'Tailândia', lat: 15.9, lng: 101.0 },
+  { name: 'Camboja', lat: 12.6, lng: 104.9 },
+  { name: 'Afeganistão', lat: 33.9, lng: 67.0 },
+  { name: 'Paquistão', lat: 30.4, lng: 69.3 },
+  { name: 'Cazaquistão', lat: 48.0, lng: 66.9 },
+  { name: 'Uzbequistão', lat: 41.4, lng: 64.6 },
+  // Américas
+  { name: 'Brasil', lat: -10.0, lng: -55.0 },
+  { name: 'Argentina', lat: -34.0, lng: -64.0 },
+  { name: 'Uruguai', lat: -32.5, lng: -55.8 },
+  { name: 'Paraguai', lat: -23.4, lng: -58.4 },
+  { name: 'Bolívia', lat: -16.3, lng: -63.6 },
+  { name: 'Chile', lat: -33.4, lng: -70.7 },
+  { name: 'Peru', lat: -9.2, lng: -75.0 },
+  { name: 'Colômbia', lat: 4.6, lng: -74.3 },
+  { name: 'Venezuela', lat: 6.4, lng: -66.6 },
+  { name: 'México', lat: 23.6, lng: -102.6 },
+  { name: 'Estados Unidos', lat: 39.8, lng: -98.6 },
+  { name: 'Canadá', lat: 56.1, lng: -106.3 },
+  { name: 'Cuba', lat: 21.5, lng: -77.8 },
+  // África Subsaariana
+  { name: 'Etiópia', lat: 9.1, lng: 40.5 },
+  { name: 'Quênia', lat: -0.0, lng: 37.9 },
+  { name: 'Nigéria', lat: 9.1, lng: 8.7 },
+  { name: 'África do Sul', lat: -30.6, lng: 22.9 },
+  { name: 'Gana', lat: 7.9, lng: -1.0 },
+  { name: 'Angola', lat: -11.2, lng: 17.9 },
+  { name: 'Moçambique', lat: -18.7, lng: 35.5 },
+  // Oceania
+  { name: 'Austrália', lat: -25.3, lng: 133.8 },
+  // Mares e regiões geográficas
+  { name: 'Mar Mediterrâneo', lat: 34.0, lng: 18.0 },
+  { name: 'Mar Egeu', lat: 38.0, lng: 25.5 },
+  { name: 'Mar Negro', lat: 43.4, lng: 34.0 },
+  { name: 'Mar Vermelho', lat: 20.0, lng: 38.0 },
+  { name: 'Mar Cáspio', lat: 41.8, lng: 50.5 },
+  { name: 'Golfo Pérsico', lat: 27.0, lng: 51.5 },
+  { name: 'Oceano Atlântico', lat: 0.0, lng: -30.0 },
+  { name: 'Oceano Índico', lat: -20.0, lng: 80.0 },
+  { name: 'Oceano Pacífico', lat: 0.0, lng: 160.0 },
+  { name: 'Canal da Mancha', lat: 50.0, lng: 1.0 },
+  { name: 'Estreito de Bósforo', lat: 41.1, lng: 29.0 },
+  { name: 'Península Arábica', lat: 22.0, lng: 47.0 },
+  { name: 'Península Itálica', lat: 42.0, lng: 12.0 },
+  { name: 'Península Ibérica', lat: 39.5, lng: -4.0 },
+  { name: 'Balcãs', lat: 42.5, lng: 21.0 },
+  { name: 'Cáucaso', lat: 42.0, lng: 44.0 },
+  { name: 'Mesopotâmia', lat: 32.0, lng: 45.0 },
+  { name: 'Crescente Fértil', lat: 33.0, lng: 42.0 },
+  { name: 'Vale do Nilo', lat: 24.0, lng: 32.0 },
+  { name: 'Sertão', lat: -10.0, lng: -40.0 },
+  { name: 'Amazônia', lat: -3.0, lng: -60.0 },
+  { name: 'Andes', lat: -20.0, lng: -68.0 },
+  { name: 'Himalaia', lat: 28.0, lng: 87.0 },
+  { name: 'Sahara', lat: 23.0, lng: 12.0 },
+  { name: 'Estepe Eurasiana', lat: 50.0, lng: 70.0 },
+];
+
 function createDivIcon(type: GeoPointType): L.DivIcon {
   const emoji = MARKER_ICONS[type];
   const color = MARKER_COLORS[type];
@@ -72,6 +185,7 @@ export default function GeographicMapView({ data, height = '320px', isExpanded =
   const baseLayerRef = useRef<L.TileLayer | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const routesRef = useRef<L.Polyline[]>([]);
+  const countryLabelsRef = useRef<L.Marker[]>([]);
   const [activeLayer, setActiveLayer] = useState<LayerStyle>('dark');
   const [showLayerSwitcher, setShowLayerSwitcher] = useState(false);
 
@@ -94,6 +208,32 @@ export default function GeographicMapView({ data, height = '320px', isExpanded =
     }).addTo(map);
 
     L.control.zoom({ position: 'topright' }).addTo(map);
+
+    // Adiciona rótulos de países/regiões em português
+    const updateCountryLabels = () => {
+      countryLabelsRef.current.forEach(m => map.removeLayer(m));
+      countryLabelsRef.current = [];
+      const zoom = map.getZoom();
+      // Mostra rótulos de países apenas em zoom baixo/médio (panorama)
+      if (zoom > 6) return;
+      const bounds = map.getBounds();
+      COUNTRY_LABELS_PT.forEach(c => {
+        if (!bounds.contains([c.lat, c.lng])) return;
+        const labelMarker = L.marker([c.lat, c.lng], {
+          icon: L.divIcon({
+            className: 'chronos-country-label',
+            html: `<span>${c.name}</span>`,
+            iconSize: [0, 0],
+          }),
+          interactive: false,
+          keyboard: false,
+        }).addTo(map);
+        countryLabelsRef.current.push(labelMarker);
+      });
+    };
+
+    updateCountryLabels();
+    map.on('moveend zoomend', updateCountryLabels);
 
     setTimeout(() => map.invalidateSize(), 200);
 
@@ -186,6 +326,34 @@ export default function GeographicMapView({ data, height = '320px', isExpanded =
       }
       .chronos-map-label::before {
         border-top-color: rgba(15, 23, 42, 0.85) !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.getElementById(styleId)?.remove();
+    };
+  }, []);
+
+  // Estilos dos rótulos de países (injetados uma vez)
+  useEffect(() => {
+    const styleId = 'chronos-country-label-style';
+    if (document.getElementById(styleId)) return;
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.textContent = `
+      .chronos-country-label {
+        pointer-events: none !important;
+      }
+      .chronos-country-label span {
+        display: inline-block;
+        font-family: 'Georgia', serif !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        color: rgba(241, 245, 249, 0.7) !important;
+        text-shadow: 0 0 3px rgba(0,0,0,0.8), 0 0 6px rgba(0,0,0,0.6) !important;
+        letter-spacing: 0.5px !important;
+        white-space: nowrap !important;
+        text-transform: uppercase !important;
       }
     `;
     document.head.appendChild(style);
