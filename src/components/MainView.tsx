@@ -971,7 +971,23 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
   const [customCards, setCustomCards] = useState<HistoryCard[]>(() => {
     const saved = localStorage.getItem('chronos_custom_cards');
-    return saved ? JSON.parse(saved) : [];
+    if (saved) {
+      try {
+        const parsed: HistoryCard[] = JSON.parse(saved);
+        // Filter out old fallback cards that contain prompt text instead of real content
+        const cleaned = parsed.filter((c: any) => {
+          const text = (c.summary || '') + (c.title || '') + (c.fact?.description || '');
+          return !text.includes('Atue como') && !text.includes('especialista em Historiografia');
+        });
+        if (cleaned.length !== parsed.length) {
+          localStorage.setItem('chronos_custom_cards', JSON.stringify(cleaned));
+        }
+        return cleaned;
+      } catch {
+        return [];
+      }
+    }
+    return [];
   });
 
   const [customTimelineSteps, setCustomTimelineSteps] = useState<any[]>(() => {
@@ -980,7 +996,12 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
       try {
         const parsed = JSON.parse(saved);
         // Clean up old steps with mismatched IDs (step- prefix from previous bug)
-        const cleaned = parsed.filter((s: any) => !s.id?.startsWith('step-'));
+        // Also remove steps that contain prompt text instead of real content
+        const cleaned = parsed.filter((s: any) => {
+          if (s.id?.startsWith('step-')) return false;
+          const text = (s.title || '') + (s.description || '');
+          return !text.includes('Atue como') && !text.includes('especialista em Historiografia');
+        });
         if (cleaned.length !== parsed.length) {
           localStorage.setItem('chronos_custom_timeline', JSON.stringify(cleaned));
         }
@@ -1028,6 +1049,21 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
     const updatedSteps = customTimelineSteps.filter(s => s.id !== cardId);
     setCustomTimelineSteps(updatedSteps);
     localStorage.setItem('chronos_custom_timeline', JSON.stringify(updatedSteps));
+  };
+
+  const handleUpdateCardFromAdmin = (updatedCard: HistoryCard) => {
+    // If the card is in customCards, update it there
+    const isInCustom = customCards.some(c => c.id === updatedCard.id);
+    if (isInCustom) {
+      const updatedCards = customCards.map(c => c.id === updatedCard.id ? updatedCard : c);
+      setCustomCards(updatedCards);
+      localStorage.setItem('chronos_custom_cards', JSON.stringify(updatedCards));
+    } else {
+      // It's a mockCard — add it to customCards as an override
+      const updatedCards = [updatedCard, ...customCards.filter(c => c.id !== updatedCard.id)];
+      setCustomCards(updatedCards);
+      localStorage.setItem('chronos_custom_cards', JSON.stringify(updatedCards));
+    }
   };
 
   const [currentTimelineIndex, setCurrentTimelineIndex] = useState<number>(() => {
@@ -2665,7 +2701,11 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
   const periods = ['Todos', 'Antiguidade', 'Idade Média', 'Idade Moderna', 'Idade Contemporânea', 'História do Brasil', 'Mitologias'];
 
-  const allCards = useMemo(() => [...mockCards, ...customCards], [customCards]);
+  const allCards = useMemo(() => {
+    const customIds = new Set(customCards.map(c => c.id));
+    const mockCardsFiltered = mockCards.filter(c => !customIds.has(c.id));
+    return [...mockCardsFiltered, ...customCards];
+  }, [customCards]);
 
   const filteredCards = allCards.filter((card) => {
     const matchesPeriod = activePeriod === 'Todos' || card.period === activePeriod;
@@ -4740,6 +4780,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
           cards={allCards}
           onAddCard={handleAddCardFromAdmin}
           onDeleteCard={handleDeleteCardFromAdmin}
+          onUpdateCard={handleUpdateCardFromAdmin}
         />
       )}
     </div>

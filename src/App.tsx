@@ -22,7 +22,22 @@ export default function App() {
   // Cards State for Admin Panel sync
   const [customCards, setCustomCards] = useState<HistoryCard[]>(() => {
     const saved = localStorage.getItem('chronos_custom_cards');
-    return saved ? JSON.parse(saved) : [];
+    if (saved) {
+      try {
+        const parsed: HistoryCard[] = JSON.parse(saved);
+        const cleaned = parsed.filter((c: any) => {
+          const text = (c.summary || '') + (c.title || '') + (c.fact?.description || '');
+          return !text.includes('Atue como') && !text.includes('especialista em Historiografia');
+        });
+        if (cleaned.length !== parsed.length) {
+          localStorage.setItem('chronos_custom_cards', JSON.stringify(cleaned));
+        }
+        return cleaned;
+      } catch {
+        return [];
+      }
+    }
+    return [];
   });
 
   const handleAddCard = (card: HistoryCard, timelineStep?: any, kgNodes?: any[]) => {
@@ -58,6 +73,19 @@ export default function App() {
         const updatedSteps = timelineSteps.filter((s: any) => s.id !== cardId);
         localStorage.setItem('chronos_custom_timeline', JSON.stringify(updatedSteps));
       } catch {}
+    }
+  };
+
+  const handleUpdateCard = (updatedCard: HistoryCard) => {
+    const isInCustom = customCards.some(c => c.id === updatedCard.id);
+    if (isInCustom) {
+      const updated = customCards.map(c => c.id === updatedCard.id ? updatedCard : c);
+      setCustomCards(updated);
+      localStorage.setItem('chronos_custom_cards', JSON.stringify(updated));
+    } else {
+      const updated = [updatedCard, ...customCards.filter(c => c.id !== updatedCard.id)];
+      setCustomCards(updated);
+      localStorage.setItem('chronos_custom_cards', JSON.stringify(updated));
     }
   };
 
@@ -106,6 +134,7 @@ export default function App() {
           cards={customCards}
           onAddCard={handleAddCard}
           onDeleteCard={handleDeleteCard}
+          onUpdateCard={handleUpdateCard}
         />
       )}
 

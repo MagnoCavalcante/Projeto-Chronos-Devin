@@ -50,7 +50,7 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
   const [depthMode, setDepthMode] = useState<'resumido' | 'aprofundado'>('resumido');
   const [expandedEvents, setExpandedEvents] = useState<Set<number>>(new Set());
 
-  const hasEnrichment = !!(card.metricas_rapidas || card.relevancia_atual || card.fact.pilares_fatos?.length || card.interpretation.debates_historiograficos?.length || card.interpretation.mitos_vs_fatos?.length || card.characters.some(c => c.citacao_historica) || card.sources.some(s => s.trecho_fonte_primaria));
+  const hasEnrichment = !!(card.modo_aprofundado || card.metricas_rapidas || card.relevancia_atual || card.fact.pilares_fatos?.length || card.interpretation.debates_historiograficos?.length || card.interpretation.mitos_vs_fatos?.length || card.characters.some(c => c.citacao_historica) || card.sources.some(s => s.trecho_fonte_primaria));
 
   const toggleEvent = (idx: number) => {
     setExpandedEvents(prev => {

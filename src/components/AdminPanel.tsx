@@ -36,6 +36,7 @@ interface AdminPanelProps {
   cards: HistoryCard[];
   onAddCard: (card: HistoryCard, timelineStep?: any, kgNodes?: any[]) => void;
   onDeleteCard: (cardId: string) => void;
+  onUpdateCard?: (card: HistoryCard) => void;
   isStandalone?: boolean;
 }
 
@@ -55,6 +56,7 @@ export default function AdminPanel({
   cards,
   onAddCard,
   onDeleteCard,
+  onUpdateCard,
   isStandalone = false
 }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'content' | 'ai_assistant' | 'requests'>('requests');
@@ -138,6 +140,7 @@ export default function AdminPanel({
   const [geminiApiKey, setGeminiApiKey] = useState(() => localStorage.getItem('chronos_gemini_api_key') || '');
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
+  const [aprofundandoCardId, setAprofundandoCardId] = useState<string | null>(null);
 
   // Manual Content Modal State
   const [showManualModal, setShowManualModal] = useState(false);
@@ -167,6 +170,15 @@ export default function AdminPanel({
     localStorage.removeItem('chronos_gemini_api_key');
     setGeminiApiKey('');
     setShowApiKeyInput(false);
+  };
+
+  // Handle "Aprofundar" — enrich an existing module with deep-dive content via AI
+  const handleAprofundar = (card: HistoryCard) => {
+    setAprofundandoCardId(card.id);
+    const promptText = `Aprofunde o dossiê histórico "${card.title}" (${card.era}). Adicione métricas rápidas (duração, fases, impacto territorial), relevância atual, pilares de fatos temáticos, debates historiográficos, mitos vs fatos, detalhes táticos na linha do tempo, citações históricas dos personagens e trechos de fontes primárias. Mantenha o mesmo ID: ${card.id}`;
+    setAiPrompt(promptText);
+    setActiveTab('ai_assistant');
+    handleGenerateAI(promptText);
   };
 
   // Handle AI Content Generation
@@ -341,7 +353,22 @@ export default function AdminPanel({
   const handlePublishAICard = () => {
     if (!aiResult || !aiResult.card) return;
 
-    onAddCard(aiResult.card, aiResult.timelineStep, aiResult.kgNodes);
+    if (aprofundandoCardId && onUpdateCard) {
+      // Aprofundando: update existing card with enriched content
+      const existingCard = cards.find(c => c.id === aprofundandoCardId);
+      if (existingCard) {
+        const enrichedCard: HistoryCard = {
+          ...existingCard,
+          ...aiResult.card,
+          id: aprofundandoCardId, // preserve original ID
+          modo_aprofundado: true,
+        };
+        onUpdateCard(enrichedCard);
+      }
+      setAprofundandoCardId(null);
+    } else {
+      onAddCard(aiResult.card, aiResult.timelineStep, aiResult.kgNodes);
+    }
     setPublishingSuccess(true);
     setTimeout(() => {
       setPublishingSuccess(false);
@@ -981,7 +1008,7 @@ export default function AdminPanel({
                     className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider shadow-lg transition-all cursor-pointer"
                   >
                     <CheckCircle2 className="w-4 h-4" />
-                    Salvar e Publicar no App
+                    {aprofundandoCardId ? 'Atualizar Módulo Aprofundado' : 'Salvar e Publicar no App'}
                   </button>
                 </div>
               </div>
@@ -1442,14 +1469,36 @@ export default function AdminPanel({
                       }</strong>
                     </span>
 
-                    <button
-                      onClick={() => onDeleteCard(c.id)}
-                      className="p-1.5 bg-red-950/60 hover:bg-red-900 text-red-400 rounded border border-red-800/40 cursor-pointer flex items-center gap-1 text-[10px] font-mono"
-                      title="Remover Módulo"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                      Excluir
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {c.modo_aprofundado ? (
+                        <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Aprofundado
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleAprofundar(c)}
+                          disabled={isGenerating && aprofundandoCardId === c.id}
+                          className="flex items-center gap-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-1 rounded text-[10px] font-mono font-bold cursor-pointer disabled:opacity-50"
+                          title="Aprofundar este módulo com conteúdo detalhado via IA"
+                        >
+                          {isGenerating && aprofundandoCardId === c.id ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-3 h-3" />
+                          )}
+                          Aprofundar
+                        </button>
+                      )}
+                      <button
+                        onClick={() => onDeleteCard(c.id)}
+                        className="p-1.5 bg-red-950/60 hover:bg-red-900 text-red-400 rounded border border-red-800/40 cursor-pointer flex items-center gap-1 text-[10px] font-mono"
+                        title="Remover Módulo"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Excluir
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
