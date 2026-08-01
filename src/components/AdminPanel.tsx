@@ -85,6 +85,10 @@ export default function AdminPanel({
   const [requestStatusFilter, setRequestStatusFilter] = useState<'all' | 'pendente' | 'em_analise' | 'atendido' | 'rejeitado'>('all');
   const [requestNotice, setRequestNotice] = useState<string | null>(null);
 
+  // Module filters
+  const [moduleSearch, setModuleSearch] = useState('');
+  const [moduleFilter, setModuleFilter] = useState<'all' | 'aprofundado' | 'nao_aprofundado'>('all');
+
   useEffect(() => {
     localStorage.setItem('chronos_dossier_requests', JSON.stringify(dossierRequests));
   }, [dossierRequests]);
@@ -1457,9 +1461,58 @@ export default function AdminPanel({
               </div>
             </div>
 
+            {/* Search & Filter Bar */}
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <input
+                  type="text"
+                  value={moduleSearch}
+                  onChange={(e) => setModuleSearch(e.target.value)}
+                  placeholder="Pesquisar por assunto ou dossiê..."
+                  className="w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs font-mono text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-amber-500/50"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setModuleFilter('all')}
+                  className={`px-3 py-2 rounded-lg text-[11px] font-mono font-bold border cursor-pointer transition-colors ${moduleFilter === 'all' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' : 'bg-slate-900 text-slate-400 border-slate-700 hover:border-slate-600'}`}
+                >
+                  Todos ({cards.length})
+                </button>
+                <button
+                  onClick={() => setModuleFilter('aprofundado')}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-mono font-bold border cursor-pointer transition-colors ${moduleFilter === 'aprofundado' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' : 'bg-slate-900 text-slate-400 border-slate-700 hover:border-slate-600'}`}
+                >
+                  <CheckCircle2 className="w-3 h-3" />
+                  Aprofundado ({cards.filter(c => c.modo_aprofundado).length})
+                </button>
+                <button
+                  onClick={() => setModuleFilter('nao_aprofundado')}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-mono font-bold border cursor-pointer transition-colors ${moduleFilter === 'nao_aprofundado' ? 'bg-slate-700 text-slate-200 border-slate-500' : 'bg-slate-900 text-slate-400 border-slate-700 hover:border-slate-600'}`}
+                >
+                  <AlertCircle className="w-3 h-3" />
+                  Não Aprofundado ({cards.filter(c => !c.modo_aprofundado).length})
+                </button>
+              </div>
+            </div>
+
             {/* Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {cards.map((c) => (
+              {cards
+                .filter(c => {
+                  const matchesSearch = !moduleSearch || 
+                    c.title.toLowerCase().includes(moduleSearch.toLowerCase()) ||
+                    c.summary?.toLowerCase().includes(moduleSearch.toLowerCase()) ||
+                    c.period?.toLowerCase().includes(moduleSearch.toLowerCase()) ||
+                    c.era?.toLowerCase().includes(moduleSearch.toLowerCase());
+                  const matchesFilter = 
+                    moduleFilter === 'all' || 
+                    (moduleFilter === 'aprofundado' && c.modo_aprofundado) ||
+                    (moduleFilter === 'nao_aprofundado' && !c.modo_aprofundado);
+                  return matchesSearch && matchesFilter;
+                })
+                .map((c) => (
                 <div key={c.id} className="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
