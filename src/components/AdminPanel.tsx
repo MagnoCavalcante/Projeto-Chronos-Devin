@@ -1534,6 +1534,64 @@ export default function AdminPanel({
                 </div>
               ))}
             </div>
+
+            {/* Timeline subjects without a dossier card */}
+            {(() => {
+              const cardIds = new Set(cards.map(c => c.id));
+              const orphanSteps = [
+                { id: 'rota-da-seda-imperio-mongol', title: 'A Rota da Seda e o Império Mongol', era: 'Idade Média (1206 d.C.)' },
+                { id: 'independencia-eua-1776', title: 'Independência dos EUA (1776)', era: 'Idade Moderna (1776 d.C.)' },
+                { id: 'restauracao-meiji-japao', title: 'Restauração Meiji no Japão (1868)', era: 'Século XIX (1868 d.C.)' },
+                { id: 'descolonizacao-africa-asia', title: 'Descolonização da África e Ásia (1947–1994)', era: 'Século XX (1947–1994)' },
+                { id: 'direitos-civis-eua-1960', title: 'Direitos Civis nos EUA (Anos 1960)', era: 'Século XX (1963)' },
+                { id: 'guerra-fria-queda-muro-berlim', title: 'Queda do Muro de Berlim (1989)', era: 'Fim do Século XX (1989)' }
+              ].filter(s => !cardIds.has(s.id));
+
+              if (orphanSteps.length === 0) return null;
+
+              return (
+                <div className="mt-6 space-y-3">
+                  <div className="flex items-center gap-2 pt-4 border-t border-slate-800">
+                    <Inbox className="w-4 h-4 text-amber-400" />
+                    <h4 className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
+                      Assuntos na Linha do Tempo sem Dossiê ({orphanSteps.length})
+                    </h4>
+                  </div>
+                  <p className="text-[11px] text-slate-400 font-mono">
+                    Estes temas aparecem na linha do tempo do app mas ainda não possuem um dossiê cadastrado. Clique em "Criar Dossiê Aprofundado" para gerar via IA.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {orphanSteps.map(step => (
+                      <div key={step.id} className="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <h5 className="text-sm font-serif font-bold text-white truncate">{step.title}</h5>
+                          <span className="text-[10px] font-mono text-slate-400">{step.era}</span>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setGerarAprofundado(true);
+                            const promptText = `Crie um dossiê histórico completo sobre "${step.title}" (${step.era}). Inclua resumo, fatos, interpretações, linha do tempo, personagens e fontes bibliográficas. Use o ID: ${step.id}`;
+                            setAiPrompt(promptText);
+                            setActiveTab('ai_assistant');
+                            handleGenerateAI(promptText);
+                          }}
+                          disabled={isGenerating}
+                          className="flex items-center gap-1.5 bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-400 border border-emerald-600/30 px-2.5 py-1.5 rounded-lg text-[10px] font-mono font-bold cursor-pointer disabled:opacity-50 whitespace-nowrap"
+                          title="Gerar dossiê aprofundado via IA para este assunto"
+                        >
+                          {isGenerating ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-3 h-3" />
+                          )}
+                          Criar Dossiê Aprofundado
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 
