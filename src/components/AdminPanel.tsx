@@ -38,6 +38,7 @@ interface AdminPanelProps {
   onDeleteCard: (cardId: string) => void;
   onUpdateCard?: (card: HistoryCard) => void;
   isStandalone?: boolean;
+  timelineSteps?: any[];
 }
 
 const DEFAULT_USERS: User[] = [
@@ -57,7 +58,8 @@ export default function AdminPanel({
   onAddCard,
   onDeleteCard,
   onUpdateCard,
-  isStandalone = false
+  isStandalone = false,
+  timelineSteps = []
 }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'content' | 'ai_assistant' | 'requests'>('requests');
   
@@ -1538,14 +1540,13 @@ export default function AdminPanel({
             {/* Timeline subjects without a dossier card */}
             {(() => {
               const cardIds = new Set(cards.map(c => c.id));
-              const orphanSteps = [
-                { id: 'rota-da-seda-imperio-mongol', title: 'A Rota da Seda e o Império Mongol', era: 'Idade Média (1206 d.C.)' },
-                { id: 'independencia-eua-1776', title: 'Independência dos EUA (1776)', era: 'Idade Moderna (1776 d.C.)' },
-                { id: 'restauracao-meiji-japao', title: 'Restauração Meiji no Japão (1868)', era: 'Século XIX (1868 d.C.)' },
-                { id: 'descolonizacao-africa-asia', title: 'Descolonização da África e Ásia (1947–1994)', era: 'Século XX (1947–1994)' },
-                { id: 'direitos-civis-eua-1960', title: 'Direitos Civis nos EUA (Anos 1960)', era: 'Século XX (1963)' },
-                { id: 'guerra-fria-queda-muro-berlim', title: 'Queda do Muro de Berlim (1989)', era: 'Fim do Século XX (1989)' }
-              ].filter(s => !cardIds.has(s.id));
+              const orphanSteps = timelineSteps
+                .filter(s => !cardIds.has(s.id))
+                .map(s => ({
+                  id: s.id,
+                  title: s.title || s.id,
+                  era: s.era || (s.label || '')
+                }));
 
               if (orphanSteps.length === 0) return null;
 

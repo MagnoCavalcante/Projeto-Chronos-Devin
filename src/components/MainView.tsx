@@ -4788,6 +4788,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
           onAddCard={handleAddCardFromAdmin}
           onDeleteCard={handleDeleteCardFromAdmin}
           onUpdateCard={handleUpdateCardFromAdmin}
+          timelineSteps={mergedTimelineSteps}
         />
       )}
     </div>
