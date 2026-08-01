@@ -135,6 +135,9 @@ export default function AdminPanel({
   const [aiNote, setAiNote] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [publishingSuccess, setPublishingSuccess] = useState(false);
+  const [geminiApiKey, setGeminiApiKey] = useState(() => localStorage.getItem('chronos_gemini_api_key') || '');
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState('');
 
   // Manual Content Modal State
   const [showManualModal, setShowManualModal] = useState(false);
@@ -150,6 +153,21 @@ export default function AdminPanel({
   useEffect(() => {
     localStorage.setItem('chronos_admin_users', JSON.stringify(users));
   }, [users]);
+
+  const handleSaveApiKey = () => {
+    if (apiKeyInput.trim()) {
+      localStorage.setItem('chronos_gemini_api_key', apiKeyInput.trim());
+      setGeminiApiKey(apiKeyInput.trim());
+      setApiKeyInput('');
+      setShowApiKeyInput(false);
+    }
+  };
+
+  const handleRemoveApiKey = () => {
+    localStorage.removeItem('chronos_gemini_api_key');
+    setGeminiApiKey('');
+    setShowApiKeyInput(false);
+  };
 
   // Handle AI Content Generation
   const handleGenerateAI = async (promptToUse?: string) => {
@@ -200,7 +218,7 @@ export default function AdminPanel({
         } catch (geminiErr: any) {
           const errMsg = geminiErr?.message || '';
           if (errMsg === 'API_KEY_NOT_CONFIGURED') {
-            setAiError('Chave da API Gemini não configurada. Crie um arquivo .env com VITE_GEMINI_API_KEY=sua_chave. Veja .env.example para instruções.');
+            setAiError('Chave da API Gemini não configurada. Clique em "+ Configurar" acima para inserir sua chave. Obtenha em aistudio.google.com/apikey');
             setIsGenerating(false);
             return;
           }
@@ -732,6 +750,59 @@ export default function AdminPanel({
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Gemini API Key Configuration */}
+            <div className="bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <Key className="w-3.5 h-3.5" />
+                  Chave da API Gemini
+                </span>
+                {geminiApiKey ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">
+                      ✓ Configurada
+                    </span>
+                    <button
+                      onClick={handleRemoveApiKey}
+                      className="text-[10px] font-mono text-red-400 hover:text-red-300 cursor-pointer"
+                    >
+                      Remover
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowApiKeyInput(!showApiKeyInput)}
+                    className="text-[10px] font-mono text-amber-400 hover:text-amber-300 cursor-pointer"
+                  >
+                    {showApiKeyInput ? 'Cancelar' : '+ Configurar'}
+                  </button>
+                )}
+              </div>
+              {showApiKeyInput && (
+                <div className="flex gap-2 pt-1">
+                  <input
+                    type="password"
+                    value={apiKeyInput}
+                    onChange={(e) => setApiKeyInput(e.target.value)}
+                    placeholder="Cole sua chave da API Gemini aqui..."
+                    className="flex-1 bg-slate-900 border border-slate-700 focus:border-amber-500 rounded-lg p-2 text-xs text-white focus:outline-none font-mono"
+                  />
+                  <button
+                    onClick={handleSaveApiKey}
+                    disabled={!apiKeyInput.trim()}
+                    className="px-3 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-slate-950 rounded-lg text-xs font-mono font-bold cursor-pointer"
+                  >
+                    Salvar
+                  </button>
+                </div>
+              )}
+              {!geminiApiKey && !showApiKeyInput && (
+                <p className="text-[10px] text-slate-500 font-mono">
+                  Sem a chave, a IA não consegue pesquisar. Obtenha em aistudio.google.com/apikey
+                </p>
+              )}
             </div>
 
             {/* Prompt Input Area */}

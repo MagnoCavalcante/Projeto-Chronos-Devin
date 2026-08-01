@@ -143,9 +143,8 @@ export async function generateContentWithGemini(
   prompt: string,
   existingCards: { id: string; title: string; period: string; era: string; summary: string }[]
 ): Promise<any> {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
-  console.log('[Gemini Client] VITE_GEMINI_API_KEY:', apiKey ? `Found (${apiKey.substring(0, 10)}...)` : 'NOT FOUND');
-  console.log('[Gemini Client] import.meta.env keys:', Object.keys(import.meta.env));
+  const apiKey = localStorage.getItem('chronos_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+  console.log('[Gemini Client] API Key:', apiKey ? `Found (${apiKey.substring(0, 10)}...)` : 'NOT FOUND');
 
   if (!apiKey) {
     throw new Error('API_KEY_NOT_CONFIGURED');
