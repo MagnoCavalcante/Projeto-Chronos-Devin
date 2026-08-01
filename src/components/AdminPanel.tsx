@@ -141,6 +141,7 @@ export default function AdminPanel({
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [aprofundandoCardId, setAprofundandoCardId] = useState<string | null>(null);
+  const [gerarAprofundado, setGerarAprofundado] = useState(false);
 
   // Manual Content Modal State
   const [showManualModal, setShowManualModal] = useState(false);
@@ -183,8 +184,13 @@ export default function AdminPanel({
 
   // Handle AI Content Generation
   const handleGenerateAI = async (promptToUse?: string) => {
-    const promptText = promptToUse || aiPrompt;
+    let promptText = promptToUse || aiPrompt;
     if (!promptText.trim()) return;
+
+    // Append enrichment instructions if "Gerar em modo aprofundado" is enabled
+    if (gerarAprofundado && !aprofundandoCardId) {
+      promptText += '\n\nGERE o conteúdo em modo aprofundado, incluindo: metricas_rapidas (duração, fases, impacto territorial), relevancia_atual (por que importa hoje), pilares_fatos (3-4 pilares temáticos com ícone e descrição), debates_historiograficos (2+ correntes concorrentes), mitos_vs_fatos (2+ comparações), fase_historica e detalhe_tatico nos eventos da timeline, citacao_historica para cada personagem, e trecho_fonte_primaria em pelo menos uma fonte.';
+    }
 
     setIsGenerating(true);
     setAiError(null);
@@ -367,7 +373,11 @@ export default function AdminPanel({
       }
       setAprofundandoCardId(null);
     } else {
-      onAddCard(aiResult.card, aiResult.timelineStep, aiResult.kgNodes);
+      // New card: set modo_aprofundado if generated with toggle on
+      const cardToPublish = gerarAprofundado
+        ? { ...aiResult.card, modo_aprofundado: true }
+        : aiResult.card;
+      onAddCard(cardToPublish, aiResult.timelineStep, aiResult.kgNodes);
     }
     setPublishingSuccess(true);
     setTimeout(() => {
@@ -845,6 +855,27 @@ export default function AdminPanel({
                   placeholder="Ex: Adicione um módulo sobre o Império Bizantino e inclua 3 livros nas fontes..."
                   className="w-full bg-slate-900 border border-slate-700 focus:border-amber-500 rounded-xl p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 font-sans resize-none"
                 />
+              </div>
+
+              {/* Modo Aprofundado Toggle */}
+              <div className="flex items-center gap-3 pt-1">
+                <button
+                  onClick={() => setGerarAprofundado(!gerarAprofundado)}
+                  className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${gerarAprofundado ? 'bg-emerald-600' : 'bg-slate-700'}`}
+                >
+                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${gerarAprofundado ? 'translate-x-5' : ''}`} />
+                </button>
+                <div className="flex flex-col">
+                  <span className="text-xs font-mono font-bold text-slate-200 flex items-center gap-1.5">
+                    <Sparkles className={`w-3 h-3 ${gerarAprofundado ? 'text-emerald-400' : 'text-slate-500'}`} />
+                    Gerar em modo aprofundado
+                  </span>
+                  <span className="text-[10px] text-slate-500 font-mono">
+                    {gerarAprofundado
+                      ? 'A IA incluirá métricas, debates, mitos vs fatos, citações, fontes primárias e detalhes táticos.'
+                      : 'Gera o dossiê básico (resumo, fatos, timeline, personagens e fontes).'}
+                  </span>
+                </div>
               </div>
 
               <div className="flex items-center justify-between pt-2">
