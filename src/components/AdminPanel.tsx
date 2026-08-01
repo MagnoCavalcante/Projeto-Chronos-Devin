@@ -1478,12 +1478,17 @@ export default function AdminPanel({
                   {/* Sources preview list */}
                   {c.sources && c.sources.length > 0 && (
                     <div className="pt-2 border-t border-slate-900 space-y-1">
-                      <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-wider block">Fontes Anexadas:</span>
+                      <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-wider block">Fontes Anexadas ({c.sources.length}):</span>
                       <div className="space-y-0.5">
-                        {c.sources.slice(0, 3).map((s, i) => (
+                        {c.sources.map((s, i) => (
                           <div key={i} className="text-[11px] font-serif text-amber-200/90 truncate flex items-center gap-1">
                             <Book className="w-3 h-3 text-amber-500 shrink-0" />
-                            <span>{s.title} ({s.author}, {s.year})</span>
+                            <span className="truncate">{s.title} ({s.author}, {s.year})</span>
+                            {s.trecho_fonte_primaria && (
+                              <span className="text-[8px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-1 py-0.5 rounded border border-emerald-500/20 shrink-0">
+                                Fonte Primária
+                              </span>
+                            )}
                           </div>
                         ))}
                       </div>
