@@ -27,11 +27,38 @@ const responseSchema = {
         era: { type: Type.STRING, description: 'Localização temporal legível, ex: "Século V - Século XV"' },
         evidenceLevel: { type: Type.STRING, description: 'Geralmente "high" ou "good"' },
         summary: { type: Type.STRING, description: 'Resumo executivo historiográfico (2-3 frases) em português do Brasil' },
+        modo_aprofundado: { type: Type.BOOLEAN, description: 'Sempre true para indicar que o módulo suporta modo aprofundado' },
+        metricas_rapidas: {
+          type: Type.OBJECT,
+          description: 'Estatísticas rápidas para o mini-dashboard',
+          properties: {
+            duracao: { type: Type.STRING, description: 'Ex: "116 anos (com tréguas)"' },
+            fases: { type: Type.STRING, description: 'Ex: "4 fases de combate"' },
+            impacto_territorial: { type: Type.STRING, description: 'Ex: "Recuperação francesa 95%+"' }
+          }
+        },
+        relevancia_atual: { type: Type.STRING, description: 'Seção "Por que isso importa hoje?" explicando a relevância contemporânea do tema em português do Brasil' },
         fact: {
           type: Type.OBJECT,
           properties: {
             title: { type: Type.STRING },
-            description: { type: Type.STRING }
+            description: { type: Type.STRING },
+            causaImediata: { type: Type.STRING, description: 'O estopim do evento histórico' },
+            desenvolvimento: { type: Type.STRING, description: 'Como o evento se desenrolou' },
+            consequencias: { type: Type.STRING, description: 'Consequências e novo mapa geopolítico' },
+            pilares_fatos: {
+              type: Type.ARRAY,
+              description: 'Seções organizadas por temas (ex: Dinastia, Economia, Peste, Revolução Militar)',
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  titulo: { type: Type.STRING },
+                  icone: { type: Type.STRING, description: 'Um emoji representativo' },
+                  descricao: { type: Type.STRING }
+                },
+                required: ['titulo', 'descricao']
+              }
+            }
           },
           required: ['title', 'description']
         },
@@ -39,7 +66,31 @@ const responseSchema = {
           type: Type.OBJECT,
           properties: {
             title: { type: Type.STRING },
-            description: { type: Type.STRING }
+            description: { type: Type.STRING },
+            debates_historiograficos: {
+              type: Type.ARRAY,
+              description: 'Correntes historiográficas concorrentes',
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  corrente: { type: Type.STRING, description: 'Nome da corrente historiográfica' },
+                  argumento: { type: Type.STRING, description: 'Argumento central da corrente' }
+                },
+                required: ['corrente', 'argumento']
+              }
+            },
+            mitos_vs_fatos: {
+              type: Type.ARRAY,
+              description: 'Mitos históricos comuns confrontados com fatos',
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  mito: { type: Type.STRING },
+                  fato: { type: Type.STRING }
+                },
+                required: ['mito', 'fato']
+              }
+            }
           },
           required: ['title', 'description']
         },
@@ -57,7 +108,9 @@ const responseSchema = {
             type: Type.OBJECT,
             properties: {
               year: { type: Type.STRING },
-              event: { type: Type.STRING }
+              event: { type: Type.STRING },
+              fase_historica: { type: Type.STRING, description: 'Nome da fase histórica para agrupamento, ex: "Fase Eduardina (1337–1360)"' },
+              detalhe_tatico: { type: Type.STRING, description: 'Detalhe tático ou estratégico expansível (accordion)' }
             },
             required: ['year', 'event']
           }
@@ -69,7 +122,8 @@ const responseSchema = {
             properties: {
               name: { type: Type.STRING },
               role: { type: Type.STRING },
-              bio: { type: Type.STRING }
+              bio: { type: Type.STRING },
+              citacao_historica: { type: Type.STRING, description: 'Citação marcante atribuída à figura histórica' }
             },
             required: ['name', 'role', 'bio']
           }
@@ -84,7 +138,8 @@ const responseSchema = {
               author: { type: Type.STRING, description: 'Nome do historiador ou autor' },
               year: { type: Type.INTEGER, description: 'Ano de publicação ou redação' },
               type: { type: Type.STRING, description: 'Sempre "book" para livros' },
-              details: { type: Type.STRING, description: 'Capítulo, volume ou trecho citado' }
+              details: { type: Type.STRING, description: 'Capítulo, volume ou trecho citado' },
+              trecho_fonte_primaria: { type: Type.STRING, description: 'Citação direta traduzida de fonte primária' }
             },
             required: ['id', 'title', 'author', 'year', 'type']
           }

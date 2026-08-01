@@ -119,6 +119,47 @@ export interface CHRONOSKnowledgeGraph {
   relationships: KGRelationship[];
 }
 
+export interface MetricasRapidas {
+  duracao?: string;
+  fases?: string;
+  impacto_territorial?: string;
+  [key: string]: string | undefined;
+}
+
+export interface PilarFato {
+  titulo: string;
+  icone?: string;
+  descricao: string;
+}
+
+export interface EventoTimeline {
+  year: string;
+  event: string;
+  fase_historica?: string;
+  detalhe_tatico?: string;
+}
+
+export interface Personagem {
+  name: string;
+  role: string;
+  bio: string;
+  citacao_historica?: string;
+}
+
+export interface MitoVsFato {
+  mito: string;
+  fato: string;
+}
+
+export interface DebateHistoriografico {
+  corrente: string;
+  argumento: string;
+}
+
+export interface FonteEnriquecida extends Source {
+  trecho_fonte_primaria?: string;
+}
+
 export interface HistoryCard {
   id: string;
   category: string;
@@ -127,24 +168,31 @@ export interface HistoryCard {
   era: string;
   summary: string;
   evidenceLevel: EvidenceLevel;
-  timeline: { year: string; event: string }[];
-  characters: { name: string; role: string; bio: string }[];
+  timeline: EventoTimeline[];
+  characters: Personagem[];
   fact: {
     title: string;
     description: string;
     causaImediata?: string;
     desenvolvimento?: string;
     consequencias?: string;
+    pilares_fatos?: PilarFato[];
   };
   interpretation: {
     title: string;
     description: string;
+    debates_historiograficos?: DebateHistoriografico[];
+    mitos_vs_fatos?: MitoVsFato[];
   };
   hypothesis: {
     title: string;
     description: string;
   };
-  sources: Source[];
+  sources: FonteEnriquecida[];
+  // Enrichment fields for modo aprofundado
+  metricas_rapidas?: MetricasRapidas;
+  relevancia_atual?: string;
+  modo_aprofundado?: boolean;
 }
 
 export interface MeanwhileEvent {

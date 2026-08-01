@@ -949,6 +949,21 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Territórios Sagrados das Américas'
+    },
+    {
+      id: 'guerra-cem-anos',
+      year: 1337,
+      label: '1337–1453 d.C.',
+      era: 'Idade Média',
+      title: 'A Guerra dos Cem Anos',
+      description: '116 anos de conflitos dinásticos e socioeconômicos entre Inglaterra e França que marcaram a transição da Europa medieval para os Estados Nacionais modernos.',
+      meanwhile: [
+        { region: 'Inglaterra & França', event: 'Disputa dinástica Plantageneta vs. Valois pelo trono francês.' },
+        { region: 'Flandres', event: 'Controle das rotas comerciais de lã e da indústria têxtil flamenga.' },
+        { region: 'Europa', event: 'Peste Negra (1347–1351) dizima 30-50% da população.' }
+      ],
+      mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
+      mapLabel: 'França & Inglaterra Medieval'
     }
   ];
 
@@ -2528,6 +2543,106 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
       sources: [
         { id: 'src-civ-1', title: 'Carta da Prisão de Birmingham (Letter from Birmingham Jail)', author: 'Martin Luther King Jr.', year: 1963, type: 'document', details: 'Texto fundamental da filosofia de desobediência civil' },
         { id: 'src-civ-2', title: 'The Autobiography of Malcolm X', author: 'Malcolm X e Alex Haley', year: 1965, type: 'book', details: 'Grove Press' }
+      ]
+    },
+    {
+      id: 'guerra-cem-anos',
+      category: 'História',
+      period: 'Idade Média',
+      title: 'A Guerra dos Cem Anos (1337–1453)',
+      era: 'Idade Média Tardia (1337–1453)',
+      evidenceLevel: 'high',
+      summary: 'Série de conflitos dinásticos e socioeconômicos entre Inglaterra e França que durou 116 anos (com tréguas). Marca a transição da Europa medieval para os Estados Nacionais modernos, o nascimento do nacionalismo e a revolução militar com arcos longos e artilharia de pólvora.',
+      modo_aprofundado: true,
+      metricas_rapidas: {
+        duracao: '116 anos (com tréguas)',
+        fases: '4 fases de combate',
+        impacto_territorial: 'Recuperação francesa 95%+'
+      },
+      relevancia_atual: 'A Guerra dos Cem Anos marcou a transição da Europa feudal medieval para os Estados Nacionais modernos. O nascimento do sentimento nacionalista francês e inglês, a revolução militar que substituiu a cavalaria nobre pela infantaria armada, e a centralização do poder real são legados diretos que moldaram a Europa moderna e o conceito de Estado-nação que conhecemos hoje.',
+      fact: {
+        title: 'O Conflito Dinástico e Socioeconômico entre Inglaterra e França',
+        description: 'A Guerra dos Cem Anos foi um conjunto de conflitos intercalados por tréguas entre a Coroa inglesa e a Coroa francesa, motivados por disputas dinásticas, controle econômico de Flandres e Aquitânia, e a crise feudal.',
+        causaImediata: 'Em 1337, o rei Filipe VI de França confiscou o ducado da Aquitânia de Eduardo III de Inglaterra. Em resposta, Eduardo III reivindicou o trono francês como neto de Filipe IV (o Belo), através de sua mãe Isabel, desafiando a Lei Sálica que excluía a linha de sucessão feminina.',
+        desenvolvimento: 'O conflito unfold-se em quatro fases: a Eduardina (1337–1360) com vitórias inglesas em Crécy e Poitiers; a Carolina (1369–1389) com recuperação francesa sob Carlos V e Du Guesclin; a Lancastriana (1415–1429) com Henrique V conquistando grande parte da França após Azincourt; e a fase final (1429–1453) com a intervenção de Joana d\'Arc e a vitória francesa.',
+        consequencias: 'A França expulsou os ingleses de quase todo seu território (mantendo apenas Calais). A guerra consolidou o poder real centralizado em ambos os países, enfraqueceu a nobreza feudal, e acelerou o desenvolvimento da artilharia de pólvora e da infantaria profissional.',
+        pilares_fatos: [
+          {
+            titulo: 'A Crise Dinástica',
+            icone: '👑',
+            descricao: 'A Lei Sálica francesa excluía a sucessão feminina ao trono. Eduardo III de Inglaterra, neto de Filipe IV pela linha materna, reivindicou a coroa francesa após a morte de Carlos IV em 1328. O parlamento francês escolheu Filipe VI (Valois), iniciando a disputa dinástica que alimentou o conflito.'
+          },
+          {
+            titulo: 'O Fator Econômico',
+            icone: '💰',
+            descricao: 'O controle das lucrativas rotas de lã em Flandres e do comércio de vinho na Aquitânia (sob domínio inglês) era fonte de tensão constante. Flandres dependia da lã inglesa para sua indústria têxtil, enquanto a coroa francesa buscava controlar toda a Aquitânia.'
+          },
+          {
+            titulo: 'Colapso Social e Sanitário',
+            icone: '☠️',
+            descricao: 'A Peste Negra (1347–1351) dizimou entre 30% e 50% da população europeia, devastando exércitos e economias. As Jacqueries (revoltas camponesas de 1358 em França) e a Revolta dos Camponeses de 1381 em Inglaterra refletiram o colapso social agravado pela guerra, fome e epidemias.'
+          },
+          {
+            titulo: 'A Revolução Militar',
+            icone: '⚔️',
+            descricao: 'O longo arco inglês (longbow) demonstrou superioridade sobre a cavalaria pesada nobre em Crécy (1346) e Azincourt (1415). A guerra também viu o surgimento da artilharia de pólvora, usada decisivamente pelos franceses no cerco de Formigny (1450), marcando o fim da era da cavalaria medieval.'
+          }
+        ]
+      },
+      interpretation: {
+        title: 'Leituras Historiográficas da Guerra dos Cem Anos',
+        description: 'A historiografia tradicional interpreta o conflito como uma guerra dinástica entre duas coroas. Interpretações modernas enfatizam os fatores socioeconômicos, a crise do feudalismo e a formação das identidades nacionais.',
+        debates_historiograficos: [
+          {
+            corrente: 'Visão Tradicional Dinástica',
+            argumento: 'Historiadores como Édouard Perroy enfatizam a disputa sucessória como causa principal: a guerra seria essencialmente um conflito entre duas famílias reais (Plantageneta vs. Valois) pelo trono francês, com vassalos cumprindo obrigações feudais.'
+          },
+          {
+            corrente: 'Visão Socioeconômica (Escola dos Annales)',
+            argumento: 'Historiadores influenciados pela Escola dos Annales, como Fernand Braudel, reinterpretam o conflito como sintoma da crise geral do feudalismo europeu: pressão demográfica, competição por recursos, colapso do sistema de obrigações senhoriais e emergência de economias de mercado em Flandres e Aquitânia.'
+          }
+        ],
+        mitos_vs_fatos: [
+          {
+            mito: 'A Guerra dos Cem Anos foi uma guerra contínua e ininterrupta de 100 anos.',
+            fato: 'O conflito durou 116 anos (1337–1453) mas foi intercalado por longas tréguas, períodos de paz e cessar-fogo. Houve pausas significativas, como a Trégua de Brétigny (1360–1369) e o período de relativa calma entre 1389–1415.'
+          },
+          {
+            mito: 'Joana d\'Arc venceu a guerra sozinha para a França.',
+            fato: 'Joana d\'Arc foi crucial ao levantar o cerco de Orléans (1429) e permitir a coroação de Carlos VII, mas a vitória final francesa exigiu ainda mais de 20 anos de campanhas militares, reformas militares e o uso decisivo da artilharia de pólvora.'
+          }
+        ]
+      },
+      hypothesis: {
+        title: 'O Debate sobre a Origem do Nacionalismo',
+        description: 'Historiadores debatem se o sentimento nacionalista emergente durante a guerra (especialmente após a intervenção de Joana d\'Arc) representa um nacionalismo genuinamente popular ou se foi uma construção da propaganda real para legitimar a centralização monárquica.'
+      },
+      timeline: [
+        { year: '1337', event: 'Filipe VI confisca a Aquitânia; Eduardo III reivindica o trono francês. Início formal da guerra.', fase_historica: 'Fase Eduardina (1337–1360)', detalhe_tatico: 'Eduardo III adota estratégia de chevauchées (raidings) para desgastar o território francês e evitar batalhas campais iniciais.' },
+        { year: '1346', event: 'Batalha de Crécy: os arqueiros ingleses (longbows) destroem a cavalaria pesada francesa.', fase_historica: 'Fase Eduardina (1337–1360)', detalhe_tatico: 'Os arqueiros ingleses posicionaram-se em terreno elevado com estacas defensivas. A cavalaria francesa atacou em ondas desordenadas através de terreno lamacento, sendo massacrada a 200 metros de distância pelos longbows que disparavam 6-10 flechas por minuto.' },
+        { year: '1356', event: 'Batalha de Poitiers: Eduardo, o Príncipe Negro, captura o rei João II de França.', fase_historica: 'Fase Eduardina (1337–1360)', detalhe_tatico: 'O Príncipe Negro usou uma posição defensiva em colina com floresta nos flancos. A cavalaria francesa foi atraída para uma emboscada onde a infantaria inglesa e arqueiros cercaram e capturaram o rei João II.' },
+        { year: '1360', event: 'Tratado de Brétigny: Inglaterra ganha Aquitânia ampliada; renúncia recíproca às reivindicações ao trono.', fase_historica: 'Fase Eduardina (1337–1360)' },
+        { year: '1369', event: 'Carlos V de França declara guerra novamente; início da Fase Carolina com Du Guesclin.', fase_historica: 'Fase Carolina (1369–1389)', detalhe_tatico: 'Bertrand du Guesclin adotou estratégia de evitação de batalhas campais, usando guerrilha, cercos progressivos e diplomacia para recuperar territórios gradualmente.' },
+        { year: '1389', event: 'Trégua de Leulinghem: pausa prolongada no conflito após recuperação francesa.', fase_historica: 'Fase Carolina (1369–1389)' },
+        { year: '1415', event: 'Batalha de Azincourt: Henrique V derrota exército francês numericamente superior.', fase_historica: 'Fase Lancastriana (1415–1429)', detalhe_tatico: 'O exército inglês, exausto e faminto, posicionou-se entre duas florestas estreitando a frente de batalha. A cavalaria francesa atacou em terreno lamacento após chuva, ficando presa. Os arqueiros ingleses massacraram a nobreza francesa desmontada com machados e martelos após esgotarem as flechas.' },
+        { year: '1420', event: 'Tratado de Troyes: Henrique V torna-se herdeiro do trono francês pelo casamento com Catarina de França.', fase_historica: 'Fase Lancastriana (1415–1429)' },
+        { year: '1429', event: 'Joana d\'Arc levanta o cerco de Orléans e conduz Carlos VII à coroação em Reims.', fase_historica: 'Fase Final (1429–1453)', detalhe_tatico: 'Joana d\'Arc chegou com reforços e mudou a moral das tropas francesas. Os ataques foram redirecionados aos pontos mais fracos das fortificações inglesas. A vitória desencadeou uma série de conquistas rápidas que culminaram na coroação de Carlos VII.' },
+        { year: '1450', event: 'Batalha de Formigny: artilharia francesa derrota os ingleses, marcando o fim do domínio do longbow.', fase_historica: 'Fase Final (1429–1453)', detalhe_tatico: 'Os franceses utilizaram canhões de pólvora (culverins) que quebraram as formações defensivas inglesas de arqueiros. Pela primeira vez, a artilharia de pólvora demonstrou superioridade decisiva sobre os longbows em campo aberto.' },
+        { year: '1453', event: 'Batalha de Castillon: vitória francesa final com artilharia; fim da Guerra dos Cem Anos.', fase_historica: 'Fase Final (1429–1453)', detalhe_tatico: 'Os franceses posicionaram uma bateria de 300 canhões em fortificação defensiva. O ataque inglês foi dizimado pela artilharia antes de alcançar as posições francesas. Esta batalha é considerada a primeira grande batalha decidida primariamente pela artilharia de pólvora.' }
+      ],
+      characters: [
+        { name: 'Eduardo III', role: 'Rei de Inglaterra (r. 1327–1377)', bio: 'Iniciou a guerra ao reivindicar o trono francês. Comandante em Crécy, fundador da Ordem da Jarreteira. Sua estratégia militar combinava arqueiros longos com táticas defensivas inovadoras.', citacao_historica: 'Que aqueles que temem não lutem, e que aqueles que não temem lutem com confiança.' },
+        { name: 'Eduardo, o Príncipe Negro', role: 'Príncipe de Gales (1330–1376)', bio: 'Filho de Eduardo III, comandou as vitórias de Crécy (aos 16 anos) e Poitiers. Tornou-se símbolo da cavalaria inglesa e do ideal militar medieval. Morreu antes de tornar-se rei.', citacao_historica: 'Eu não fui feito para fugir, mas para lutar e vencer.' },
+        { name: 'Bertrand du Guesclin', role: 'Condestável de França (c. 1320–1380)', bio: 'Estrategista francês que reverteu a maré da guerra na Fase Carolina. Adotou táticas de guerrilha e evitação de batalhas campais para recuperar territórios gradualmente. Um dos maiores comandantes militares da Idade Média.', citacao_historica: 'Mais vale uma terra tomada pela astúcia do que por mil batalhas.' },
+        { name: 'Henrique V', role: 'Rei de Inglaterra (r. 1413–1422)', bio: 'Conquistou grande parte da França após Azincourt. Sua vitória em 1415 é uma das mais célebres da história militar inglesa. Forçou o Tratado de Troyes que o tornou herdeiro do trono francês.', citacao_historica: 'Nós, poucos, nós poucos felizes, nós banda de irmãos. — Discurso antes de Azincourt, conforme Shakespeare' },
+        { name: 'Joana d\'Arc', role: 'Heroína e Santa de França (c. 1412–1431)', bio: 'Camponesa que, guiada por vozes divinas, levantou o cerco de Orléans e conduziu Carlos VII à coroação. Capturada pelos Borguinhões, foi queimada em Rouen por heresia aos 19 anos. Canonizada em 1920.', citacao_historica: 'Não tenho medo, eu nasci para fazer isto.' }
+      ],
+      sources: [
+        { id: 'src-gc100-1', title: 'Crônicas (Chroniques)', author: 'Jean Froissart', year: 1400, type: 'book', details: 'Livro I, Cap. sobre a Batalha de Crécy', trecho_fonte_primaria: 'Os ingleses, embora em número muito menor, não recuaram. Seus arqueiros estavam dispostos em forma de herse, atrás de estacas afiadas, e quando a cavalaria francesa avançou em desordem através do vale lamacento, uma chuva de flechas caiu sobre eles tão espessa que parecia neve. Os cavalos caíam uns sobre os outros, e os senhores franceses, presos em suas armaduras, não podiam levantar-se do lodo.' },
+        { id: 'src-gc100-2', title: 'A Guerra dos Cem Anos (The Hundred Years War)', author: 'Christopher Allmand', year: 1988, type: 'book', details: 'Yale University Press, Cap. 1-3' },
+        { id: 'src-gc100-3', title: 'The Hundred Years War: Trial by Battle', author: 'Jonathan Sumption', year: 1990, type: 'book', details: 'Volume I, University of Pennsylvania Press' },
+        { id: 'src-gc100-4', title: 'História da Guerra dos Cem Anos', author: 'Édouard Perroy', year: 1945, type: 'book', details: 'Edição brasileira, Cap. IV-VI' },
+        { id: 'src-gc100-5', title: 'Joana d\'Arc: Uma Biografia', author: 'Régine Pernoud', year: 1986, type: 'book', details: 'Cap. 3-5 sobre Orléans e Reims' }
       ]
     }
   ];
