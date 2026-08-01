@@ -26,11 +26,12 @@ export default function App() {
     if (saved) {
       try {
         const parsed: HistoryCard[] = JSON.parse(saved);
-        const mockTitles = new Set(mockCards.map(c => c.title.toLowerCase().trim()));
+        const normalizeTitle = (t: string) => t.toLowerCase().trim().replace(/\s*\(.*?\)\s*/g, '').replace(/\s+/g, ' ').trim();
+        const mockTitles = new Set(mockCards.map(c => normalizeTitle(c.title || '')));
         const cleaned = parsed.filter((c: any) => {
           const text = (c.summary || '') + (c.title || '') + (c.fact?.description || '');
           const isPromptJunk = text.includes('Atue como') || text.includes('especialista em Historiografia');
-          const isDuplicateOfMock = mockTitles.has((c.title || '').toLowerCase().trim());
+          const isDuplicateOfMock = mockTitles.has(normalizeTitle(c.title || ''));
           return !isPromptJunk && !isDuplicateOfMock;
         });
         if (cleaned.length !== parsed.length) {
@@ -96,8 +97,9 @@ export default function App() {
   const allCards = useMemo(() => {
     const customIds = new Set(customCards.map(c => c.id));
     const mockCardsFiltered = mockCards.filter(c => !customIds.has(c.id));
-    const mockTitles = new Set(mockCards.map(c => c.title.toLowerCase().trim()));
-    const customCardsFiltered = customCards.filter(c => !mockTitles.has(c.title.toLowerCase().trim()));
+    const normalizeTitle = (t: string) => t.toLowerCase().trim().replace(/\s*\(.*?\)\s*/g, '').replace(/\s+/g, ' ').trim();
+    const mockTitles = new Set(mockCards.map(c => normalizeTitle(c.title || '')));
+    const customCardsFiltered = customCards.filter(c => !mockTitles.has(normalizeTitle(c.title || '')));
     return [...mockCardsFiltered, ...customCardsFiltered];
   }, [customCards]);
 
