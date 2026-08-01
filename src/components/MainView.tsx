@@ -1014,9 +1014,19 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
   });
 
   // Merge custom timeline steps into TIMELINE_STEPS, sorted by year
+  // Filter out custom steps that duplicate a mock step by year or title
   const mergedTimelineSteps = [...TIMELINE_STEPS];
   customTimelineSteps.forEach(customStep => {
-    if (!mergedTimelineSteps.some(s => s.id === customStep.id)) {
+    const duplicatesMock = mergedTimelineSteps.some(s =>
+      s.id === customStep.id ||
+      s.year === customStep.year ||
+      (s.title && customStep.title && (
+        s.title.toLowerCase() === customStep.title.toLowerCase() ||
+        s.title.toLowerCase().includes(customStep.title.toLowerCase()) ||
+        customStep.title.toLowerCase().includes(s.title.toLowerCase())
+      ))
+    );
+    if (!duplicatesMock) {
       mergedTimelineSteps.push(customStep);
     }
   });
