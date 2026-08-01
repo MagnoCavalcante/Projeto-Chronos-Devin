@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Screen, User, HistoryCard } from './types';
+import { mockCards, TIMELINE_STEPS } from './data/mockData';
 import SplashView from './components/SplashView';
 import WelcomeView from './components/WelcomeView';
 import LoginView from './components/LoginView';
@@ -89,6 +90,12 @@ export default function App() {
     }
   };
 
+  const allCards = useMemo(() => {
+    const customIds = new Set(customCards.map(c => c.id));
+    const mockCardsFiltered = mockCards.filter(c => !customIds.has(c.id));
+    return [...mockCardsFiltered, ...customCards];
+  }, [customCards]);
+
   const handleLogout = () => {
     setCurrentUser(null);
     setCurrentScreen('LOGIN');
@@ -131,10 +138,11 @@ export default function App() {
           }}
           isStandalone={true}
           onClose={() => setCurrentScreen('LOGIN')}
-          cards={customCards}
+          cards={allCards}
           onAddCard={handleAddCard}
           onDeleteCard={handleDeleteCard}
           onUpdateCard={handleUpdateCard}
+          timelineSteps={TIMELINE_STEPS}
         />
       )}
 
