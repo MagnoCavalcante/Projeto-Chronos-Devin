@@ -2086,46 +2086,6 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
       ]
     },
     {
-      id: 'guerra-cem-anos',
-      category: 'História',
-      period: 'Idade Média',
-      title: 'A Guerra dos Cem Anos (1337 – 1453 d.C.)',
-      era: 'Fim da Idade Média (1337–1453 d.C.)',
-      evidenceLevel: 'high',
-      summary: 'França vs. Inglaterra (Joana D\'Arc). O fim do sistema feudal de cavalaria, o nascimento dos exércitos permanentes e a transição para as monarquias nacionais consolidadas.',
-      fact: {
-        title: 'O Secular Conflito Dinástico e Territorial',
-        description: 'Conflito prolongado travado em solo francês entre a dinastia dos Valois (França) e a dinastia dos Plantageneta (Inglaterra).',
-        causaImediata: 'Disputa pela sucessão do trono francês após a morte de Carlos IV em 1328 e o controle da rica região mercantil de Flandres.',
-        desenvolvimento: 'Fase de vitórias inglesas impulsionadas pelos arqueiros na Batalha de Crécy (1346) e Azincourt (1415). Fase de virada francesa (1429): Liderança mística e militar de Joana D\'Arc rompendo o Cerco de Orléans e coroando Carlos VII, culminando na vitória francesa final em Castillon (1453).',
-        consequencias: 'Expulsão dos ingleses da França, consolidação do sentimento nacionalista e centralização das monarquias absolutas na França e Inglaterra.'
-      },
-      interpretation: {
-        title: 'O Nascimento da Identidade Nacional Moderna',
-        description: 'Historiadores franceses e britânicos analisam o conflito como o catalisador que separou a identidade cultural de ambos os reinos, extinguindo o mundo feudal fragmentado.'
-      },
-      hypothesis: {
-        title: 'O Papel da Artilharia de Pólvora na Vitória Francesa',
-        description: 'Pesquisadores militares demonstram que foram os canhões franceses desenvolvidos pelos irmãos Bureau, e não apenas o fervor de Joana D\'Arc, que decidiram as batalhas finais de Castillon.'
-      },
-      timeline: [
-        { year: '1337', event: 'Eduardo III da Inglaterra declara guerra à França.' },
-        { year: '1346', event: 'Batalha de Crécy; demonstração do poder destruidor do arco longo inglês.' },
-        { year: '1415', event: 'Batalha de Azincourt; vitória esmagadora de Henrique V da Inglaterra.' },
-        { year: '1429', event: 'Joana D\'Arc liberta a cidade de Orléans e transforma o rumo da guerra.' },
-        { year: '1453', event: 'Batalha de Castillon; vitória francesa decisiva e fim do conflito.' }
-      ],
-      characters: [
-        { name: 'Joana D\'Arc', role: 'Heroína e Padroeira da França', bio: 'Jovem camponesa cujas visões e coragem lideraram a reconquista do território francês.' },
-        { name: 'Henrique V', role: 'Rei da Inglaterra', bio: 'Monarca guerreiro responsável pela vitória memorável na Batalha de Azincourt.' },
-        { name: 'Carlos VII', role: 'Rei da França', bio: 'Monarca coroado em Reims graças ao apoio de Joana D\'Arc que unificou a França.' }
-      ],
-      sources: [
-        { id: 'src-100-1', title: 'Chroniques de Froissart', author: 'Jean Froissart', year: 1400, type: 'document', details: 'Manuscrito iluminado' },
-        { id: 'src-100-2', title: 'The Hundred Years War', author: 'Robin Neillands', year: 1990, type: 'book', details: 'Routledge' }
-      ]
-    },
-    {
       id: 'guerras-napoleonicas',
       category: 'História',
       period: 'Idade Moderna',
@@ -4056,16 +4016,53 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                         className="p-4 bg-white rounded-xl border border-slate-200 hover:border-amber-500 hover:shadow-xs transition-all cursor-pointer flex justify-between items-start"
                       >
                         <div>
-                          <div className="flex gap-1.5 items-center">
+                          <div className="flex gap-1.5 items-center flex-wrap">
                             <span className="text-[8px] uppercase font-mono tracking-widest bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">
                               {card.period}
                             </span>
                             <span className="text-[8px] uppercase font-mono tracking-widest bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-100">
                               {card.evidenceLevel.toUpperCase()}
                             </span>
+                            {card.modo_aprofundado && (
+                              <span className="text-[8px] uppercase font-mono tracking-widest bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200 flex items-center gap-0.5">
+                                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                Aprofundado
+                              </span>
+                            )}
                           </div>
                           <h4 className="font-serif font-bold text-slate-900 mt-2 text-sm leading-snug">{card.title}</h4>
                           <p className="text-slate-500 text-xs font-serif mt-1 line-clamp-2">{card.summary}</p>
+                          {card.modo_aprofundado && (
+                            <div className="mt-2 pt-2 border-t border-slate-100 space-y-1">
+                              <p className="text-[9px] font-mono font-bold text-emerald-600 uppercase tracking-wider">Conteúdo Aprofundado:</p>
+                              <div className="flex flex-wrap gap-1">
+                                {card.metricas_rapidas && (
+                                  <span className="text-[8px] font-mono bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">Métricas</span>
+                                )}
+                                {card.relevancia_atual && (
+                                  <span className="text-[8px] font-mono bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">Relevância Atual</span>
+                                )}
+                                {card.fact?.pilares_fatos?.length ? (
+                                  <span className="text-[8px] font-mono bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">Pilares de Fatos</span>
+                                ) : null}
+                                {card.interpretation?.debates_historiograficos?.length ? (
+                                  <span className="text-[8px] font-mono bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">Debates Historiográficos</span>
+                                ) : null}
+                                {card.interpretation?.mitos_vs_fatos?.length ? (
+                                  <span className="text-[8px] font-mono bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">Mitos vs Fatos</span>
+                                ) : null}
+                                {card.characters?.some(c => c.citacao_historica) && (
+                                  <span className="text-[8px] font-mono bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">Citações Históricas</span>
+                                )}
+                                {card.sources?.some(s => s.trecho_fonte_primaria) && (
+                                  <span className="text-[8px] font-mono bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">Fontes Primárias</span>
+                                )}
+                                {card.timeline?.some(t => t.detalhe_tatico) && (
+                                  <span className="text-[8px] font-mono bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">Detalhes Táticos</span>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <ChevronRight className="w-5 h-5 text-slate-300 shrink-0 self-center" />
                       </div>
