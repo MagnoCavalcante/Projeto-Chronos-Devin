@@ -1008,6 +1008,11 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
     const updatedCards = customCards.filter(c => c.id !== cardId);
     setCustomCards(updatedCards);
     localStorage.setItem('chronos_custom_cards', JSON.stringify(updatedCards));
+
+    // Also remove corresponding timeline step
+    const updatedSteps = customTimelineSteps.filter(s => s.id !== cardId);
+    setCustomTimelineSteps(updatedSteps);
+    localStorage.setItem('chronos_custom_timeline', JSON.stringify(updatedSteps));
   };
 
   const [currentTimelineIndex, setCurrentTimelineIndex] = useState<number>(() => {

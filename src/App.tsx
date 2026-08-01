@@ -49,6 +49,16 @@ export default function App() {
     const updated = customCards.filter(c => c.id !== cardId);
     setCustomCards(updated);
     localStorage.setItem('chronos_custom_cards', JSON.stringify(updated));
+
+    // Also remove corresponding timeline step
+    const savedTimeline = localStorage.getItem('chronos_custom_timeline');
+    if (savedTimeline) {
+      try {
+        const timelineSteps = JSON.parse(savedTimeline);
+        const updatedSteps = timelineSteps.filter((s: any) => s.id !== cardId);
+        localStorage.setItem('chronos_custom_timeline', JSON.stringify(updatedSteps));
+      } catch {}
+    }
   };
 
   const handleLogout = () => {
