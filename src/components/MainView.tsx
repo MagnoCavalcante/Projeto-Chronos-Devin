@@ -511,9 +511,13 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
       try {
         const parsed: HistoryCard[] = JSON.parse(saved);
         // Filter out old fallback cards that contain prompt text instead of real content
+        // Also remove duplicates of mockCards by title
+        const mockTitles = new Set(mockCards.map(c => c.title.toLowerCase().trim()));
         const cleaned = parsed.filter((c: any) => {
           const text = (c.summary || '') + (c.title || '') + (c.fact?.description || '');
-          return !text.includes('Atue como') && !text.includes('especialista em Historiografia');
+          const isPromptJunk = text.includes('Atue como') || text.includes('especialista em Historiografia');
+          const isDuplicateOfMock = mockTitles.has((c.title || '').toLowerCase().trim());
+          return !isPromptJunk && !isDuplicateOfMock;
         });
         if (cleaned.length !== parsed.length) {
           localStorage.setItem('chronos_custom_cards', JSON.stringify(cleaned));
@@ -747,7 +751,9 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
   const allCards = useMemo(() => {
     const customIds = new Set(customCards.map(c => c.id));
     const mockCardsFiltered = mockCards.filter(c => !customIds.has(c.id));
-    return [...mockCardsFiltered, ...customCards];
+    const mockTitles = new Set(mockCards.map(c => c.title.toLowerCase().trim()));
+    const customCardsFiltered = customCards.filter(c => !mockTitles.has(c.title.toLowerCase().trim()));
+    return [...mockCardsFiltered, ...customCardsFiltered];
   }, [customCards]);
 
   const filteredCards = allCards.filter((card) => {
