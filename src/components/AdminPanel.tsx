@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { User, HistoryCard, Source, DossierRequest } from '../types';
 import { generateContentWithGemini } from '../lib/geminiClient';
+import { saveApiKeyToSupabase, loadApiKeyFromSupabase, deleteApiKeyFromSupabase } from '../lib/supabaseSync';
 
 interface AdminPanelProps {
   currentUser: User;
@@ -164,10 +165,25 @@ export default function AdminPanel({
     localStorage.setItem('chronos_admin_users', JSON.stringify(users));
   }, [users]);
 
+  // Load API key from Supabase if not in localStorage
+  useEffect(() => {
+    (async () => {
+      if (!geminiApiKey) {
+        const remoteKey = await loadApiKeyFromSupabase();
+        if (remoteKey) {
+          localStorage.setItem('chronos_gemini_api_key', remoteKey);
+          setGeminiApiKey(remoteKey);
+        }
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSaveApiKey = () => {
     if (apiKeyInput.trim()) {
       localStorage.setItem('chronos_gemini_api_key', apiKeyInput.trim());
       setGeminiApiKey(apiKeyInput.trim());
+      saveApiKeyToSupabase(apiKeyInput.trim());
       setApiKeyInput('');
       setShowApiKeyInput(false);
     }
@@ -177,6 +193,7 @@ export default function AdminPanel({
     localStorage.removeItem('chronos_gemini_api_key');
     setGeminiApiKey('');
     setShowApiKeyInput(false);
+    deleteApiKeyFromSupabase();
   };
 
   // Handle "Aprofundar" — enrich an existing module with deep-dive content via AI

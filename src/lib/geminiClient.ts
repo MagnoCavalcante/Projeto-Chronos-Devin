@@ -1,4 +1,17 @@
 import { GoogleGenAI, Type } from '@google/genai';
+import { loadApiKeyFromSupabase } from './supabaseSync';
+
+async function resolveApiKey(): Promise<string> {
+  const localKey = localStorage.getItem('chronos_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+  if (localKey) return localKey;
+  // Fallback: try Supabase
+  const remoteKey = await loadApiKeyFromSupabase();
+  if (remoteKey) {
+    localStorage.setItem('chronos_gemini_api_key', remoteKey);
+    return remoteKey;
+  }
+  return '';
+}
 
 const responseSchema = {
   type: Type.OBJECT,
@@ -198,7 +211,7 @@ export async function generateContentWithGemini(
   prompt: string,
   existingCards: { id: string; title: string; period: string; era: string; summary: string }[]
 ): Promise<any> {
-  const apiKey = localStorage.getItem('chronos_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+  const apiKey = await resolveApiKey();
   console.log('[Gemini Client] API Key:', apiKey ? `Found (${apiKey.substring(0, 10)}...)` : 'NOT FOUND');
 
   if (!apiKey) {
@@ -309,7 +322,7 @@ export async function generateCharacterBio(
   contextTitle: string,
   contextEra: string
 ): Promise<any> {
-  const apiKey = localStorage.getItem('chronos_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+  const apiKey = await resolveApiKey();
 
   if (!apiKey) {
     throw new Error('API_KEY_NOT_CONFIGURED');
@@ -324,7 +337,7 @@ export async function generateCharacterBio(
     },
   });
 
-  const prompt = `Você é um historiador acadêmico sênior. Gere uma biografia detalhada e enriquecida sobre o personagem histórico "${characterName}", que exerceu o papel de "${characterRole}" no contexto do tema "${contextTitle}" (${contextEra}).
+  const existingCardsList = `Você é um historiador acadêmico sênior. Gere uma biografia detalhada e enriquecida sobre o personagem histórico "${characterName}", que exerceu o papel de "${characterRole}" no contexto do tema "${contextTitle}" (${contextEra}).
 
 Forneça uma biografia rica, acadêmica e precisa em PORTUGUÊS DO BRASIL, incluindo datas de nascimento e morte, contexto histórico, principais feitos, legado, curiosidades e uma citação famosa se houver registro.`;
 
@@ -336,7 +349,7 @@ Forneça uma biografia rica, acadêmica e precisa em PORTUGUÊS DO BRASIL, inclu
       try {
         const response = await ai.models.generateContent({
           model: modelName,
-          contents: prompt,
+          contents: existingCardsList,
           config: {
             responseMimeType: 'application/json',
             responseSchema: characterBioSchema as any,

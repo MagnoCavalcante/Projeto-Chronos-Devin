@@ -178,6 +178,58 @@ export async function loadCharacterBioFromSupabase(
 }
 
 // ========================
+// GEMINI API KEY
+// ========================
+
+export async function saveApiKeyToSupabase(key: string): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('app_settings')
+      .upsert({
+        key_name: 'gemini_api_key',
+        key_value: key,
+        updated_at: new Date().toISOString(),
+      });
+    if (error) console.error('[Supabase] Erro ao salvar API key:', error.message);
+  } catch (err) {
+    console.error('[Supabase] Falha ao salvar API key:', err);
+  }
+}
+
+export async function loadApiKeyFromSupabase(): Promise<string | null> {
+  try {
+    const { data, error } = await supabase
+      .from('app_settings')
+      .select('key_value')
+      .eq('key_name', 'gemini_api_key')
+      .maybeSingle();
+
+    if (error) {
+      console.error('[Supabase] Erro ao carregar API key:', error.message);
+      return null;
+    }
+
+    if (!data) return null;
+    return data.key_value as string;
+  } catch (err) {
+    console.error('[Supabase] Falha ao carregar API key:', err);
+    return null;
+  }
+}
+
+export async function deleteApiKeyFromSupabase(): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('app_settings')
+      .delete()
+      .eq('key_name', 'gemini_api_key');
+    if (error) console.error('[Supabase] Erro ao deletar API key:', error.message);
+  } catch (err) {
+    console.error('[Supabase] Falha ao deletar API key:', err);
+  }
+}
+
+// ========================
 // MOCK CARDS (Dados embutidos no app)
 // ========================
 
