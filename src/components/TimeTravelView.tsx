@@ -255,13 +255,42 @@ export default function TimeTravelView({ onComplete, targetYear = -10000 }: Time
   }, [isLanding]);
 
   useEffect(() => {
-    // Uma curiosidade por login: sorteia um fato aleatório que fica durante toda a animação
+    // Non-repeating random fact queue: shows all facts in random order before repeating any
     const allFacts = Object.values(eraFacts).flat();
     if (allFacts.length > 0) {
-      const randomIdx = Math.floor(Math.random() * allFacts.length);
-      factIndexRef.current = randomIdx;
-      setFactIndex(randomIdx);
-      setCurrentFact(allFacts[randomIdx]);
+      const STORAGE_KEY = 'chronos_fact_queue';
+      let queue: number[] = [];
+
+      try {
+        const saved = sessionStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          queue = JSON.parse(saved);
+          if (!Array.isArray(queue) || queue.length === 0) queue = [];
+        }
+      } catch {
+        queue = [];
+      }
+
+      // If queue is empty, build a new shuffled queue of all indices
+      if (queue.length === 0) {
+        queue = Array.from({ length: allFacts.length }, (_, i) => i);
+        // Fisher-Yates shuffle
+        for (let i = queue.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [queue[i], queue[j]] = [queue[j], queue[i]];
+        }
+      }
+
+      // Take the next fact from the front of the queue
+      const nextIdx = queue.shift()!;
+      factIndexRef.current = nextIdx;
+      setFactIndex(nextIdx);
+      setCurrentFact(allFacts[nextIdx]);
+
+      // Persist the remaining queue
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+      } catch {}
     }
   }, []);
 
