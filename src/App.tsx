@@ -6,7 +6,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Screen, User, HistoryCard } from './types';
 import { mockCards, TIMELINE_STEPS } from './data/mockData';
-import { saveCardToSupabase, deleteCardFromSupabase, loadCardsFromSupabase, migrateLocalStorageToSupabase } from './lib/supabaseSync';
+import { saveCardToSupabase, deleteCardFromSupabase, loadCardsFromSupabase, migrateLocalStorageToSupabase, migrateMockDataToSupabase } from './lib/supabaseSync';
 import SplashView from './components/SplashView';
 import WelcomeView from './components/WelcomeView';
 import LoginView from './components/LoginView';
@@ -46,9 +46,10 @@ export default function App() {
     return [];
   });
 
-  // Sync with Supabase on mount: migrate localStorage first, then merge remote cards
+  // Sync with Supabase on mount: migrate mock + localStorage first, then merge remote cards
   useEffect(() => {
     (async () => {
+      await migrateMockDataToSupabase(mockCards, TIMELINE_STEPS);
       await migrateLocalStorageToSupabase();
       const remoteCards = await loadCardsFromSupabase();
       if (remoteCards.length > 0) {

@@ -176,3 +176,120 @@ export async function loadCharacterBioFromSupabase(
     return null;
   }
 }
+
+// ========================
+// MOCK CARDS (Dados embutidos no app)
+// ========================
+
+export async function saveMockCardToSupabase(card: HistoryCard): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('mock_cards')
+      .upsert({
+        id: card.id,
+        card_data: card,
+        title: card.title,
+        period: card.period,
+        era: card.era,
+        modo_aprofundado: card.modo_aprofundado || false,
+        updated_at: new Date().toISOString(),
+      });
+    if (error) console.error('[Supabase] Erro ao salvar mock card:', error.message);
+  } catch (err) {
+    console.error('[Supabase] Falha ao salvar mock card:', err);
+  }
+}
+
+export async function loadMockCardsFromSupabase(): Promise<HistoryCard[]> {
+  try {
+    const { data, error } = await supabase
+      .from('mock_cards')
+      .select('card_data')
+      .order('title', { ascending: true });
+
+    if (error) {
+      console.error('[Supabase] Erro ao carregar mock cards:', error.message);
+      return [];
+    }
+
+    if (!data || data.length === 0) return [];
+    return data.map((row: any) => row.card_data as HistoryCard);
+  } catch (err) {
+    console.error('[Supabase] Falha ao carregar mock cards:', err);
+    return [];
+  }
+}
+
+// ========================
+// TIMELINE STEPS (Dados embutidos no app)
+// ========================
+
+export async function saveTimelineStepToSupabase(step: any): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('timeline_steps')
+      .upsert({
+        id: step.id,
+        step_data: step,
+        title: step.title,
+        year: step.year,
+        era: step.era,
+        updated_at: new Date().toISOString(),
+      });
+    if (error) console.error('[Supabase] Erro ao salvar timeline step:', error.message);
+  } catch (err) {
+    console.error('[Supabase] Falha ao salvar timeline step:', err);
+  }
+}
+
+export async function loadTimelineStepsFromSupabase(): Promise<any[]> {
+  try {
+    const { data, error } = await supabase
+      .from('timeline_steps')
+      .select('step_data')
+      .order('year', { ascending: true });
+
+    if (error) {
+      console.error('[Supabase] Erro ao carregar timeline steps:', error.message);
+      return [];
+    }
+
+    if (!data || data.length === 0) return [];
+    return data.map((row: any) => row.step_data);
+  } catch (err) {
+    console.error('[Supabase] Falha ao carregar timeline steps:', err);
+    return [];
+  }
+}
+
+// ========================
+// ONE-TIME MIGRATION: Mock Data → Supabase
+// ========================
+
+export async function migrateMockDataToSupabase(
+  mockCards: HistoryCard[],
+  timelineSteps: any[]
+): Promise<void> {
+  const MIGRATION_FLAG = 'chronos_mock_data_migrated';
+
+  if (localStorage.getItem(MIGRATION_FLAG)) return;
+
+  let migratedCards = 0;
+  let migratedSteps = 0;
+
+  // 1. Migrate mock cards
+  for (const card of mockCards) {
+    await saveMockCardToSupabase(card);
+    migratedCards++;
+  }
+
+  // 2. Migrate timeline steps
+  for (const step of timelineSteps) {
+    await saveTimelineStepToSupabase(step);
+    migratedSteps++;
+  }
+
+  console.log(`[Supabase Mock Migration] Concluído: ${migratedCards} mock cards e ${migratedSteps} timeline steps migrados.`);
+
+  localStorage.setItem(MIGRATION_FLAG, new Date().toISOString());
+}
