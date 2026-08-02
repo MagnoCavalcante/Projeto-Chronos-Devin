@@ -146,6 +146,20 @@ export interface Personagem {
   citacao_historica?: string;
 }
 
+export interface CharacterBio {
+  nome: string;
+  titulo_completo: string;
+  nascimento: string;
+  morte: string;
+  biografia_detalhada: string;
+  principais_feitos: string[];
+  contexto_historico: string;
+  legado: string;
+  curiosidades: string[];
+  citacao_famosa: string;
+  fontes_sugeridas: string[];
+}
+
 export interface MitoVsFato {
   mito: string;
   fato: string;

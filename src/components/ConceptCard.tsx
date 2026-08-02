@@ -27,11 +27,14 @@ import {
   ChevronUp,
   BarChart3,
   Swords,
-  Scale
+  Scale,
+  Loader2,
+  UserCircle
 } from 'lucide-react';
-import { HistoryCard, EvidenceLevel } from '../types';
+import { HistoryCard, EvidenceLevel, CharacterBio } from '../types';
 import GeographicMapView from './GeographicMapView';
 import { getGeoMapDataForTopic } from '../data/geographicCoordinates';
+import { generateCharacterBio } from '../lib/geminiClient';
 
 interface ConceptCardProps {
   card: HistoryCard;
@@ -49,6 +52,34 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
   const [showLegendModal, setShowLegendModal] = useState(false);
   const [depthMode, setDepthMode] = useState<'resumido' | 'aprofundado'>('resumido');
   const [expandedEvents, setExpandedEvents] = useState<Set<number>>(new Set());
+
+  // Character bio modal state
+  const [showCharacterModal, setShowCharacterModal] = useState(false);
+  const [characterBio, setCharacterBio] = useState<CharacterBio | null>(null);
+  const [loadingCharacter, setLoadingCharacter] = useState(false);
+  const [characterError, setCharacterError] = useState('');
+  const [currentCharacterName, setCurrentCharacterName] = useState('');
+
+  const handleSaibaMais = async (charName: string, charRole: string) => {
+    setShowCharacterModal(true);
+    setLoadingCharacter(true);
+    setCharacterError('');
+    setCharacterBio(null);
+    setCurrentCharacterName(charName);
+    try {
+      const bio = await generateCharacterBio(charName, charRole, card.title, card.era);
+      setCharacterBio(bio);
+    } catch (err: any) {
+      const msg = err?.message || '';
+      if (msg.includes('API_KEY_NOT_CONFIGURED')) {
+        setCharacterError('Chave de API não configurada. Defina a chave do Gemini nas configurações.');
+      } else {
+        setCharacterError('Não foi possível gerar a biografia. Tente novamente.');
+      }
+    } finally {
+      setLoadingCharacter(false);
+    }
+  };
 
   const hasEnrichment = !!(card.modo_aprofundado || card.metricas_rapidas || card.relevancia_atual || card.fact.pilares_fatos?.length || card.interpretation.debates_historiograficos?.length || card.interpretation.mitos_vs_fatos?.length || card.characters.some(c => c.citacao_historica) || card.sources.some(s => s.trecho_fonte_primaria));
 
@@ -527,8 +558,25 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
                   {card.characters && card.characters.length > 0 ? (
                     card.characters.map((char, idx) => (
                       <div key={idx} className="p-3 bg-slate-50 border border-slate-100 rounded-xl">
-                        <span className="font-serif font-bold text-slate-900 text-xs block">{char.name}</span>
-                        <span className="font-mono text-[9px] uppercase text-slate-400 font-semibold tracking-wide">{char.role}</span>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <span className="font-serif font-bold text-slate-900 text-xs block">{char.name}</span>
+                            <span className="font-mono text-[9px] uppercase text-slate-400 font-semibold tracking-wide">{char.role}</span>
+                          </div>
+                          <button
+                            onClick={() => handleSaibaMais(char.name, char.role)}
+                            disabled={loadingCharacter && currentCharacterName === char.name}
+                            className="flex items-center gap-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 border border-amber-500/30 px-2 py-1 rounded-lg text-[9px] font-mono font-bold cursor-pointer transition-colors disabled:opacity-50 shrink-0"
+                            title="Saiba mais sobre este personagem via IA"
+                          >
+                            {loadingCharacter && currentCharacterName === char.name ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <UserCircle className="w-3 h-3" />
+                            )}
+                            Saiba Mais
+                          </button>
+                        </div>
                         <p className="font-serif text-xs text-slate-600 mt-1 leading-normal">{char.bio}</p>
                         {depthMode === 'aprofundado' && char.citacao_historica && (
                           <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-start gap-1.5">
@@ -843,6 +891,159 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
                   className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs py-2 px-5 rounded-xl transition-all cursor-pointer"
                 >
                   Entendi
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Character Bio Modal (Saiba Mais) */}
+      <AnimatePresence>
+        {showCharacterModal && (
+          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.18 }}
+              className="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[85vh]"
+            >
+              {/* Modal Header */}
+              <div className="p-5 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-amber-500 text-white rounded-lg">
+                    <UserCircle className="w-5 h-5 stroke-[1.5]" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif font-bold text-slate-900 text-lg leading-tight">
+                      {currentCharacterName}
+                    </h4>
+                    <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mt-0.5">
+                      Biografia Gerada via IA
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowCharacterModal(false)}
+                  className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 overflow-y-auto space-y-4">
+                {loadingCharacter && (
+                  <div className="flex flex-col items-center justify-center py-12 gap-3">
+                    <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+                    <p className="text-xs font-mono text-slate-400">Sintetizando biografia historiográfica...</p>
+                  </div>
+                )}
+
+                {characterError && !loadingCharacter && (
+                  <div className="flex flex-col items-center justify-center py-12 gap-3">
+                    <p className="text-xs font-mono text-rose-500 text-center">{characterError}</p>
+                    <button
+                      onClick={() => setShowCharacterModal(false)}
+                      className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs py-2 px-5 rounded-xl transition-all cursor-pointer"
+                    >
+                      Fechar
+                    </button>
+                  </div>
+                )}
+
+                {characterBio && !loadingCharacter && (
+                  <>
+                    {/* Title and dates */}
+                    <div className="space-y-1">
+                      <h3 className="font-serif font-bold text-slate-900 text-base">{characterBio.titulo_completo}</h3>
+                      <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500">
+                        <Calendar className="w-3 h-3" />
+                        <span>{characterBio.nascimento} — {characterBio.morte}</span>
+                      </div>
+                    </div>
+
+                    {/* Detailed biography */}
+                    <div className="space-y-2">
+                      <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Biografia Detalhada</h4>
+                      <p className="font-serif text-xs text-slate-700 leading-relaxed">{characterBio.biografia_detalhada}</p>
+                    </div>
+
+                    {/* Context */}
+                    <div className="space-y-2">
+                      <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Contexto Histórico</h4>
+                      <p className="font-serif text-xs text-slate-700 leading-relaxed">{characterBio.contexto_historico}</p>
+                    </div>
+
+                    {/* Main achievements */}
+                    {characterBio.principais_feitos && characterBio.principais_feitos.length > 0 && (
+                      <div className="space-y-2">
+                        <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Principais Feitos</h4>
+                        <ul className="space-y-1.5">
+                          {characterBio.principais_feitos.map((feito, i) => (
+                            <li key={i} className="flex items-start gap-2 text-xs font-serif text-slate-700 leading-relaxed">
+                              <Check className="w-3 h-3 text-emerald-500 shrink-0 mt-0.5" />
+                              <span>{feito}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Legacy */}
+                    <div className="space-y-2">
+                      <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Legado</h4>
+                      <p className="font-serif text-xs text-slate-700 leading-relaxed">{characterBio.legado}</p>
+                    </div>
+
+                    {/* Curiosities */}
+                    {characterBio.curiosidades && characterBio.curiosidades.length > 0 && (
+                      <div className="space-y-2">
+                        <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Curiosidades</h4>
+                        <div className="space-y-1.5">
+                          {characterBio.curiosidades.map((cur, i) => (
+                            <div key={i} className="p-2.5 bg-amber-50/60 border border-amber-100 rounded-lg">
+                              <p className="font-serif text-[11px] text-amber-900 italic leading-relaxed">{cur}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Famous quote */}
+                    {characterBio.citacao_famosa && !characterBio.citacao_famosa.includes('Não há') && (
+                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-2">
+                        <Quote className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                        <p className="font-serif text-xs text-slate-800 italic leading-relaxed">"{characterBio.citacao_famosa}"</p>
+                      </div>
+                    )}
+
+                    {/* Suggested sources */}
+                    {characterBio.fontes_sugeridas && characterBio.fontes_sugeridas.length > 0 && (
+                      <div className="space-y-2">
+                        <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Fontes Sugeridas para Aprofundamento</h4>
+                        <div className="space-y-1">
+                          {characterBio.fontes_sugeridas.map((fonte, i) => (
+                            <div key={i} className="flex items-start gap-1.5 text-[11px] font-serif text-slate-600">
+                              <BookOpen className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
+                              <span>{fonte}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button
+                  onClick={() => setShowCharacterModal(false)}
+                  className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs py-2 px-5 rounded-xl transition-all cursor-pointer"
+                >
+                  Fechar
                 </button>
               </div>
             </motion.div>

@@ -272,3 +272,98 @@ INSTRUÇÕES CRÍTICAS DE VERIFICAÇÃO E CONEXÃO DE CONTEÚDO:
 
   throw lastError || new Error('Falha ao gerar conteúdo com a IA.');
 }
+
+const characterBioSchema = {
+  type: Type.OBJECT,
+  properties: {
+    nome: { type: Type.STRING, description: 'Nome completo do personagem histórico' },
+    titulo_completo: { type: Type.STRING, description: 'Título ou cargo completo, ex: "Rei de Inglaterra (r. 1327–1377)"' },
+    nascimento: { type: Type.STRING, description: 'Data ou ano de nascimento com local, ex: "1312, Windsor, Inglaterra"' },
+    morte: { type: Type.STRING, description: 'Data ou ano de morte com local' },
+    biografia_detalhada: { type: Type.STRING, description: 'Biografia detalhada em 3-5 parágrafos em português do Brasil' },
+    principais_feitos: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
+      description: 'Lista de 4-6 principais feitos ou marcos históricos'
+    },
+    contexto_historico: { type: Type.STRING, description: 'Contexto histórico em que viveu, em português do Brasil' },
+    legado: { type: Type.STRING, description: 'Legado histórico e impacto duradouro' },
+    curiosidades: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
+      description: '3-4 curiosidades ou fatos interessantes'
+    },
+    citacao_famosa: { type: Type.STRING, description: 'Citação famosa atribuída ao personagem, ou "Não há registros de citações diretas."' },
+    fontes_sugeridas: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
+      description: '3-4 sugestões de livros ou fontes para aprofundamento'
+    }
+  },
+  required: ['nome', 'titulo_completo', 'nascimento', 'morte', 'biografia_detalhada', 'principais_feitos', 'contexto_historico', 'legado', 'curiosidades', 'citacao_famosa', 'fontes_sugeridas']
+};
+
+export async function generateCharacterBio(
+  characterName: string,
+  characterRole: string,
+  contextTitle: string,
+  contextEra: string
+): Promise<any> {
+  const apiKey = localStorage.getItem('chronos_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+
+  if (!apiKey) {
+    throw new Error('API_KEY_NOT_CONFIGURED');
+  }
+
+  const ai = new GoogleGenAI({
+    apiKey: apiKey,
+    httpOptions: {
+      headers: {
+        'User-Agent': 'chronos-app',
+      },
+    },
+  });
+
+  const prompt = `Você é um historiador acadêmico sênior. Gere uma biografia detalhada e enriquecida sobre o personagem histórico "${characterName}", que exerceu o papel de "${characterRole}" no contexto do tema "${contextTitle}" (${contextEra}).
+
+Forneça uma biografia rica, acadêmica e precisa em PORTUGUÊS DO BRASIL, incluindo datas de nascimento e morte, contexto histórico, principais feitos, legado, curiosidades e uma citação famosa se houver registro.`;
+
+  const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest'];
+  let lastError: any = null;
+
+  for (const modelName of modelsToTry) {
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const response = await ai.models.generateContent({
+          model: modelName,
+          contents: prompt,
+          config: {
+            responseMimeType: 'application/json',
+            responseSchema: characterBioSchema as any,
+          }
+        });
+
+        if (response && response.text) {
+          return JSON.parse(response.text);
+        }
+      } catch (err: any) {
+        lastError = err;
+        const errMsg = err?.message || JSON.stringify(err);
+        const isTransientError =
+          errMsg.includes('503') ||
+          errMsg.includes('UNAVAILABLE') ||
+          errMsg.includes('high demand') ||
+          errMsg.includes('429') ||
+          errMsg.includes('RESOURCE_EXHAUSTED');
+
+        if (isTransientError && attempt < 3) {
+          await new Promise(resolve => setTimeout(resolve, attempt * 2000));
+        } else if (!isTransientError) {
+          break;
+        }
+      }
+    }
+  }
+
+  throw lastError || new Error('Falha ao gerar biografia do personagem.');
+}
