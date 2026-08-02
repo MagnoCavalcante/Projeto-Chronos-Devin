@@ -35,6 +35,7 @@ import { HistoryCard, EvidenceLevel, CharacterBio } from '../types';
 import GeographicMapView from './GeographicMapView';
 import { getGeoMapDataForTopic } from '../data/geographicCoordinates';
 import { generateCharacterBio } from '../lib/geminiClient';
+import { saveCharacterBioToSupabase, loadCharacterBioFromSupabase } from '../lib/supabaseSync';
 
 interface ConceptCardProps {
   card: HistoryCard;
@@ -66,9 +67,42 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
     setCharacterError('');
     setCharacterBio(null);
     setCurrentCharacterName(charName);
+
+    const cacheKey = `chronos_char_bio_${card.id}_${charName.toLowerCase().replace(/\s+/g, '_')}`;
+
+    // 1. Check localStorage cache first (fastest)
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const parsed = JSON.parse(cached) as CharacterBio;
+        setCharacterBio(parsed);
+        setLoadingCharacter(false);
+        return;
+      }
+    } catch {}
+
+    // 2. Check Supabase
+    const supabaseBio = await loadCharacterBioFromSupabase(card.id, charName);
+    if (supabaseBio) {
+      setCharacterBio(supabaseBio);
+      setLoadingCharacter(false);
+      // Also save to localStorage for instant access next time
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(supabaseBio));
+      } catch {}
+      return;
+    }
+
+    // 3. Generate via IA and save to both Supabase and localStorage
     try {
       const bio = await generateCharacterBio(charName, charRole, card.title, card.era);
       setCharacterBio(bio);
+      // Save to localStorage cache
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(bio));
+      } catch {}
+      // Save to Supabase
+      saveCharacterBioToSupabase(card.id, charName, bio);
     } catch (err: any) {
       const msg = err?.message || '';
       if (msg.includes('API_KEY_NOT_CONFIGURED')) {

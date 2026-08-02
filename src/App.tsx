@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Screen, User, HistoryCard } from './types';
 import { mockCards, TIMELINE_STEPS } from './data/mockData';
+import { saveCardToSupabase, deleteCardFromSupabase, loadCardsFromSupabase } from './lib/supabaseSync';
 import SplashView from './components/SplashView';
 import WelcomeView from './components/WelcomeView';
 import LoginView from './components/LoginView';
@@ -45,10 +46,28 @@ export default function App() {
     return [];
   });
 
+  // Sync with Supabase on mount: merge remote cards into local state
+  useEffect(() => {
+    (async () => {
+      const remoteCards = await loadCardsFromSupabase();
+      if (remoteCards.length > 0) {
+        const localIds = new Set(customCards.map(c => c.id));
+        const newFromRemote = remoteCards.filter(c => !localIds.has(c.id));
+        if (newFromRemote.length > 0) {
+          const merged = [...customCards, ...newFromRemote];
+          setCustomCards(merged);
+          localStorage.setItem('chronos_custom_cards', JSON.stringify(merged));
+        }
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleAddCard = (card: HistoryCard, timelineStep?: any, kgNodes?: any[]) => {
     const updated = [card, ...customCards];
     setCustomCards(updated);
     localStorage.setItem('chronos_custom_cards', JSON.stringify(updated));
+    saveCardToSupabase(card);
 
     if (timelineStep) {
       const savedTimeline = localStorage.getItem('chronos_custom_timeline');
@@ -69,6 +88,7 @@ export default function App() {
     const updated = customCards.filter(c => c.id !== cardId);
     setCustomCards(updated);
     localStorage.setItem('chronos_custom_cards', JSON.stringify(updated));
+    deleteCardFromSupabase(cardId);
 
     // Also remove corresponding timeline step
     const savedTimeline = localStorage.getItem('chronos_custom_timeline');
@@ -92,6 +112,7 @@ export default function App() {
       setCustomCards(updated);
       localStorage.setItem('chronos_custom_cards', JSON.stringify(updated));
     }
+    saveCardToSupabase(updatedCard);
   };
 
   const allCards = useMemo(() => {

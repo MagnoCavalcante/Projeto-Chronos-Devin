@@ -44,6 +44,7 @@ import { getGeoMapDataForTopic } from '../data/geographicCoordinates';
 import { CHRONOSKnowledgeEngine } from '../lib/knowledgeGraphEngine';
 import { getSpecificMythologySection } from '../data/mythologyData';
 import { TIMELINE_STEPS, mockCards } from '../data/mockData';
+import { saveCardToSupabase, deleteCardFromSupabase, loadCardsFromSupabase } from '../lib/supabaseSync';
 
 // Instantiate the singleton Knowledge Graph engine
 const kgEngine = new CHRONOSKnowledgeEngine();
@@ -531,6 +532,23 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
     return [];
   });
 
+  // Sync with Supabase on mount: merge remote cards into local state
+  useEffect(() => {
+    (async () => {
+      const remoteCards = await loadCardsFromSupabase();
+      if (remoteCards.length > 0) {
+        const localIds = new Set(customCards.map(c => c.id));
+        const newFromRemote = remoteCards.filter(c => !localIds.has(c.id));
+        if (newFromRemote.length > 0) {
+          const merged = [...customCards, ...newFromRemote];
+          setCustomCards(merged);
+          localStorage.setItem('chronos_custom_cards', JSON.stringify(merged));
+        }
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [customTimelineSteps, setCustomTimelineSteps] = useState<any[]>(() => {
     const saved = localStorage.getItem('chronos_custom_timeline');
     if (saved) {
@@ -577,6 +595,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
     const updatedCards = [card, ...customCards];
     setCustomCards(updatedCards);
     localStorage.setItem('chronos_custom_cards', JSON.stringify(updatedCards));
+    saveCardToSupabase(card);
 
     if (timelineStep) {
       const updatedSteps = [...customTimelineSteps, timelineStep];
@@ -595,6 +614,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
     const updatedCards = customCards.filter(c => c.id !== cardId);
     setCustomCards(updatedCards);
     localStorage.setItem('chronos_custom_cards', JSON.stringify(updatedCards));
+    deleteCardFromSupabase(cardId);
 
     // Also remove corresponding timeline step
     const updatedSteps = customTimelineSteps.filter(s => s.id !== cardId);
@@ -615,6 +635,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
       setCustomCards(updatedCards);
       localStorage.setItem('chronos_custom_cards', JSON.stringify(updatedCards));
     }
+    saveCardToSupabase(updatedCard);
   };
 
   const [currentTimelineIndex, setCurrentTimelineIndex] = useState<number>(() => {
