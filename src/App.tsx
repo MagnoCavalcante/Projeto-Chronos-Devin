@@ -6,7 +6,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Screen, User, HistoryCard } from './types';
 import { mockCards, TIMELINE_STEPS } from './data/mockData';
-import { saveCardToSupabase, deleteCardFromSupabase, loadCardsFromSupabase } from './lib/supabaseSync';
+import { saveCardToSupabase, deleteCardFromSupabase, loadCardsFromSupabase, migrateLocalStorageToSupabase } from './lib/supabaseSync';
 import SplashView from './components/SplashView';
 import WelcomeView from './components/WelcomeView';
 import LoginView from './components/LoginView';
@@ -46,9 +46,10 @@ export default function App() {
     return [];
   });
 
-  // Sync with Supabase on mount: merge remote cards into local state
+  // Sync with Supabase on mount: migrate localStorage first, then merge remote cards
   useEffect(() => {
     (async () => {
+      await migrateLocalStorageToSupabase();
       const remoteCards = await loadCardsFromSupabase();
       if (remoteCards.length > 0) {
         const localIds = new Set(customCards.map(c => c.id));

@@ -44,7 +44,7 @@ import { getGeoMapDataForTopic } from '../data/geographicCoordinates';
 import { CHRONOSKnowledgeEngine } from '../lib/knowledgeGraphEngine';
 import { getSpecificMythologySection } from '../data/mythologyData';
 import { TIMELINE_STEPS, mockCards } from '../data/mockData';
-import { saveCardToSupabase, deleteCardFromSupabase, loadCardsFromSupabase } from '../lib/supabaseSync';
+import { saveCardToSupabase, deleteCardFromSupabase, loadCardsFromSupabase, migrateLocalStorageToSupabase } from '../lib/supabaseSync';
 
 // Instantiate the singleton Knowledge Graph engine
 const kgEngine = new CHRONOSKnowledgeEngine();
@@ -532,9 +532,10 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
     return [];
   });
 
-  // Sync with Supabase on mount: merge remote cards into local state
+  // Sync with Supabase on mount: migrate localStorage first, then merge remote cards
   useEffect(() => {
     (async () => {
+      await migrateLocalStorageToSupabase();
       const remoteCards = await loadCardsFromSupabase();
       if (remoteCards.length > 0) {
         const localIds = new Set(customCards.map(c => c.id));
