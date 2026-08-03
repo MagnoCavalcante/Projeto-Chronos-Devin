@@ -78,7 +78,6 @@ export async function migrateLocalStorageToSupabase(): Promise<void> {
     console.error('[Supabase Migration] Erro ao escanear bios:', err);
   }
 
-  console.log(`[Supabase Migration] Concluído: ${migratedCards} cards e ${migratedBios} biografias migradas.`);
 
   // Set flag so migration doesn't run again
   localStorage.setItem(MIGRATION_FLAG, new Date().toISOString());
@@ -200,11 +199,7 @@ export async function saveApiKeyToSupabase(key: string): Promise<void> {
         key_value: key,
         updated_at: new Date().toISOString(),
       });
-    if (error) {
-      console.error('[Supabase] Erro ao salvar API key:', error.message, error.code, error.details);
-    } else {
-      console.log('[Supabase] API key salva com sucesso!');
-    }
+    if (error) console.error('[Supabase] Erro ao salvar API key:', error.message);
   } catch (err) {
     console.error('[Supabase] Falha ao salvar API key:', err);
   }
@@ -219,11 +214,10 @@ export async function loadApiKeyFromSupabase(): Promise<string | null> {
       .maybeSingle();
 
     if (error) {
-      console.error('[Supabase] Erro ao carregar API key:', error.message, error.code, error.details);
+      console.error('[Supabase] Erro ao carregar API key:', error.message);
       return null;
     }
 
-    console.log('[Supabase] loadApiKeyFromSupabase - data:', data ? 'FOUND' : 'NULL');
     if (!data) return null;
     return data.key_value as string;
   } catch (err) {
@@ -356,7 +350,6 @@ export async function migrateMockDataToSupabase(
     migratedSteps++;
   }
 
-  console.log(`[Supabase Mock Migration] Concluído: ${migratedCards} mock cards e ${migratedSteps} timeline steps migrados.`);
 
   localStorage.setItem(MIGRATION_FLAG, new Date().toISOString());
 }

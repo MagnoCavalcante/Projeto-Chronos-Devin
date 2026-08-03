@@ -2,26 +2,15 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { loadApiKeyFromSupabase } from './supabaseSync';
 
 async function resolveApiKey(): Promise<string> {
-  const localKey = localStorage.getItem('chronos_gemini_api_key') || '';
-  const envKey = import.meta.env.VITE_GEMINI_API_KEY || '';
-  console.log('[resolveApiKey] localStorage key:', localKey ? `${localKey.substring(0, 8)}...` : 'EMPTY');
-  console.log('[resolveApiKey] env key:', envKey ? `${envKey.substring(0, 8)}...` : 'EMPTY');
-
+  const localKey = localStorage.getItem('chronos_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
   if (localKey) return localKey;
-  if (envKey) return envKey;
-
-  // Fallback: try Supabase
-  console.log('[resolveApiKey] Trying Supabase...');
   try {
     const remoteKey = await loadApiKeyFromSupabase();
-    console.log('[resolveApiKey] Supabase key:', remoteKey ? `${remoteKey.substring(0, 8)}...` : 'NULL/EMPTY');
     if (remoteKey) {
       localStorage.setItem('chronos_gemini_api_key', remoteKey);
       return remoteKey;
     }
-  } catch (err) {
-    console.error('[resolveApiKey] Supabase error:', err);
-  }
+  } catch {}
   return '';
 }
 
@@ -224,7 +213,6 @@ export async function generateContentWithGemini(
   existingCards: { id: string; title: string; period: string; era: string; summary: string }[]
 ): Promise<any> {
   const apiKey = await resolveApiKey();
-  console.log('[Gemini Client] API Key:', apiKey ? `Found (${apiKey.substring(0, 10)}...)` : 'NOT FOUND');
 
   if (!apiKey) {
     throw new Error('API_KEY_NOT_CONFIGURED');
