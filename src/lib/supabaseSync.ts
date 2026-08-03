@@ -8,7 +8,17 @@ import { HistoryCard, CharacterBio } from '../types';
 export async function migrateLocalStorageToSupabase(): Promise<void> {
   const MIGRATION_FLAG = 'chronos_supabase_migrated';
 
-  // Check if migration already done
+  // 0. Always try to migrate Gemini API key (in case it was saved before Supabase sync was added)
+  try {
+    const localKey = localStorage.getItem('chronos_gemini_api_key');
+    if (localKey) {
+      await saveApiKeyToSupabase(localKey);
+    }
+  } catch (err) {
+    console.error('[Supabase Migration] Erro ao migrar API key:', err);
+  }
+
+  // Check if rest of migration already done
   if (localStorage.getItem(MIGRATION_FLAG)) return;
 
   let migratedCards = 0;
