@@ -200,7 +200,11 @@ export async function saveApiKeyToSupabase(key: string): Promise<void> {
         key_value: key,
         updated_at: new Date().toISOString(),
       });
-    if (error) console.error('[Supabase] Erro ao salvar API key:', error.message);
+    if (error) {
+      console.error('[Supabase] Erro ao salvar API key:', error.message, error.code, error.details);
+    } else {
+      console.log('[Supabase] API key salva com sucesso!');
+    }
   } catch (err) {
     console.error('[Supabase] Falha ao salvar API key:', err);
   }
@@ -215,10 +219,11 @@ export async function loadApiKeyFromSupabase(): Promise<string | null> {
       .maybeSingle();
 
     if (error) {
-      console.error('[Supabase] Erro ao carregar API key:', error.message);
+      console.error('[Supabase] Erro ao carregar API key:', error.message, error.code, error.details);
       return null;
     }
 
+    console.log('[Supabase] loadApiKeyFromSupabase - data:', data ? 'FOUND' : 'NULL');
     if (!data) return null;
     return data.key_value as string;
   } catch (err) {
