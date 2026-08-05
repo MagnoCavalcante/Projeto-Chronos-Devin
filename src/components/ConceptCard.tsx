@@ -194,6 +194,48 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
     );
   };
 
+  function buildCharacterBioNarration(bio: CharacterBio): string {
+    const parts: string[] = [];
+    parts.push(bio.nome);
+    parts.push(bio.titulo_completo);
+    parts.push(`${bio.nascimento} a ${bio.morte}.`);
+    parts.push('Biografia detalhada.');
+    parts.push(bio.biografia_detalhada);
+    parts.push('Contexto histórico.');
+    parts.push(bio.contexto_historico);
+
+    if (bio.principais_feitos?.length) {
+      parts.push('Principais feitos.');
+      bio.principais_feitos.forEach((feito, i) => {
+        parts.push(`${i + 1}. ${feito}`);
+      });
+    }
+
+    parts.push('Legado.');
+    parts.push(bio.legado);
+
+    if (bio.curiosidades?.length) {
+      parts.push('Curiosidades.');
+      bio.curiosidades.forEach((cur, i) => {
+        parts.push(`${i + 1}. ${cur}`);
+      });
+    }
+
+    if (bio.citacao_famosa && !bio.citacao_famosa.toLowerCase().includes('não há')) {
+      parts.push('Citação famosa.');
+      parts.push(`"${bio.citacao_famosa}"`);
+    }
+
+    if (bio.fontes_sugeridas?.length) {
+      parts.push('Fontes sugeridas.');
+      bio.fontes_sugeridas.forEach((fonte, i) => {
+        parts.push(`${i + 1}. ${fonte}`);
+      });
+    }
+
+    return parts.join(' ');
+  }
+
   const handleSaibaMais = async (charName: string, charRole: string) => {
     setShowCharacterModal(true);
     setLoadingCharacter(true);
@@ -1112,12 +1154,27 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setShowCharacterModal(false)}
-                  className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-2">
+                  {characterBio && !loadingCharacter && (
+                    <button
+                      onClick={() => handleNarrate(buildCharacterBioNarration(characterBio))}
+                      className={`p-1.5 rounded-lg border transition-all ${
+                        isSpeakingText
+                          ? 'bg-amber-50 text-amber-600 border-amber-200'
+                          : 'text-slate-400 border-slate-200 hover:text-slate-600 hover:bg-slate-50'
+                      }`}
+                      title="Narrar biografia completa"
+                    >
+                      <Volume2 className={`w-3.5 h-3.5 ${isSpeakingText ? 'fill-current' : ''}`} />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setShowCharacterModal(false)}
+                    className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               {/* Modal Body */}
@@ -1154,20 +1211,51 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
 
                     {/* Detailed biography */}
                     <div className="space-y-2">
-                      <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Biografia Detalhada</h4>
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Biografia Detalhada</h4>
+                        <button
+                          onClick={() => handleNarrate(`Biografia detalhada de ${characterBio.nome}. ${characterBio.biografia_detalhada}`)}
+                          className="text-slate-400 hover:text-amber-600 transition-colors"
+                          title="Narrar biografia detalhada"
+                        >
+                          <Volume2 className="w-3 h-3" />
+                        </button>
+                      </div>
                       <p className="font-serif text-xs text-slate-700 leading-relaxed">{characterBio.biografia_detalhada}</p>
                     </div>
 
                     {/* Context */}
                     <div className="space-y-2">
-                      <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Contexto Histórico</h4>
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Contexto Histórico</h4>
+                        <button
+                          onClick={() => handleNarrate(`Contexto histórico de ${characterBio.nome}. ${characterBio.contexto_historico}`)}
+                          className="text-slate-400 hover:text-amber-600 transition-colors"
+                          title="Narrar contexto histórico"
+                        >
+                          <Volume2 className="w-3 h-3" />
+                        </button>
+                      </div>
                       <p className="font-serif text-xs text-slate-700 leading-relaxed">{characterBio.contexto_historico}</p>
                     </div>
 
                     {/* Main achievements */}
                     {characterBio.principais_feitos && characterBio.principais_feitos.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Principais Feitos</h4>
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Principais Feitos</h4>
+                          <button
+                            onClick={() =>
+                              handleNarrate(
+                                `Principais feitos de ${characterBio.nome}. ${characterBio.principais_feitos?.join('. ') || ''}`
+                              )
+                            }
+                            className="text-slate-400 hover:text-amber-600 transition-colors"
+                            title="Narrar principais feitos"
+                          >
+                            <Volume2 className="w-3 h-3" />
+                          </button>
+                        </div>
                         <ul className="space-y-1.5">
                           {characterBio.principais_feitos.map((feito, i) => (
                             <li key={i} className="flex items-start gap-2 text-xs font-serif text-slate-700 leading-relaxed">
@@ -1181,14 +1269,36 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
 
                     {/* Legacy */}
                     <div className="space-y-2">
-                      <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Legado</h4>
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Legado</h4>
+                        <button
+                          onClick={() => handleNarrate(`Legado de ${characterBio.nome}. ${characterBio.legado}`)}
+                          className="text-slate-400 hover:text-amber-600 transition-colors"
+                          title="Narrar legado"
+                        >
+                          <Volume2 className="w-3 h-3" />
+                        </button>
+                      </div>
                       <p className="font-serif text-xs text-slate-700 leading-relaxed">{characterBio.legado}</p>
                     </div>
 
                     {/* Curiosities */}
                     {characterBio.curiosidades && characterBio.curiosidades.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Curiosidades</h4>
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Curiosidades</h4>
+                          <button
+                            onClick={() =>
+                              handleNarrate(
+                                `Curiosidades sobre ${characterBio.nome}. ${characterBio.curiosidades?.join('. ') || ''}`
+                              )
+                            }
+                            className="text-slate-400 hover:text-amber-600 transition-colors"
+                            title="Narrar curiosidades"
+                          >
+                            <Volume2 className="w-3 h-3" />
+                          </button>
+                        </div>
                         <div className="space-y-1.5">
                           {characterBio.curiosidades.map((cur, i) => (
                             <div key={i} className="p-2.5 bg-amber-50/60 border border-amber-100 rounded-lg">
@@ -1203,14 +1313,34 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
                     {characterBio.citacao_famosa && !characterBio.citacao_famosa.includes('Não há') && (
                       <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-2">
                         <Quote className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                        <p className="font-serif text-xs text-slate-800 italic leading-relaxed">"{characterBio.citacao_famosa}"</p>
+                        <p className="font-serif text-xs text-slate-800 italic leading-relaxed flex-1">"{characterBio.citacao_famosa}"</p>
+                        <button
+                          onClick={() => handleNarrate(`Citação famosa de ${characterBio.nome}. "${characterBio.citacao_famosa}"`)}
+                          className="text-slate-400 hover:text-amber-600 transition-colors"
+                          title="Narrar citação"
+                        >
+                          <Volume2 className="w-3 h-3" />
+                        </button>
                       </div>
                     )}
 
                     {/* Suggested sources */}
                     {characterBio.fontes_sugeridas && characterBio.fontes_sugeridas.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Fontes Sugeridas para Aprofundamento</h4>
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-wider">Fontes Sugeridas para Aprofundamento</h4>
+                          <button
+                            onClick={() =>
+                              handleNarrate(
+                                `Fontes sugeridas sobre ${characterBio.nome}. ${characterBio.fontes_sugeridas?.join('. ') || ''}`
+                              )
+                            }
+                            className="text-slate-400 hover:text-amber-600 transition-colors"
+                            title="Narrar fontes sugeridas"
+                          >
+                            <Volume2 className="w-3 h-3" />
+                          </button>
+                        </div>
                         <div className="space-y-1">
                           {characterBio.fontes_sugeridas.map((fonte, i) => (
                             <div key={i} className="flex items-start gap-1.5 text-[11px] font-serif text-slate-600">
