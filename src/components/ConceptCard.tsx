@@ -29,13 +29,15 @@ import {
   Swords,
   Scale,
   Loader2,
-  UserCircle
+  UserCircle,
+  Volume2
 } from 'lucide-react';
 import { HistoryCard, EvidenceLevel, CharacterBio } from '../types';
 import GeographicMapView from './GeographicMapView';
 import { getGeoMapDataForTopic } from '../data/geographicCoordinates';
 import { generateCharacterBio } from '../lib/geminiClient';
 import { saveCharacterBioToSupabase, loadCharacterBioFromSupabase } from '../lib/supabaseSync';
+import { speak, stopSpeaking, isSpeaking } from '../lib/tts';
 
 interface ConceptCardProps {
   card: HistoryCard;
@@ -60,6 +62,23 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
   const [loadingCharacter, setLoadingCharacter] = useState(false);
   const [characterError, setCharacterError] = useState('');
   const [currentCharacterName, setCurrentCharacterName] = useState('');
+  const [isSpeakingText, setIsSpeakingText] = useState(false);
+
+  const handleNarrate = async (text: string) => {
+    if (isSpeakingText || isSpeaking()) {
+      stopSpeaking();
+      setIsSpeakingText(false);
+      return;
+    }
+    setIsSpeakingText(true);
+    try {
+      await speak(text);
+    } catch (err) {
+      console.error('Erro ao narrar:', err);
+    } finally {
+      setIsSpeakingText(false);
+    }
+  };
 
   const handleSaibaMais = async (charName: string, charRole: string) => {
     setShowCharacterModal(true);
@@ -212,6 +231,18 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
             title={isSaved ? 'Remover dos favoritos' : 'Salvar nas referências de estudo'}
           >
             <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-current' : ''}`} />
+          </button>
+
+          <button
+            onClick={() => handleNarrate(`${card.title}. ${card.summary}`)}
+            className={`p-1.5 rounded-lg border transition-all ${
+              isSpeakingText
+                ? 'bg-amber-50 text-amber-600 border-amber-200'
+                : 'text-slate-400 border-slate-200 hover:text-slate-600 hover:bg-slate-50'
+            }`}
+            title="Narrar resumo"
+          >
+            <Volume2 className={`w-3.5 h-3.5 ${isSpeakingText ? 'fill-current' : ''}`} />
           </button>
         </div>
 
