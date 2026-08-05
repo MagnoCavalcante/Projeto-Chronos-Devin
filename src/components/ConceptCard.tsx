@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   BookOpen,
@@ -30,7 +30,8 @@ import {
   Scale,
   Loader2,
   UserCircle,
-  Volume2
+  Volume2,
+  Settings
 } from 'lucide-react';
 import { HistoryCard, EvidenceLevel, CharacterBio } from '../types';
 import GeographicMapView from './GeographicMapView';
@@ -47,6 +48,25 @@ interface ConceptCardProps {
 }
 
 type CardTab = 'resumo' | 'fatos' | 'interpretacoes' | 'linha' | 'personagens' | 'fontes' | 'mapa';
+
+type NarrationSection =
+  | 'resumo'
+  | 'fatos'
+  | 'interpretacoes'
+  | 'hipoteses'
+  | 'linha'
+  | 'personagens'
+  | 'fontes';
+
+const DEFAULT_NARRATION_SECTIONS: NarrationSection[] = [
+  'resumo',
+  'fatos',
+  'interpretacoes',
+  'hipoteses',
+  'linha',
+  'personagens',
+  'fontes',
+];
 
 export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptCardProps) {
   const [activeTab, setActiveTab] = useState<CardTab>('resumo');
@@ -65,6 +85,8 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
   const [isSpeakingText, setIsSpeakingText] = useState(false);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceName, setSelectedVoiceName] = useState<string | null>(getStoredVoiceName());
+  const [narrationSections, setNarrationSections] = useState<NarrationSection[]>(DEFAULT_NARRATION_SECTIONS);
+  const [showNarrationModal, setShowNarrationModal] = useState(false);
 
   useEffect(() => {
     getAvailableVoices().then((voices) => {
@@ -91,6 +113,85 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
   const handleVoiceChange = (voiceName: string) => {
     setSelectedVoiceName(voiceName || null);
     setStoredVoiceName(voiceName || null);
+  };
+
+  function buildNarrationText(): string {
+    const parts: string[] = [];
+
+    // Título sempre no início e apenas uma vez
+    parts.push(card.title);
+    parts.push(`Era: ${card.era}.`);
+
+    if (narrationSections.includes('resumo')) {
+      parts.push(card.summary);
+    }
+
+    if (narrationSections.includes('fatos') && card.fact) {
+      const f = card.fact;
+      parts.push(`Fatos: ${f.title}. ${f.description}`);
+      if (f.causaImediata) parts.push(`Causa imediata: ${f.causaImediata}`);
+      if (f.desenvolvimento) parts.push(`Desenvolvimento: ${f.desenvolvimento}`);
+      if (f.consequencias) parts.push(`Consequências: ${f.consequencias}`);
+      if (f.pilares_fatos?.length) {
+        parts.push('Pilares dos fatos:');
+        f.pilares_fatos.forEach((p) => {
+          parts.push(`${p.title}. ${p.description}`);
+        });
+      }
+    }
+
+    if (narrationSections.includes('interpretacoes') && card.interpretation) {
+      const i = card.interpretation;
+      parts.push(`Interpretações: ${i.title}. ${i.description}`);
+      if (i.debates_historiograficos?.length) {
+        parts.push('Debates historiográficos:');
+        i.debates_historiograficos.forEach((d) => {
+          parts.push(`${d.corrente}: ${d.argumento}`);
+        });
+      }
+      if (i.mitos_vs_fatos?.length) {
+        parts.push('Mitos versus fatos:');
+        i.mitos_vs_fatos.forEach((m) => {
+          parts.push(`Mito: ${m.mito}. Fato: ${m.fato}`);
+        });
+      }
+    }
+
+    if (narrationSections.includes('hipoteses') && card.hypothesis) {
+      parts.push(`Hipóteses: ${card.hypothesis.title}. ${card.hypothesis.description}`);
+    }
+
+    if (narrationSections.includes('linha') && card.timeline?.length) {
+      parts.push('Linha do tempo:');
+      card.timeline.forEach((t) => {
+        parts.push(`${t.year}: ${t.event}`);
+      });
+    }
+
+    if (narrationSections.includes('personagens') && card.characters?.length) {
+      parts.push('Personagens:');
+      card.characters.forEach((c) => {
+        parts.push(`${c.name}. ${c.role}. ${c.bio || ''}`);
+        if (c.citacao_historica) {
+          parts.push(`Citação: ${c.citacao_historica}`);
+        }
+      });
+    }
+
+    if (narrationSections.includes('fontes') && card.sources?.length) {
+      parts.push('Fontes:');
+      card.sources.forEach((s) => {
+        parts.push(`${s.title}, por ${s.author}, ${s.year}. ${s.details || ''}`);
+      });
+    }
+
+    return parts.join(' ');
+  };
+
+  const toggleNarrationSection = (section: NarrationSection) => {
+    setNarrationSections((prev) =>
+      prev.includes(section) ? prev.filter((s) => s !== section) : [...prev, section]
+    );
   };
 
   const handleSaibaMais = async (charName: string, charRole: string) => {
@@ -246,43 +347,26 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
             <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-current' : ''}`} />
           </button>
 
-          <button
-            onClick={() => handleNarrate(`${card.title}. ${card.summary}`)}
-            className={`p-1.5 rounded-lg border transition-all ${
-              isSpeakingText
-                ? 'bg-amber-50 text-amber-600 border-amber-200'
-                : 'text-slate-400 border-slate-200 hover:text-slate-600 hover:bg-slate-50'
-            }`}
-            title="Narrar resumo"
-          >
-            <Volume2 className={`w-3.5 h-3.5 ${isSpeakingText ? 'fill-current' : ''}`} />
-          </button>
-
-          {availableVoices.length > 0 && (
-            <select
-              value={selectedVoiceName || ''}
-              onChange={(e) => handleVoiceChange(e.target.value)}
-              className="text-[10px] bg-white border border-slate-200 rounded-lg px-1 py-1 text-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-400 max-w-[110px]"
-              title="Escolher voz"
+          <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden">
+            <button
+              onClick={() => handleNarrate(buildNarrationText())}
+              className={`p-1.5 transition-all ${
+                isSpeakingText
+                  ? 'bg-amber-50 text-amber-600'
+                  : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+              }`}
+              title="Narrar seções selecionadas"
             >
-              <option value="">Voz padrão</option>
-              {availableVoices
-                .filter((v) => v.lang.toLowerCase().startsWith('pt') || v.lang.toLowerCase().includes('brazil'))
-                .map((voice) => (
-                  <option key={voice.name} value={voice.name}>
-                    {voice.name.replace('Google ', '').replace('Microsoft ', '').slice(0, 35)}
-                  </option>
-                ))}
-              <option disabled>──────────</option>
-              {availableVoices
-                .filter((v) => !v.lang.toLowerCase().startsWith('pt') && !v.lang.toLowerCase().includes('brazil'))
-                .map((voice) => (
-                  <option key={voice.name} value={voice.name}>
-                    {voice.name.replace('Google ', '').replace('Microsoft ', '').slice(0, 35)} ({voice.lang})
-                  </option>
-                ))}
-            </select>
-          )}
+              <Volume2 className={`w-3.5 h-3.5 ${isSpeakingText ? 'fill-current' : ''}`} />
+            </button>
+            <button
+              onClick={() => setShowNarrationModal(true)}
+              className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 border-l border-slate-100"
+              title="Escolher o que narrar"
+            >
+              <Settings className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
 
         <h3 className="text-xl font-serif font-bold text-slate-900 leading-snug">
@@ -1149,6 +1233,123 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
                 >
                   Fechar
                 </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Narration Options Modal */}
+      <AnimatePresence>
+        {showNarrationModal && (
+          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.18 }}
+              className="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[85vh]"
+            >
+              <div className="p-5 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-amber-500 text-white rounded-lg">
+                    <Volume2 className="w-5 h-5 stroke-[1.5]" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif font-bold text-slate-900 text-lg leading-tight">Opções de Narração</h4>
+                    <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mt-0.5">Escolha o que ouvir</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowNarrationModal(false)}
+                  className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="p-6 overflow-y-auto space-y-5 text-sm text-slate-700">
+                <div className="space-y-2">
+                  <label className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">Seções</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { key: 'resumo', label: 'Resumo' },
+                      { key: 'fatos', label: 'Fatos' },
+                      { key: 'interpretacoes', label: 'Interpretações' },
+                      { key: 'hipoteses', label: 'Hipóteses' },
+                      { key: 'linha', label: 'Linha do Tempo' },
+                      { key: 'personagens', label: 'Personagens' },
+                      { key: 'fontes', label: 'Fontes' },
+                    ].map((section) => (
+                      <label
+                        key={section.key}
+                        className="flex items-center gap-2 p-2 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={narrationSections.includes(section.key as NarrationSection)}
+                          onChange={() => toggleNarrationSection(section.key as NarrationSection)}
+                          className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                        />
+                        <span className="text-xs text-slate-700">{section.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {availableVoices.length > 0 && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">Voz</label>
+                    <select
+                      value={selectedVoiceName || ''}
+                      onChange={(e) => handleVoiceChange(e.target.value)}
+                      className="w-full text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                    >
+                      <option value="">Voz padrão do navegador</option>
+                      {availableVoices
+                        .filter((v) => v.lang.toLowerCase().startsWith('pt') || v.lang.toLowerCase().includes('brazil'))
+                        .map((voice) => (
+                          <option key={voice.name} value={voice.name}>
+                            {voice.name.replace('Google ', '').replace('Microsoft ', '').slice(0, 45)}
+                          </option>
+                        ))}
+                      <option disabled>──────────</option>
+                      {availableVoices
+                        .filter((v) => !v.lang.toLowerCase().startsWith('pt') && !v.lang.toLowerCase().includes('brazil'))
+                        .map((voice) => (
+                          <option key={voice.name} value={voice.name}>
+                            {voice.name.replace('Google ', '').replace('Microsoft ', '').slice(0, 35)} ({voice.lang})
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-between">
+                <button
+                  onClick={() => setNarrationSections(DEFAULT_NARRATION_SECTIONS)}
+                  className="text-xs font-medium text-slate-500 hover:text-slate-700 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  Selecionar tudo
+                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowNarrationModal(false)}
+                    className="text-xs font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
+                  >
+                    Fechar
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowNarrationModal(false);
+                      handleNarrate(buildNarrationText());
+                    }}
+                    className="bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs py-2 px-5 rounded-xl transition-all cursor-pointer"
+                  >
+                    Ouvir agora
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>
