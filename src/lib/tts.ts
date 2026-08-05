@@ -24,6 +24,45 @@ export async function getAvailableVoices(): Promise<SpeechSynthesisVoice[]> {
   });
 }
 
+export function getVoiceQualityScore(voice: SpeechSynthesisVoice): number {
+  const name = voice.name.toLowerCase();
+  const isPt = voice.lang.toLowerCase().startsWith('pt');
+  const isCloud = voice.localService === false;
+
+  let score = 0;
+
+  // Prefer cloud/online voices (usually much more natural)
+  if (isCloud) score += 50;
+
+  // Prefer neural / premium / enhanced voices
+  if (name.includes('neural')) score += 30;
+  if (name.includes('wavenet')) score += 30;
+  if (name.includes('premium')) score += 25;
+  if (name.includes('enhanced')) score += 20;
+  if (name.includes('natural')) score += 20;
+
+  // Some browsers/OS expose high-quality voices with these keywords
+  if (name.includes('online')) score += 15;
+  if (name.includes('azure')) score += 15;
+
+  // Portuguese is strongly preferred
+  if (isPt) score += 40;
+
+  // Penalize old/crude local voices
+  if (name.includes('compact')) score -= 20;
+  if (name.includes('low quality')) score -= 30;
+
+  return score;
+}
+
+export function rankVoices(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice[] {
+  return [...voices].sort((a, b) => getVoiceQualityScore(b) - getVoiceQualityScore(a));
+}
+
+export function getRecommendedVoices(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice[] {
+  return rankVoices(voices).filter((v) => getVoiceQualityScore(v) > 0);
+}
+
 export function getStoredVoiceName(): string | null {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem(SELECTED_VOICE_KEY);
@@ -41,6 +80,7 @@ export function setStoredVoiceName(name: string | null): void {
 async function pickVoice(): Promise<SpeechSynthesisVoice | null> {
   if (!isSpeechSynthesisSupported()) return null;
   const voices = await getAvailableVoices();
+  const ranked = rankVoices(voices);
 
   const storedName = getStoredVoiceName();
   if (storedName) {
@@ -48,13 +88,12 @@ async function pickVoice(): Promise<SpeechSynthesisVoice | null> {
     if (exact) return exact;
   }
 
-  const ptBR = voices.find((v) => v.lang.toLowerCase() === 'pt-br');
-  if (ptBR) return ptBR;
+  // Prefer the top-ranked voice, ideally Portuguese and high-quality
+  const bestPt = ranked.find((v) => v.lang.toLowerCase().startsWith('pt'));
+  if (bestPt) return bestPt;
 
-  const pt = voices.find((v) => v.lang.toLowerCase().startsWith('pt'));
-  if (pt) return pt;
-
-  return null;
+  // Fallback to any top-ranked voice
+  return ranked[0] || null;
 }
 
 export function speak(text: string, lang = 'pt-BR'): Promise<void> {

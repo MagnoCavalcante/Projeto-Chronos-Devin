@@ -38,7 +38,7 @@ import GeographicMapView from './GeographicMapView';
 import { getGeoMapDataForTopic } from '../data/geographicCoordinates';
 import { generateCharacterBio } from '../lib/geminiClient';
 import { saveCharacterBioToSupabase, loadCharacterBioFromSupabase } from '../lib/supabaseSync';
-import { speak, stopSpeaking, isSpeaking, getAvailableVoices, getStoredVoiceName, setStoredVoiceName } from '../lib/tts';
+import { speak, stopSpeaking, isSpeaking, getAvailableVoices, getStoredVoiceName, setStoredVoiceName, rankVoices } from '../lib/tts';
 
 interface ConceptCardProps {
   card: HistoryCard;
@@ -1436,22 +1436,37 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
                       className="w-full text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-400"
                     >
                       <option value="">Voz padrão do navegador</option>
-                      {availableVoices
-                        .filter((v) => v.lang.toLowerCase().startsWith('pt') || v.lang.toLowerCase().includes('brazil'))
-                        .map((voice) => (
-                          <option key={voice.name} value={voice.name}>
-                            {voice.name.replace('Google ', '').replace('Microsoft ', '').slice(0, 45)}
-                          </option>
-                        ))}
-                      <option disabled>──────────</option>
-                      {availableVoices
-                        .filter((v) => !v.lang.toLowerCase().startsWith('pt') && !v.lang.toLowerCase().includes('brazil'))
-                        .map((voice) => (
-                          <option key={voice.name} value={voice.name}>
-                            {voice.name.replace('Google ', '').replace('Microsoft ', '').slice(0, 35)} ({voice.lang})
-                          </option>
-                        ))}
+                      {(() => {
+                        const ranked = rankVoices(availableVoices);
+                        const recommended = ranked.filter((v) => v.localService === false || /neural|wavenet|premium|enhanced|natural/i.test(v.name));
+                        const others = ranked.filter((v) => !recommended.includes(v));
+                        return (
+                          <>
+                            {recommended.length > 0 && (
+                              <optgroup label="Vozes mais naturais (recomendadas)">
+                                {recommended.map((voice) => (
+                                  <option key={voice.name} value={voice.name}>
+                                    {voice.name.replace(/Google |Microsoft /gi, '').slice(0, 45)} ({voice.lang})
+                                  </option>
+                                ))}
+                              </optgroup>
+                            )}
+                            {others.length > 0 && (
+                              <optgroup label="Outras vozes">
+                                {others.map((voice) => (
+                                  <option key={voice.name} value={voice.name}>
+                                    {voice.name.replace(/Google |Microsoft /gi, '').slice(0, 35)} ({voice.lang})
+                                  </option>
+                                ))}
+                              </optgroup>
+                            )}
+                          </>
+                        );
+                      })()}
                     </select>
+                    <p className="text-[10px] text-slate-400 leading-relaxed">
+                      Dica: para vozes mais naturais no Windows, use o navegador Microsoft Edge. No Mac/iPhone, use Safari.
+                    </p>
                   </div>
                 )}
               </div>
