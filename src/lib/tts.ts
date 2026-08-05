@@ -1,8 +1,60 @@
 // Text-to-Speech utility using the Web Speech API
 let currentUtterance: SpeechSynthesisUtterance | null = null;
+const SELECTED_VOICE_KEY = 'chronos_tts_voice';
 
 export function isSpeechSynthesisSupported(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window;
+}
+
+export async function getAvailableVoices(): Promise<SpeechSynthesisVoice[]> {
+  if (!isSpeechSynthesisSupported()) return [];
+
+  const load = (): SpeechSynthesisVoice[] => window.speechSynthesis.getVoices();
+
+  let voices = load();
+  if (voices.length > 0) return voices;
+
+  return new Promise((resolve) => {
+    const handle = () => {
+      voices = load();
+      window.speechSynthesis.removeEventListener('voiceschanged', handle);
+      resolve(voices);
+    };
+    window.speechSynthesis.addEventListener('voiceschanged', handle);
+  });
+}
+
+export function getStoredVoiceName(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(SELECTED_VOICE_KEY);
+}
+
+export function setStoredVoiceName(name: string | null): void {
+  if (typeof window === 'undefined') return;
+  if (name) {
+    localStorage.setItem(SELECTED_VOICE_KEY, name);
+  } else {
+    localStorage.removeItem(SELECTED_VOICE_KEY);
+  }
+}
+
+async function pickVoice(): Promise<SpeechSynthesisVoice | null> {
+  if (!isSpeechSynthesisSupported()) return null;
+  const voices = await getAvailableVoices();
+
+  const storedName = getStoredVoiceName();
+  if (storedName) {
+    const exact = voices.find((v) => v.name === storedName);
+    if (exact) return exact;
+  }
+
+  const ptBR = voices.find((v) => v.lang.toLowerCase() === 'pt-br');
+  if (ptBR) return ptBR;
+
+  const pt = voices.find((v) => v.lang.toLowerCase().startsWith('pt'));
+  if (pt) return pt;
+
+  return null;
 }
 
 export function speak(text: string, lang = 'pt-BR'): Promise<void> {
@@ -20,27 +72,29 @@ export function speak(text: string, lang = 'pt-BR'): Promise<void> {
     utterance.pitch = 1;
     utterance.volume = 1;
 
-    // Try to find a Portuguese voice
-    const voices = window.speechSynthesis.getVoices();
-    const ptVoice = voices.find(
-      (v) => v.lang.toLowerCase().startsWith('pt') || v.lang.toLowerCase().includes('brazil')
-    );
-    if (ptVoice) {
-      utterance.voice = ptVoice;
-    }
+    pickVoice()
+      .then((voice) => {
+        if (voice) {
+          utterance.voice = voice;
+        }
 
-    utterance.onend = () => {
-      currentUtterance = null;
-      resolve();
-    };
+        utterance.onend = () => {
+          currentUtterance = null;
+          resolve();
+        };
 
-    utterance.onerror = (event) => {
-      currentUtterance = null;
-      reject(new Error(`Erro na narração: ${event.error}`));
-    };
+        utterance.onerror = (event) => {
+          currentUtterance = null;
+          reject(new Error(`Erro na narração: ${event.error}`));
+        };
 
-    currentUtterance = utterance;
-    window.speechSynthesis.speak(utterance);
+        currentUtterance = utterance;
+        window.speechSynthesis.speak(utterance);
+      })
+      .catch(() => {
+        currentUtterance = null;
+        reject(new Error('Não foi possível carregar uma voz'));
+      });
   });
 }
 
@@ -55,25 +109,9 @@ export function isSpeaking(): boolean {
   return isSpeechSynthesisSupported() && window.speechSynthesis.speaking;
 }
 
-// Ensure voices are loaded (some browsers load asynchronously)
-export function loadVoices(): Promise<SpeechSynthesisVoice[]> {
-  return new Promise((resolve) => {
-    if (!isSpeechSynthesisSupported()) {
-      resolve([]);
-      return;
-    }
-
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      resolve(voices);
-      return;
-    }
-
-    const handleVoicesChanged = () => {
-      resolve(window.speechSynthesis.getVoices());
-      window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
-    };
-
-    window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
-  });
+// Load voices early so they are available when the user opens the selector
+if (isSpeechSynthesisSupported()) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    window.speechSynthesis.getVoices();
+  };
 }

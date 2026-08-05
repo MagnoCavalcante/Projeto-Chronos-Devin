@@ -37,7 +37,7 @@ import GeographicMapView from './GeographicMapView';
 import { getGeoMapDataForTopic } from '../data/geographicCoordinates';
 import { generateCharacterBio } from '../lib/geminiClient';
 import { saveCharacterBioToSupabase, loadCharacterBioFromSupabase } from '../lib/supabaseSync';
-import { speak, stopSpeaking, isSpeaking } from '../lib/tts';
+import { speak, stopSpeaking, isSpeaking, getAvailableVoices, getStoredVoiceName, setStoredVoiceName } from '../lib/tts';
 
 interface ConceptCardProps {
   card: HistoryCard;
@@ -63,6 +63,14 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
   const [characterError, setCharacterError] = useState('');
   const [currentCharacterName, setCurrentCharacterName] = useState('');
   const [isSpeakingText, setIsSpeakingText] = useState(false);
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoiceName, setSelectedVoiceName] = useState<string | null>(getStoredVoiceName());
+
+  useEffect(() => {
+    getAvailableVoices().then((voices) => {
+      setAvailableVoices(voices);
+    });
+  }, []);
 
   const handleNarrate = async (text: string) => {
     if (isSpeakingText || isSpeaking()) {
@@ -78,6 +86,11 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
     } finally {
       setIsSpeakingText(false);
     }
+  };
+
+  const handleVoiceChange = (voiceName: string) => {
+    setSelectedVoiceName(voiceName || null);
+    setStoredVoiceName(voiceName || null);
   };
 
   const handleSaibaMais = async (charName: string, charRole: string) => {
@@ -244,6 +257,32 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
           >
             <Volume2 className={`w-3.5 h-3.5 ${isSpeakingText ? 'fill-current' : ''}`} />
           </button>
+
+          {availableVoices.length > 0 && (
+            <select
+              value={selectedVoiceName || ''}
+              onChange={(e) => handleVoiceChange(e.target.value)}
+              className="text-[10px] bg-white border border-slate-200 rounded-lg px-1 py-1 text-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-400 max-w-[110px]"
+              title="Escolher voz"
+            >
+              <option value="">Voz padrão</option>
+              {availableVoices
+                .filter((v) => v.lang.toLowerCase().startsWith('pt') || v.lang.toLowerCase().includes('brazil'))
+                .map((voice) => (
+                  <option key={voice.name} value={voice.name}>
+                    {voice.name.replace('Google ', '').replace('Microsoft ', '').slice(0, 35)}
+                  </option>
+                ))}
+              <option disabled>──────────</option>
+              {availableVoices
+                .filter((v) => !v.lang.toLowerCase().startsWith('pt') && !v.lang.toLowerCase().includes('brazil'))
+                .map((voice) => (
+                  <option key={voice.name} value={voice.name}>
+                    {voice.name.replace('Google ', '').replace('Microsoft ', '').slice(0, 35)} ({voice.lang})
+                  </option>
+                ))}
+            </select>
+          )}
         </div>
 
         <h3 className="text-xl font-serif font-bold text-slate-900 leading-snug">
