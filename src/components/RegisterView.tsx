@@ -76,8 +76,21 @@ export default function RegisterView({ onNavigate, onRegisterSuccess }: Register
       level: 1,
       streak: 1,
       joinedDate: new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
-      role: 'user'
+      role: 'user',
+      password: password
     };
+
+    // Add to admin user list for management
+    try {
+      const adminUsersRaw = localStorage.getItem('chronos_admin_users');
+      const adminUsers: UserType[] = adminUsersRaw ? JSON.parse(adminUsersRaw) : [];
+      if (!adminUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+        adminUsers.unshift(newUser);
+        localStorage.setItem('chronos_admin_users', JSON.stringify(adminUsers));
+      }
+    } catch (e) {
+      console.error('Erro ao sincronizar usuário com painel admin:', e);
+    }
 
     setSuccess(true);
     setTimeout(() => {

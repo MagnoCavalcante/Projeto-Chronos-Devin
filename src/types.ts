@@ -17,6 +17,15 @@ export interface User {
   joinedDate: string;
   role?: 'admin' | 'user' | 'historiador';
   status?: 'ativo' | 'suspenso' | 'pendente';
+  password?: string;
+}
+
+export interface PasswordResetRequest {
+  id: string;
+  name: string;
+  email: string;
+  requestedAt: string;
+  status: 'pendente' | 'atendido' | 'rejeitado';
 }
 
 export type EvidenceLevel = 'high' | 'good' | 'debate' | 'hypothesis' | 'mythological';

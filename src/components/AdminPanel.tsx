@@ -27,7 +27,7 @@ import {
   Key,
   Inbox
 } from 'lucide-react';
-import { User, HistoryCard, Source, DossierRequest } from '../types';
+import { User, HistoryCard, Source, DossierRequest, PasswordResetRequest } from '../types';
 import { generateContentWithGemini } from '../lib/geminiClient';
 import { saveApiKeyToSupabase, loadApiKeyFromSupabase, deleteApiKeyFromSupabase } from '../lib/supabaseSync';
 
@@ -62,7 +62,7 @@ export default function AdminPanel({
   isStandalone = false,
   timelineSteps = []
 }: AdminPanelProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'content' | 'ai_assistant' | 'requests'>('requests');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'content' | 'ai_assistant' | 'requests' | 'password_resets'>('requests');
   
   // Dossier Requests State
   const [dossierRequests, setDossierRequests] = useState<DossierRequest[]>(() => {
@@ -86,6 +86,20 @@ export default function AdminPanel({
   const [requestStatusFilter, setRequestStatusFilter] = useState<'all' | 'pendente' | 'em_analise' | 'atendido' | 'rejeitado'>('all');
   const [requestNotice, setRequestNotice] = useState<string | null>(null);
 
+  // Password Reset Requests State
+  const [passwordResetRequests, setPasswordResetRequests] = useState<PasswordResetRequest[]>(() => {
+    const saved = localStorage.getItem('chronos_password_reset_requests');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  });
+  const [resetRequestNotice, setResetRequestNotice] = useState<string | null>(null);
+
   // Module filters
   const [moduleSearch, setModuleSearch] = useState('');
   const [moduleFilter, setModuleFilter] = useState<'all' | 'aprofundado' | 'nao_aprofundado'>('all');
@@ -95,11 +109,21 @@ export default function AdminPanel({
   }, [dossierRequests]);
 
   useEffect(() => {
+    localStorage.setItem('chronos_password_reset_requests', JSON.stringify(passwordResetRequests));
+  }, [passwordResetRequests]);
+
+  useEffect(() => {
     const handleStorage = () => {
-      const saved = localStorage.getItem('chronos_dossier_requests');
-      if (saved) {
+      const savedRequests = localStorage.getItem('chronos_dossier_requests');
+      if (savedRequests) {
         try {
-          setDossierRequests(JSON.parse(saved));
+          setDossierRequests(JSON.parse(savedRequests));
+        } catch (e) {}
+      }
+      const savedResets = localStorage.getItem('chronos_password_reset_requests');
+      if (savedResets) {
+        try {
+          setPasswordResetRequests(JSON.parse(savedResets));
         } catch (e) {}
       }
     };
@@ -122,6 +146,24 @@ export default function AdminPanel({
     localStorage.setItem('chronos_dossier_requests', JSON.stringify(updated));
     setRequestNotice('Solicitação removida do painel.');
     setTimeout(() => setRequestNotice(null), 3000);
+  };
+
+  // Password Reset Request Actions
+  const handleUpdateResetRequestStatus = (id: string, status: 'pendente' | 'atendido' | 'rejeitado') => {
+    const updated = passwordResetRequests.map(r => r.id === id ? { ...r, status } : r);
+    setPasswordResetRequests(updated);
+    localStorage.setItem('chronos_password_reset_requests', JSON.stringify(updated));
+    const labels = { pendente: 'Pendente', atendido: 'Atendido', rejeitado: 'Rejeitado' };
+    setResetRequestNotice(`Status da solicitação atualizado para "${labels[status]}".`);
+    setTimeout(() => setResetRequestNotice(null), 3000);
+  };
+
+  const handleDeleteResetRequest = (id: string) => {
+    const updated = passwordResetRequests.filter(r => r.id !== id);
+    setPasswordResetRequests(updated);
+    localStorage.setItem('chronos_password_reset_requests', JSON.stringify(updated));
+    setResetRequestNotice('Solicitação de senha removida do painel.');
+    setTimeout(() => setResetRequestNotice(null), 3000);
   };
 
   // User Management State
@@ -429,7 +471,8 @@ export default function AdminPanel({
       streak: 0,
       joinedDate: new Date().toLocaleDateString('pt-BR'),
       role: newUserForm.role,
-      status: 'ativo'
+      status: 'ativo',
+      password: newUserForm.password
     };
 
     const updatedUsers = [newUser, ...users];
@@ -452,14 +495,35 @@ export default function AdminPanel({
     e.preventDefault();
     if (!editingUser) return;
 
+    // Preserve existing password if the admin left the field blank
+    const existing = users.find(u => (editingUser.id && u.id && u.id === editingUser.id) || u.email === editingUser.email);
+    const finalUser = editingUser.password ? editingUser : { ...editingUser, password: existing?.password };
+
     const updatedUsers = users.map(u => {
-      const isMatch = (editingUser.id && u.id && u.id === editingUser.id) || (u.email === editingUser.email);
-      return isMatch ? editingUser : u;
+      const isMatch = (finalUser.id && u.id && u.id === finalUser.id) || (u.email === finalUser.email);
+      return isMatch ? finalUser : u;
     });
 
     setUsers(updatedUsers);
     localStorage.setItem('chronos_admin_users', JSON.stringify(updatedUsers));
-    setUserActionNotice(`Usuário "${editingUser.name}" atualizado com sucesso!`);
+
+    // Sincroniza senha alterada nas contas registradas para login
+    const passwordToSync = finalUser.password || existing?.password;
+    if (passwordToSync) {
+      const storedAccountsRaw = localStorage.getItem('chronos_registered_accounts');
+      const existingAccounts: { name: string; email: string; pass: string }[] = storedAccountsRaw ? JSON.parse(storedAccountsRaw) : [];
+      const updatedAccounts = existingAccounts.map(a =>
+        a.email.toLowerCase() === finalUser.email.toLowerCase()
+          ? { ...a, name: finalUser.name, pass: passwordToSync }
+          : a
+      );
+      if (!updatedAccounts.some(a => a.email.toLowerCase() === finalUser.email.toLowerCase())) {
+        updatedAccounts.push({ name: finalUser.name, email: finalUser.email, pass: passwordToSync });
+      }
+      localStorage.setItem('chronos_registered_accounts', JSON.stringify(updatedAccounts));
+    }
+
+    setUserActionNotice(`Usuário "${finalUser.name}" atualizado com sucesso!`);
     setEditingUser(null);
     setTimeout(() => setUserActionNotice(null), 3000);
   };
@@ -477,6 +541,17 @@ export default function AdminPanel({
     setUserActionNotice(`Usuário "${userToDelete.name}" excluído com sucesso.`);
     setUserToDelete(null);
     setTimeout(() => setUserActionNotice(null), 3000);
+  };
+
+  const getAccountPassword = (email: string): string | undefined => {
+    const stored = localStorage.getItem('chronos_registered_accounts');
+    if (!stored) return undefined;
+    try {
+      const accounts: { email: string; pass: string }[] = JSON.parse(stored);
+      return accounts.find(a => a.email.toLowerCase() === email.toLowerCase())?.pass;
+    } catch (e) {
+      return undefined;
+    }
   };
 
   const handleToggleRole = (user: User) => {
@@ -569,6 +644,23 @@ export default function AdminPanel({
         >
           <BookOpen className="w-4 h-4" />
           Módulos & Fontes ({cards.length})
+        </button>
+
+        <button
+          onClick={() => setActiveTab('password_resets')}
+          className={`flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium font-mono border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === 'password_resets'
+              ? 'border-amber-500 text-amber-400 bg-amber-500/5'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+          }`}
+        >
+          <Key className="w-4 h-4" />
+          <span>Senhas & Recuperação</span>
+          {passwordResetRequests.filter(r => r.status === 'pendente').length > 0 && (
+            <span className="bg-rose-500 text-white font-sans text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">
+              {passwordResetRequests.filter(r => r.status === 'pendente').length}
+            </span>
+          )}
         </button>
 
         <button
@@ -1070,6 +1162,132 @@ export default function AdminPanel({
           </div>
         )}
 
+        {/* ================= TAB: PASSWORD RESET REQUESTS ================= */}
+        {activeTab === 'password_resets' && (
+          <div className="space-y-6 max-w-5xl mx-auto">
+            {/* Header Banner */}
+            <div className="p-5 bg-gradient-to-r from-slate-950 via-slate-900 to-rose-950/30 rounded-2xl border border-slate-800 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-rose-400 font-mono text-xs font-bold uppercase tracking-wider">
+                  <Key className="w-4 h-4 text-rose-400" />
+                  Central de Recuperação de Senha
+                </div>
+                <span className="text-[10px] font-mono bg-rose-500/10 text-rose-300 border border-rose-500/30 px-3 py-1 rounded-full font-bold">
+                  {passwordResetRequests.filter(r => r.status === 'pendente').length} Pendente{passwordResetRequests.filter(r => r.status === 'pendente').length !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <h3 className="text-lg font-serif font-bold text-white">
+                Solicitações de Recuperação de Senha
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
+                Quando um usuário clicar em <strong className="text-amber-400">"Esqueceu?"</strong> no login, a solicitação cai aqui. Você pode ver a senha atual do usuário na <strong className="text-amber-400">Gestão de Usuários</strong> e alterá-la diretamente no cadastro.
+              </p>
+            </div>
+
+            {resetRequestNotice && (
+              <div className="p-3 bg-emerald-950/80 border border-emerald-500/50 text-emerald-200 rounded-xl font-mono text-xs flex items-center justify-between shadow-lg animate-fade-in">
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  {resetRequestNotice}
+                </span>
+                <button onClick={() => setResetRequestNotice(null)} className="text-emerald-400 hover:text-white cursor-pointer">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+            {passwordResetRequests.length === 0 ? (
+              <div className="p-8 bg-slate-950 border border-slate-800 rounded-2xl text-center space-y-3">
+                <Key className="w-8 h-8 text-slate-600 mx-auto" />
+                <h4 className="text-sm font-serif font-bold text-slate-300">Nenhuma solicitação de senha</h4>
+                <p className="text-xs text-slate-500">
+                  Quando um usuário solicitar recuperação, ela aparecerá nesta lista.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {passwordResetRequests.map((req) => {
+                  const statusClass =
+                    req.status === 'pendente'
+                      ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+                      : req.status === 'atendido'
+                      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                      : 'bg-rose-500/15 text-rose-400 border-rose-500/30';
+                  const statusLabel =
+                    req.status === 'pendente' ? 'Pendente' : req.status === 'atendido' ? 'Atendido' : 'Rejeitado';
+                  const currentPass = getAccountPassword(req.email) || users.find(u => u.email.toLowerCase() === req.email.toLowerCase())?.password;
+
+                  return (
+                    <div key={req.id} className="bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 space-y-4 transition-all shadow-md">
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-850 pb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="p-2 bg-slate-900 rounded-lg border border-slate-800">
+                            <Key className="w-4 h-4 text-amber-400" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-serif font-bold text-white">{req.name || req.email}</h4>
+                            <p className="text-[11px] text-slate-400 font-mono">{req.email}</p>
+                          </div>
+                        </div>
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase border ${statusClass}`}>
+                          {statusLabel}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div className="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                          <span className="text-slate-500 font-mono block mb-1">Solicitado em</span>
+                          <span className="text-slate-200">{new Date(req.requestedAt).toLocaleString('pt-BR')}</span>
+                        </div>
+                        <div className="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                          <span className="text-slate-500 font-mono block mb-1">Senha atual cadastrada</span>
+                          <span className="text-amber-300 font-mono">{currentPass || '(não encontrada)'}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-slate-850">
+                        {req.status === 'pendente' && (
+                          <>
+                            <button
+                              onClick={() => handleUpdateResetRequestStatus(req.id, 'atendido')}
+                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[10px] font-mono font-bold transition-colors cursor-pointer"
+                            >
+                              Marcar como Atendido
+                            </button>
+                            <button
+                              onClick={() => handleUpdateResetRequestStatus(req.id, 'rejeitado')}
+                              className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-lg text-[10px] font-mono transition-colors cursor-pointer"
+                            >
+                              Rejeitar
+                            </button>
+                          </>
+                        )}
+                        <button
+                          onClick={() => {
+                            const user = users.find(u => u.email.toLowerCase() === req.email.toLowerCase());
+                            if (user) setEditingUser({ ...user });
+                            else setResetRequestNotice('Usuário não encontrado na lista de cadastrados.');
+                          }}
+                          className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-lg text-[10px] font-mono transition-colors cursor-pointer"
+                        >
+                          Editar usuário / trocar senha
+                        </button>
+                        <button
+                          onClick={() => handleDeleteResetRequest(req.id)}
+                          className="p-1.5 bg-slate-900 hover:bg-red-950 text-slate-400 hover:text-red-400 border border-slate-800 rounded-lg transition-colors cursor-pointer"
+                          title="Remover solicitação"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* ================= TAB 2: USER MANAGEMENT (OPÇÃO A) ================= */}
         {activeTab === 'users' && (
           <div className="space-y-5">
@@ -1162,6 +1380,18 @@ export default function AdminPanel({
                         </td>
 
                         <td className="p-3.5 text-right space-x-2">
+                          <button
+                            onClick={() => {
+                              const pass = u.password || getAccountPassword(u.email) || '(não cadastrada)';
+                              alert(`Senha de ${u.name}:\n${pass}`);
+                            }}
+                            className="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded text-[10px] font-mono border border-slate-700 cursor-pointer inline-flex items-center gap-1"
+                            title="Ver senha"
+                          >
+                            <Key className="w-3 h-3" />
+                            <span>Senha</span>
+                          </button>
+
                           <button
                             onClick={() => setEditingUser({ ...u })}
                             className="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded text-[10px] font-mono border border-amber-500/30 cursor-pointer inline-flex items-center gap-1"
@@ -1331,6 +1561,17 @@ export default function AdminPanel({
                         required
                         value={editingUser.email}
                         onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500 font-mono"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="block text-slate-400 font-mono mb-1">Senha de Acesso</label>
+                      <input
+                        type="text"
+                        value={editingUser.password || ''}
+                        onChange={(e) => setEditingUser({ ...editingUser, password: e.target.value })}
+                        placeholder="Deixe em branco para manter a senha atual"
                         className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500 font-mono"
                       />
                     </div>
