@@ -24,3 +24,4 @@ export 'chronos_dialog.dart';
 export 'chronos_bottom_sheet.dart';
 export 'chronos_confirmation_dialog.dart';
 export 'status_badge.dart';
+export 'premium_paywall_card.dart';

@@ -11,6 +11,7 @@ class HistoryCard {
   final String era;
   final String summary;
   final String evidenceLevel;
+  final bool isFree;
   final List<TimelineEvent> timeline;
   final List<HistoryCharacter> characters;
   final FactSection fact;
@@ -26,6 +27,7 @@ class HistoryCard {
     required this.era,
     required this.summary,
     required this.evidenceLevel,
+    this.isFree = false,
     this.timeline = const [],
     this.characters = const [],
     required this.fact,
@@ -44,6 +46,7 @@ class HistoryCard {
       era: json['era'] as String,
       summary: json['summary'] as String,
       evidenceLevel: json['evidence_level'] as String,
+      isFree: (json['is_free'] as bool?) ?? false,
       timeline: ((json['timeline'] as List?) ?? const [])
           .map((e) => TimelineEvent.fromJson(e as Map<String, dynamic>))
           .toList(),

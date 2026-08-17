@@ -3,6 +3,7 @@ import '../../../core/presentation/widgets/widgets.dart';
 import '../../../core/theme/chronos_colors.dart';
 import '../../../core/theme/chronos_typography.dart';
 import '../../../shared/models/history_card.dart';
+import '../../../shared/services/auth_service.dart';
 import '../../../shared/services/dossier_remote_datasource.dart';
 import '../../../shared/services/gamification_service.dart';
 import '../../../shared/widgets/dossier_card.dart';
@@ -24,12 +25,18 @@ class DossierPage extends StatefulWidget {
 class _DossierPageState extends State<DossierPage> {
   final GamificationService _gamification = GamificationService();
   final DossierRemoteDataSource _dataSource = DossierRemoteDataSource();
+  final AuthService _authService = AuthService.instance;
 
   late Future<HistoryCard> _cardFuture;
+  bool _isPremium = false;
 
   @override
   void initState() {
     super.initState();
+    _isPremium = _authService.currentProfile?.isPremium ?? false;
+    _authService.profileStream.listen((profile) {
+      if (mounted) setState(() => _isPremium = profile?.isPremium ?? false);
+    });
     if (widget.card != null) {
       _cardFuture = Future.value(widget.card);
     } else if (widget.cardId != null) {
@@ -62,6 +69,8 @@ class _DossierPageState extends State<DossierPage> {
             );
           }
           final card = snapshot.data!;
+          final hasAccess = card.isFree || _isPremium;
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -69,22 +78,25 @@ class _DossierPageState extends State<DossierPage> {
               children: [
                 _buildHeader(),
                 const SizedBox(height: 16),
-                DossierCard(
-                  card: card,
-                  isMastered: _gamification.isMastered(card.id),
-                  onMaster: () {
-                    final earned = _gamification.masterCard(card.id);
-                    if (earned > 0) {
-                      setState(() {});
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('+$earned XP conquistados!'),
-                          backgroundColor: ChronosColors.success,
-                        ),
-                      );
-                    }
-                  },
-                ),
+                if (hasAccess)
+                  DossierCard(
+                    card: card,
+                    isMastered: _gamification.isMastered(card.id),
+                    onMaster: () {
+                      final earned = _gamification.masterCard(card.id);
+                      if (earned > 0) {
+                        setState(() {});
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('+$earned XP conquistados!'),
+                            backgroundColor: ChronosColors.success,
+                          ),
+                        );
+                      }
+                    },
+                  )
+                else
+                  PremiumPaywallCard(),
               ],
             ),
           );

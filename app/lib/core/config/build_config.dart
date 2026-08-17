@@ -7,6 +7,7 @@ class BuildConfig {
   final String supabaseUrl;
   final String supabaseAnonKey;
   final String apiBaseUrl;
+  final String checkoutUrl;
   final Duration connectTimeout;
   final Duration receiveTimeout;
   final bool enableLogs;
@@ -17,6 +18,7 @@ class BuildConfig {
     required this.supabaseUrl,
     required this.supabaseAnonKey,
     required this.apiBaseUrl,
+    required this.checkoutUrl,
     required this.connectTimeout,
     required this.receiveTimeout,
     required this.enableLogs,
@@ -32,6 +34,7 @@ class BuildConfig {
     required String supabaseUrl,
     required String supabaseAnonKey,
     String? apiBaseUrl,
+    String? checkoutUrl,
     Duration? connectTimeout,
     Duration? receiveTimeout,
     bool? enableLogs,
@@ -42,6 +45,7 @@ class BuildConfig {
       supabaseUrl: supabaseUrl,
       supabaseAnonKey: supabaseAnonKey,
       apiBaseUrl: apiBaseUrl ?? 'https://api.chronos-app.internal',
+      checkoutUrl: checkoutUrl ?? 'https://checkout.chronos-app.internal',
       connectTimeout: connectTimeout ?? const Duration(seconds: 10),
       receiveTimeout: receiveTimeout ?? const Duration(seconds: 15),
       enableLogs: enableLogs ?? (env != Environment.production),

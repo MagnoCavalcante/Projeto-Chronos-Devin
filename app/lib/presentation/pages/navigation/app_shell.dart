@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/theme.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../core/config/build_config.dart';
+import '../../../core/navigation/route_names.dart';
 import '../../../core/presentation/widgets/widgets.dart';
+import '../../../core/theme/theme.dart';
+import '../../../shared/models/profile.dart';
+import '../../../shared/services/auth_service.dart';
 import 'main_navigation.dart';
 
 /// AppShell oficial e responsiva do ecossistema CHRONOS.
@@ -17,6 +23,116 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   ChronosTab _currentTab = ChronosTab.home;
+  bool _isAuthenticated = false;
+  bool _isPremium = false;
+  String? _userEmail;
+
+  @override
+  void initState() {
+    super.initState();
+    _syncAuthState();
+    AuthService.instance.profileStream.listen(_onProfileChanged);
+  }
+
+  void _syncAuthState() {
+    final user = AuthService.instance.currentUser;
+    final profile = AuthService.instance.currentProfile;
+    setState(() {
+      _isAuthenticated = user != null;
+      _userEmail = user?.email;
+      _isPremium = profile?.isPremium ?? false;
+    });
+  }
+
+  void _onProfileChanged(Profile? profile) {
+    if (!mounted) return;
+    setState(() {
+      _isAuthenticated = AuthService.instance.isAuthenticated;
+      _userEmail = AuthService.instance.currentUser?.email;
+      _isPremium = profile?.isPremium ?? false;
+    });
+  }
+
+  Future<void> _openCheckout() async {
+    final uri = Uri.parse(BuildConfig.instance.checkoutUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _handleLogout() async {
+    await AuthService.instance.signOut();
+    if (!mounted) return;
+    Navigator.of(context).pushReplacementNamed(RouteNames.login);
+  }
+
+  void _showAuthMenu() {
+    showMenu<String>(
+      context: context,
+      position: const RelativeRect.fromLTRB(1000, 80, 16, 0),
+      items: [
+        PopupMenuItem<String>(
+          enabled: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _isAuthenticated ? (_userEmail ?? 'Usuário') : 'Convidado',
+                style: ChronosTypography.labelMedium.copyWith(color: ChronosColors.textPrimary),
+              ),
+              if (_isAuthenticated)
+                Text(
+                  _isPremium ? 'Assinante Premium' : 'Conta Gratuita',
+                  style: ChronosTypography.bodySmall.copyWith(
+                    color: _isPremium ? Colors.amber : ChronosColors.textMuted,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        if (!_isPremium)
+          const PopupMenuItem<String>(
+            value: 'premium',
+            child: Row(
+              children: [
+                Icon(Icons.workspace_premium_rounded, size: 18, color: Colors.amber),
+                SizedBox(width: 8),
+                Text('Liberar Premium'),
+              ],
+            ),
+          ),
+        if (_isAuthenticated)
+          const PopupMenuItem<String>(
+            value: 'logout',
+            child: Row(
+              children: [
+                Icon(Icons.logout_rounded, size: 18),
+                SizedBox(width: 8),
+                Text('Sair'),
+              ],
+            ),
+          )
+        else
+          const PopupMenuItem<String>(
+            value: 'login',
+            child: Row(
+              children: [
+                Icon(Icons.login_rounded, size: 18),
+                SizedBox(width: 8),
+                Text('Entrar'),
+              ],
+            ),
+          ),
+      ],
+      elevation: 8,
+      color: ChronosColors.surface,
+    ).then((value) {
+      if (value == null || !mounted) return;
+      if (value == 'premium') _openCheckout();
+      if (value == 'logout') _handleLogout();
+      if (value == 'login') Navigator.of(context).pushReplacementNamed(RouteNames.login);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -227,15 +343,26 @@ class _AppShellState extends State<AppShell> {
         bottom: BorderSide(color: ChronosColors.border, width: 1.0),
       ),
       actions: [
+        if (!_isPremium)
+          Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: ChronosIconButton(
+              icon: Icons.workspace_premium_rounded,
+              tooltip: 'Liberar Premium',
+              color: Colors.amber,
+              onPressed: _openCheckout,
+            ),
+          ),
         ChronosIconButton(
           icon: Icons.notifications_none_rounded,
           tooltip: 'Notificações',
           onPressed: () {},
         ),
         ChronosIconButton(
-          icon: Icons.account_circle_outlined,
-          tooltip: 'Perfil',
-          onPressed: () {},
+          icon: _isAuthenticated ? Icons.account_circle_rounded : Icons.account_circle_outlined,
+          tooltip: _isAuthenticated ? 'Perfil' : 'Entrar',
+          color: _isAuthenticated ? ChronosColors.accent : null,
+          onPressed: _showAuthMenu,
         ),
         ChronosSpacing.hSizedBoxMD,
       ],

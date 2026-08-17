@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/navigation/route_names.dart';
 import '../../../core/theme/theme.dart';
+import '../../../shared/services/auth_service.dart';
 
 /// Tela de abertura (Splash) do CHRONOS.
 ///
@@ -48,7 +49,10 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
 
     Future.delayed(const Duration(milliseconds: 3000), () {
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed(RouteNames.welcome);
+        final nextRoute = AuthService.instance.isAuthenticated
+            ? RouteNames.home
+            : RouteNames.welcome;
+        Navigator.of(context).pushReplacementNamed(nextRoute);
       }
     });
   }

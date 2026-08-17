@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import '../../../core/presentation/widgets/widgets.dart';
 import '../../../core/theme/theme.dart';
 import '../../../shared/models/history_card.dart';
+import '../../../shared/models/profile.dart';
+import '../../../shared/services/auth_service.dart';
 import '../../../shared/services/dossier_remote_datasource.dart';
 import 'dossier_page.dart';
 
-/// Lista completa dos Dossiês Históricos disponíveis no acervo do CHRONOS,
-/// migrados diretamente do protótipo web (src/components/MainView.tsx).
+/// Lista dos Dossiês Históricos do CHRONOS com paywall por premium.
+///
+/// Usuários não autenticados ou sem `is_premium` podem acessar apenas
+/// 1 dossiê de degustação. O restante é apresentado através do card de upgrade.
 class DossierListPage extends StatefulWidget {
   const DossierListPage({super.key});
 
@@ -16,12 +20,19 @@ class DossierListPage extends StatefulWidget {
 
 class _DossierListPageState extends State<DossierListPage> {
   final DossierRemoteDataSource _dataSource = DossierRemoteDataSource();
+  final AuthService _authService = AuthService.instance;
+
   late Future<List<HistoryCard>> _dossiersFuture;
+  Profile? _currentProfile;
 
   @override
   void initState() {
     super.initState();
     _dossiersFuture = _dataSource.getAllDossiers();
+    _currentProfile = _authService.currentProfile;
+    _authService.profileStream.listen((profile) {
+      if (mounted) setState(() => _currentProfile = profile);
+    });
   }
 
   Future<void> _reload() async {
@@ -30,6 +41,8 @@ class _DossierListPageState extends State<DossierListPage> {
     });
     await _dossiersFuture;
   }
+
+  bool get _canAccessAll => _currentProfile?.isPremium == true;
 
   @override
   Widget build(BuildContext context) {
@@ -68,17 +81,128 @@ class _DossierListPageState extends State<DossierListPage> {
               );
             }
 
+            final freeDossier = dossiers.firstWhere(
+              (d) => d.isFree,
+              orElse: () => dossiers.first,
+            );
+            final remainingDossiers = dossiers.where((d) => d.id != freeDossier.id).toList();
+
+            if (_canAccessAll) {
+              return ListView.separated(
+                padding: const EdgeInsets.all(ChronosSpacing.lg),
+                itemCount: dossiers.length,
+                separatorBuilder: (_, __) => const SizedBox(height: ChronosSpacing.md),
+                itemBuilder: (context, index) => _DossierListTile(dossier: dossiers[index]),
+              );
+            }
+
             return ListView.separated(
               padding: const EdgeInsets.all(ChronosSpacing.lg),
-              itemCount: dossiers.length,
+              itemCount: remainingDossiers.isNotEmpty ? 3 : 1,
               separatorBuilder: (_, __) => const SizedBox(height: ChronosSpacing.md),
               itemBuilder: (context, index) {
-                final dossier = dossiers[index];
-                return _DossierListTile(dossier: dossier);
+                if (index == 0) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _DossierSampleHeader(),
+                      const SizedBox(height: ChronosSpacing.sm),
+                      _DossierListTile(dossier: freeDossier),
+                    ],
+                  );
+                }
+                if (index == 1) {
+                  return const PremiumPaywallCard();
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Mais ${remainingDossiers.length} dossiês disponíveis',
+                      style: ChronosTypography.labelMedium.copyWith(color: ChronosColors.textMuted),
+                    ),
+                    const SizedBox(height: ChronosSpacing.sm),
+                    ...remainingDossiers.map(
+                      (d) => Opacity(
+                        opacity: 0.45,
+                        child: _LockedDossierTile(title: d.title, period: d.period, era: d.era),
+                      ),
+                    ),
+                  ],
+                );
               },
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _DossierSampleHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: ChronosColors.accent.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: ChronosColors.accent.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.local_cafe_rounded, size: 16, color: ChronosColors.accent),
+          const SizedBox(width: 8),
+          Text(
+            'Dossiê de degustação grátis',
+            style: ChronosTypography.labelMedium.copyWith(color: ChronosColors.accent),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LockedDossierTile extends StatelessWidget {
+  final String title;
+  final String period;
+  final String era;
+
+  const _LockedDossierTile({required this.title, required this.period, required this.era});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: ChronosSpacing.sm),
+      padding: const EdgeInsets.all(ChronosSpacing.md),
+      decoration: BoxDecoration(
+        color: ChronosColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: ChronosColors.border),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.lock_outline_rounded, color: ChronosColors.textMuted, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: ChronosTypography.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  '$period • $era',
+                  style: ChronosTypography.bodySmall.copyWith(color: ChronosColors.textMuted),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
