@@ -1042,16 +1042,18 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
             {/* THE INFINITE TIMELINE NAVIGATION (HEART OF THE APP) */}
             <div className="relative bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6 overflow-hidden">
               {/* Transparent thematic background image tied to the selected epoch */}
-              <div className="absolute inset-0 z-0 pointer-events-none select-none" aria-hidden="true">
-                <img
-                  key={mergedTimelineSteps[currentTimelineIndex].id}
-                  src={mergedTimelineSteps[currentTimelineIndex].mapUrl}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover opacity-[0.07] grayscale transition-opacity duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/30 to-white/80" />
-              </div>
+              {mergedTimelineSteps[currentTimelineIndex].mapUrl && (
+                <div className="absolute inset-0 z-0 pointer-events-none select-none" aria-hidden="true">
+                  <img
+                    key={mergedTimelineSteps[currentTimelineIndex].id}
+                    src={mergedTimelineSteps[currentTimelineIndex].mapUrl}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover opacity-25 sepia-[0.4] transition-opacity duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/40 to-white/85" />
+                </div>
+              )}
 
               <div className="relative z-10 flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2">
