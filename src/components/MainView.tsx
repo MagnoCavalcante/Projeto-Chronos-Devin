@@ -1040,8 +1040,20 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
             </div>
 
             {/* THE INFINITE TIMELINE NAVIGATION (HEART OF THE APP) */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="relative bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6 overflow-hidden">
+              {/* Transparent thematic background image tied to the selected epoch */}
+              <div className="absolute inset-0 z-0 pointer-events-none select-none" aria-hidden="true">
+                <img
+                  key={mergedTimelineSteps[currentTimelineIndex].id}
+                  src={mergedTimelineSteps[currentTimelineIndex].mapUrl}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover opacity-[0.07] grayscale transition-opacity duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/30 to-white/80" />
+              </div>
+
+              <div className="relative z-10 flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-amber-600" />
                   <h3 className="text-base font-serif font-bold text-slate-900">Linha do Tempo Infinita</h3>
@@ -1050,7 +1062,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
               </div>
 
               {/* Centered Selector Moving-Line Timeline Track */}
-              <div className="relative py-8 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden select-none shadow-md">
+              <div className="relative z-10 py-8 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden select-none shadow-md">
                 {/* Fixed Center Selector Marker Line */}
                 <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600 z-20 pointer-events-none shadow-[0_0_12px_rgba(245,158,11,0.9)]" />
                 
@@ -1140,7 +1152,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
               </div>
 
               {/* Prev/Next timeline controls */}
-              <div className="flex justify-between items-center gap-1.5 sm:gap-4 bg-slate-50/50 p-2 sm:p-2.5 rounded-xl border border-slate-200/50">
+              <div className="relative z-10 flex justify-between items-center gap-1.5 sm:gap-4 bg-slate-50/50 p-2 sm:p-2.5 rounded-xl border border-slate-200/50">
                 <button
                   disabled={currentTimelineIndex === 0}
                   onClick={() => {
@@ -1177,7 +1189,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
               </div>
 
               {/* Stop Year Epoch Presentation */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+              <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                 <div className="md:col-span-2 space-y-3">
                   <div className="flex items-baseline gap-2.5">
                     <span className="text-3xl font-mono font-extrabold tracking-tight text-slate-900">
@@ -1741,7 +1753,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                                     setCurrentTimelineIndex(stepIdx);
                                     setViewingDossier(true);
                                   } else {
-                                    setActiveTab('cards');
+                                    setActiveTab('search');
                                     setSearchQuery(matchingCard?.title || '');
                                   }
                                   setSelectedMeanwhileItem(null);
