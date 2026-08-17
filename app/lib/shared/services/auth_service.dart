@@ -14,7 +14,13 @@ class AuthService {
 
   static final AuthService instance = AuthService._();
 
-  final _client = SupabaseConfig.client;
+  /// Cliente do Supabase acessado de forma preguiçosa (lazy), evitando falhas
+  /// na construção do singleton quando a infraestrutura ainda não foi inicializada.
+  SupabaseClient get _client => SupabaseConfig.client;
+
+  /// Indica se a infraestrutura do Supabase está disponível para uso.
+  bool get _isSupabaseReady => SupabaseConfig.isInitialized;
+
   StreamSubscription<AuthState>? _authStateSubscription;
 
   Profile? _currentProfile;
@@ -24,7 +30,7 @@ class AuthService {
   Stream<Profile?> get profileStream => _profileController.stream;
 
   /// Retorna o usuário atualmente autenticado, ou null.
-  User? get currentUser => _client.auth.currentUser;
+  User? get currentUser => _isSupabaseReady ? _client.auth.currentUser : null;
 
   /// Indica se existe um usuário autenticado no momento.
   bool get isAuthenticated => currentUser != null;
@@ -34,6 +40,13 @@ class AuthService {
 
   /// Inicializa o serviço carregando o perfil do usuário atual, se houver.
   Future<void> initialize() async {
+    if (!_isSupabaseReady) {
+      ChronosLogger.error(
+        'Supabase indisponível; AuthService operará em modo convidado.',
+        tag: 'AuthService',
+      );
+      return;
+    }
     final user = currentUser;
     if (user != null) {
       await _loadProfile(user.id);
