@@ -15,7 +15,8 @@ export const TIMELINE_STEPS = [
         { region: 'Europa', event: 'Primeiras estruturas megalíticas em Stonehenge.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Crescente Fértil & Vale do Nilo'
+      mapLabel: 'Crescente Fértil & Vale do Nilo',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/ancient%20Sumerian%20cuneiform%20clay%20tablets%20temple%20Mesopotamia?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'hamurabi',
@@ -31,7 +32,8 @@ export const TIMELINE_STEPS = [
         { region: 'Vale do Indo', event: 'Declínio das grandes cidades planejadas de Harappa e Mohenjo-daro.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Império Paleobabilônico e Mesopotâmia'
+      mapLabel: 'Império Paleobabilônico e Mesopotâmia',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Code%20of%20Hammurabi%20stele%20Babylonian%20laws%20ancient%20Mesopotamia?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'grecia-classica',
@@ -47,7 +49,8 @@ export const TIMELINE_STEPS = [
         { region: 'África', event: 'Metalurgia do ferro pela cultura Nok na atual Nigéria.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Hélade Clássica e Cidades-Estado'
+      mapLabel: 'Hélade Clássica e Cidades-Estado',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/ancient%20Athens%20Parthenon%20Greek%20philosophy%20democracy%20Acropolis?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'alexandria',
@@ -63,7 +66,8 @@ export const TIMELINE_STEPS = [
         { region: 'América', event: 'Construção das pirâmides maias primordiais em El Mirador (Guatemala).' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Mundo Helenístico e Mediterrâneo'
+      mapLabel: 'Mundo Helenístico e Mediterrâneo',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/ancient%20Library%20of%20Alexandria%20scrolls%20papyrus%20Egypt%20knowledge?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'roma-republica',
@@ -79,7 +83,8 @@ export const TIMELINE_STEPS = [
         { region: 'Índia', event: 'Império Satavahana domina rotas comerciais marítimas.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Províncias Romanas'
+      mapLabel: 'Províncias Romanas',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Julius%20Caesar%20Roman%20legion%20crossing%20Rubicon%20river%20ancient%20Rome?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'queda-roma',
@@ -95,7 +100,8 @@ export const TIMELINE_STEPS = [
         { region: 'África', event: 'Reino de Aksum domina o comércio do Mar Vermelho.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Reinos Germânicos na Europa'
+      mapLabel: 'Reinos Germânicos na Europa',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/fall%20of%20Rome%20barbarian%20invasion%20ancient%20Roman%20ruins%20dark%20ages?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'reiartur',
@@ -111,7 +117,8 @@ export const TIMELINE_STEPS = [
         { region: 'Índia', event: 'Era de Ouro das artes e matemática sob a dinastia Gupta.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Bretanha Pós-Romana'
+      mapLabel: 'Bretanha Pós-Romana',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/King%20Arthur%20medieval%20Britain%20Camelot%20castle%20round%20table%20legend?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'islamismo',
@@ -127,7 +134,8 @@ export const TIMELINE_STEPS = [
         { region: 'Japão', event: 'Reformas Taika instituem a administração imperial inspirada na China.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Expansão Árabe e Califados'
+      mapLabel: 'Expansão Árabe e Califados',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/birth%20of%20Islam%20Prophet%20Muhammad%20Hegira%20Medina%20Arabic%20manuscripts%20desert%20caravan?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'rota-da-seda-imperio-mongol',
@@ -143,7 +151,8 @@ export const TIMELINE_STEPS = [
         { region: 'Oriente Próximo', event: 'Florescimento da medicina e filosofia islâmica nos centros de Bagdá e Cairo.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Rota da Seda e Territórios Mongóis'
+      mapLabel: 'Rota da Seda e Territórios Mongóis',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Silk%20Road%20Mongol%20Empire%20Genghis%20Khan%20nomadic%20horsemen%20desert%20trade?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'constantinopla',
@@ -159,7 +168,8 @@ export const TIMELINE_STEPS = [
         { region: 'Brasil', event: 'Sociedades Tupi-Guarani dominam a gestão sustentável das florestas tropicais.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Bósforo e Império Otomano'
+      mapLabel: 'Bósforo e Império Otomano',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Fall%20of%20Constantinople%201453%20Ottoman%20siege%20Byzantine%20walls%20Bosphorus?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'tordesilhas',
@@ -175,7 +185,8 @@ export const TIMELINE_STEPS = [
         { region: 'Espanha', event: 'Queda de Granada e expulsão dos mouros da Península Ibérica.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Partição de Tordesilhas e Rotas Marítimas'
+      mapLabel: 'Partição de Tordesilhas e Rotas Marítimas',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Treaty%20of%20Tordesillas%201492%20world%20map%20divided%20Spanish%20Portuguese%20ships?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'brasil-colonial',
@@ -191,7 +202,8 @@ export const TIMELINE_STEPS = [
         { region: 'África', event: 'Reino do Congo mantém relações diplomáticas formais com Portugal.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Costa do Brasil e Economia Açucareira'
+      mapLabel: 'Costa do Brasil e Economia Açucareira',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/arrival%20of%20Portuguese%20in%20Brazil%201500%20colonial%20ships%20tropical%20coast%20indigenous?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'reforma-protestante',
@@ -207,7 +219,8 @@ export const TIMELINE_STEPS = [
         { region: 'Índia', event: 'Babur funda o monumental Império Mogol no norte indiano.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Europa da Reforma e Imprima de Gutenberg'
+      mapLabel: 'Europa da Reforma e Imprima de Gutenberg',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Martin%20Luther%2095%20Theses%20Wittenberg%20church%20Protestant%20Reformation%20printing%20press?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'revolucao-industrial',
@@ -223,7 +236,8 @@ export const TIMELINE_STEPS = [
         { region: 'França', event: 'Enciclopedistas como Diderot e Voltaire propagam o Iluminismo.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Gra-Bretanha e a Bacia do Carvão'
+      mapLabel: 'Gra-Bretanha e a Bacia do Carvão',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/First%20Industrial%20Revolution%20steam%20engines%20coal%20mines%20textile%20factory%20Britain?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'independencia-eua-1776',
@@ -239,7 +253,8 @@ export const TIMELINE_STEPS = [
         { region: 'Pacífico', event: 'Expedições do Capitão James Cook cartografam a Austrália e Oceania.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'As Treze Colônias Americanas'
+      mapLabel: 'As Treze Colônias Americanas',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Declaration%20of%20Independence%201776%20founding%20fathers%20American%20Revolution%20Philadelphia?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'revolucao-francesa',
@@ -255,7 +270,8 @@ export const TIMELINE_STEPS = [
         { region: 'Austrália', event: 'Chegada da Primeira Frota britânica e início da colonização de Sydney.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Europa Revolucionária'
+      mapLabel: 'Europa Revolucionária',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/French%20Revolution%201789%20Bastille%20Paris%20liberty%20guillotine%20crowd?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'brasil-imperio',
@@ -271,7 +287,8 @@ export const TIMELINE_STEPS = [
         { region: 'Grã-Bretanha', event: 'Pioneirismo nas estradas de ferro a vapor públicas.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Império do Brasil e Vale do Paraíba'
+      mapLabel: 'Império do Brasil e Vale do Paraíba',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Independence%20of%20Brazil%201822%20Ipiranga%20Dom%20Pedro%20I%20Brazilian%20Empire?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'restauracao-meiji-japao',
@@ -287,7 +304,8 @@ export const TIMELINE_STEPS = [
         { region: 'África', event: 'Resistência nativa contra o avanço das expedições de exploração do Imperialismo.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Arquipélago Japonês e Era Meiji'
+      mapLabel: 'Arquipélago Japonês e Era Meiji',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Meiji%20Restoration%201868%20Japan%20samurai%20industrialization%20Tokyo?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'primeira-guerra-russa',
@@ -303,7 +321,8 @@ export const TIMELINE_STEPS = [
         { region: 'China', event: 'Queda do último imperador e fundação da República da China (1912).' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Europa em Guerra e Império Russo'
+      mapLabel: 'Europa em Guerra e Império Russo',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/World%20War%20I%20trenches%20Russian%20Revolution%201917%20soldiers%20Lenin%20USSR?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'era-vargas',
@@ -319,7 +338,8 @@ export const TIMELINE_STEPS = [
         { region: 'URSS', event: 'Industrialização acelerada sob os Planos Quinquenais de Stálin.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Brasil da Era Vargas'
+      mapLabel: 'Brasil da Era Vargas',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Getulio%20Vargas%20Brazil%201930s%20industrialization%20workers%20Brazilian%20government?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'segunda-guerra-holocausto',
@@ -335,7 +355,8 @@ export const TIMELINE_STEPS = [
         { region: 'Mundo', event: 'Criação da Organização das Nações Unidas (ONU) em 1945.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Teatro Global da Segunda Guerra'
+      mapLabel: 'Teatro Global da Segunda Guerra',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/World%20War%20II%20Holocaust%20concentration%20camps%20Allied%20soldiers%20Europe?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'descolonizacao-africa-asia',
@@ -351,7 +372,8 @@ export const TIMELINE_STEPS = [
         { region: 'América Latina', event: 'Industrialização por substituição de importações e lutas sociais.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Ásia, África e o Fim do Apartheid'
+      mapLabel: 'Ásia, África e o Fim do Apartheid',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/decolonization%20India%20independence%20Gandhi%20Mandela%20apartheid%20end%20Africa%20Asia?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'direitos-civis-eua-1960',
@@ -367,7 +389,8 @@ export const TIMELINE_STEPS = [
         { region: 'Vaticano', event: 'Concílio Vaticano II moderniza ritos e doutrina social da Igreja Católica.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'EUA e o Sul de Segregação Racial'
+      mapLabel: 'EUA e o Sul de Segregação Racial',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Civil%20Rights%20Movement%20Martin%20Luther%20King%20Jr%201960s%20USA%20march%20equality?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'ditadura-militar-brasil',
@@ -383,7 +406,8 @@ export const TIMELINE_STEPS = [
         { region: 'África', event: 'Independência das colônias portuguesas (Angola, Moçambique).' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Brasil e o Cone Sul'
+      mapLabel: 'Brasil e o Cone Sul',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Brazilian%20military%20dictatorship%201964%20protests%20Diretas%20Ja%20redemocratization?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'pouso-lua',
@@ -399,7 +423,8 @@ export const TIMELINE_STEPS = [
         { region: 'Japão', event: 'Milagre econômico pós-guerra despontando como centro tecnológico.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Ordem Bipolar da Guerra Fria'
+      mapLabel: 'Ordem Bipolar da Guerra Fria',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Apollo%2011%20moon%20landing%201969%20astronaut%20lunar%20surface%20space%20race?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'guerra-fria-queda-muro-berlim',
@@ -415,7 +440,8 @@ export const TIMELINE_STEPS = [
         { region: 'América Latina', event: 'Processos de transição democrática e combate à inflação na América do Sul.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Berlim, Europa e a Ordem Pós-Guerra Fria'
+      mapLabel: 'Berlim, Europa e a Ordem Pós-Guerra Fria',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Fall%20of%20Berlin%20Wall%201989%20Cold%20War%20end%20Germany?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'mitologia-nordica',
@@ -431,7 +457,8 @@ export const TIMELINE_STEPS = [
         { region: 'Impacto Cultural', event: 'Inspiração profunda para a literatura de fantasia clássica e moderna.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Nove Reinos de Yggdrasil'
+      mapLabel: 'Nove Reinos de Yggdrasil',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Norse%20mythology%20Asgard%20Yggdrasil%20Viking%20gods%20Valhalla%20fantasy?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'mitologia-mesoamericana',
@@ -447,7 +474,8 @@ export const TIMELINE_STEPS = [
         { region: 'Preservação', event: 'Transcrição em manuscritos maia-quiché preservada nos cutes de Popol Vuh.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'Territórios Sagrados das Américas'
+      mapLabel: 'Territórios Sagrados das Américas',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Mesoamerican%20mythology%20Popol%20Vuh%20Mayan%20gods%20Aztec%20sun%20maize?width=1600&height=900&nologo=true&seed=1',
     },
     {
       id: 'guerra-cem-anos',
@@ -462,7 +490,8 @@ export const TIMELINE_STEPS = [
         { region: 'Europa', event: 'Peste Negra (1347–1351) dizima 30-50% da população.' }
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
-      mapLabel: 'França & Inglaterra Medieval'
+      mapLabel: 'França & Inglaterra Medieval',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Hundred%20Years%20War%20medieval%20knights%20France%20England%20Joan%20of%20Arc%20battle?width=1600&height=900&nologo=true&seed=1',
     }
   ];
 

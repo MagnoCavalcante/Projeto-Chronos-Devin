@@ -1042,11 +1042,11 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
             {/* THE INFINITE TIMELINE NAVIGATION (HEART OF THE APP) */}
             <div className="relative bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6 overflow-hidden">
               {/* Transparent thematic background image tied to the selected epoch */}
-              {mergedTimelineSteps[currentTimelineIndex].mapUrl && (
+              {mergedTimelineSteps[currentTimelineIndex].backgroundImageUrl && (
                 <div className="absolute inset-0 z-0 pointer-events-none select-none" aria-hidden="true">
                   <img
-                    key={mergedTimelineSteps[currentTimelineIndex].id}
-                    src={mergedTimelineSteps[currentTimelineIndex].mapUrl}
+                    key={`bg-${mergedTimelineSteps[currentTimelineIndex].id}`}
+                    src={mergedTimelineSteps[currentTimelineIndex].backgroundImageUrl}
                     alt=""
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover opacity-25 sepia-[0.4] transition-opacity duration-700"
