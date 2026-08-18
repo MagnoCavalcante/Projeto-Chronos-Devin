@@ -18,6 +18,8 @@ export interface User {
   role?: 'admin' | 'user' | 'historiador';
   status?: 'ativo' | 'suspenso' | 'pendente';
   password?: string;
+  isGuest?: boolean;
+  guestExpiresAt?: number;
 }
 
 export interface PasswordResetRequest {

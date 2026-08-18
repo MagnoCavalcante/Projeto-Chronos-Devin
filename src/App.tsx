@@ -128,15 +128,49 @@ export default function App() {
 
   const handleLogout = () => {
     setCurrentUser(null);
+    localStorage.removeItem('chronos_current_user');
     setCurrentScreen('LOGIN');
   };
 
   const handleLoginRegisterSuccess = (user: User) => {
     setCurrentUser(user);
+    localStorage.setItem('chronos_current_user', JSON.stringify(user));
     if (currentScreen !== 'ADMIN') {
       setTimeTravelTarget(-10000);
     }
   };
+
+  // Restore session on mount and enforce guest expiration
+  useEffect(() => {
+    const saved = localStorage.getItem('chronos_current_user');
+    if (saved) {
+      try {
+        const user = JSON.parse(saved) as User;
+        if (user.isGuest && user.guestExpiresAt && user.guestExpiresAt < Date.now()) {
+          localStorage.removeItem('chronos_current_user');
+          return;
+        }
+        setCurrentUser(user);
+      } catch {
+        localStorage.removeItem('chronos_current_user');
+      }
+    }
+  }, []);
+
+  // Log out guest users when their session expires
+  useEffect(() => {
+    if (!currentUser?.isGuest || !currentUser.guestExpiresAt) return;
+    const timeLeft = currentUser.guestExpiresAt - Date.now();
+    if (timeLeft <= 0) {
+      handleLogout();
+      return;
+    }
+    const timer = setTimeout(() => {
+      handleLogout();
+      alert('Seu acesso de convidado expirou. Faça login para continuar.');
+    }, timeLeft);
+    return () => clearTimeout(timer);
+  }, [currentUser]);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans antialiased">
@@ -157,7 +191,7 @@ export default function App() {
 
       {currentScreen === 'ADMIN' && (
         <AdminPanel
-          currentUser={currentUser || {
+          currentUser={(currentUser && currentUser.role === 'admin') ? currentUser : {
             name: 'Magno Cavalcante (Admin)',
             email: 'magno.brt8@gmail.com',
             xp: 9990,

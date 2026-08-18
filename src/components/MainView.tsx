@@ -896,14 +896,16 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
           {/* Core Academic Progression Indicators */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowAdminPanel(true)}
-              className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-full text-xs font-mono font-bold shadow-xs cursor-pointer transition-all border border-amber-400/40"
-              title="Acessar Painel de Controle Admin & IA Híbrida"
-            >
-              <ShieldCheck className="w-4 h-4 text-slate-950" />
-              <span className="hidden sm:inline">Painel Admin</span>
-            </button>
+            {userState.role === 'admin' && (
+              <button
+                onClick={() => setShowAdminPanel(true)}
+                className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-full text-xs font-mono font-bold shadow-xs cursor-pointer transition-all border border-amber-400/40"
+                title="Acessar Painel de Controle Admin & IA Híbrida"
+              >
+                <ShieldCheck className="w-4 h-4 text-slate-950" />
+                <span className="hidden sm:inline">Painel Admin</span>
+              </button>
+            )}
 
             <div className="flex items-center gap-1.5 bg-amber-50/50 px-3 py-1.5 rounded-full border border-amber-200/40 text-amber-900 shadow-3xs" title="Dias seguidos de atividade">
               <Flame className="w-4 h-4 text-amber-500 fill-current animate-pulse" />
@@ -2859,11 +2861,12 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
 
             {/* Settings Options (Restauração de XP removida!) */}
             <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm divide-y divide-slate-100">
-              <button
-                id="admin-panel-button"
-                onClick={() => setShowAdminPanel(true)}
-                className="w-full text-left px-6 py-4 hover:bg-amber-50 text-amber-900 transition-colors flex items-center justify-between text-xs font-semibold cursor-pointer"
-              >
+              {userState.role === 'admin' && (
+                <button
+                  id="admin-panel-button"
+                  onClick={() => setShowAdminPanel(true)}
+                  className="w-full text-left px-6 py-4 hover:bg-amber-50 text-amber-900 transition-colors flex items-center justify-between text-xs font-semibold cursor-pointer"
+                >
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-amber-600" />
                   <span>Painel de Controle (Gestão de Usuários & IA Híbrida)</span>
@@ -2872,6 +2875,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                   Abrir
                 </span>
               </button>
+            )}
 
               <button
                 id="logout-button"
@@ -2898,7 +2902,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
       />
 
       {/* Admin Control Panel Modal */}
-      {showAdminPanel && (
+      {showAdminPanel && userState.role === 'admin' && (
         <AdminPanel
           currentUser={userState}
           onClose={() => setShowAdminPanel(false)}

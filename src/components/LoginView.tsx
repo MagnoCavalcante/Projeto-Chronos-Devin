@@ -116,7 +116,9 @@ export default function LoginView({ onNavigate, onLoginSuccess }: LoginViewProps
         level: 2,
         streak: 5,
         joinedDate: 'Julho de 2026',
-        role: 'user'
+        role: 'user',
+        isGuest: true,
+        guestExpiresAt: Date.now() + 15 * 60 * 1000
       });
       onNavigate('TIME_TRAVEL');
     }, 800);
