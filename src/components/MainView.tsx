@@ -665,7 +665,7 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
     }
   }, [initialYear]);
 
-  // Preload current, previous and next era background images so they appear faster
+  // Preload current and the two adjacent eras on each side so images appear faster
   useEffect(() => {
     const preloadImage = (src?: string) => {
       if (!src) return;
@@ -673,11 +673,11 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
       img.src = src;
     };
     const steps = mergedTimelineSteps;
-    const urls = [
-      steps[currentTimelineIndex]?.backgroundImageUrl,
-      steps[currentTimelineIndex - 1]?.backgroundImageUrl,
-      steps[currentTimelineIndex + 1]?.backgroundImageUrl,
-    ];
+    const urls: string[] = [];
+    for (let offset = -2; offset <= 2; offset++) {
+      const url = steps[currentTimelineIndex + offset]?.backgroundImageUrl;
+      if (url) urls.push(url);
+    }
     urls.forEach(preloadImage);
   }, [currentTimelineIndex, mergedTimelineSteps]);
 

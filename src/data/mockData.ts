@@ -16,7 +16,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Crescente Fértil & Vale do Nilo',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/ancient%20Sumerian%20cuneiform%20clay%20tablets%20temple%20Mesopotamia?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/ancient%20Sumerian%20cuneiform%20clay%20tablets%20temple%20Mesopotamia?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'hamurabi',
@@ -33,7 +33,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Império Paleobabilônico e Mesopotâmia',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Code%20of%20Hammurabi%20stele%20Babylonian%20laws%20ancient%20Mesopotamia?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Code%20of%20Hammurabi%20stele%20Babylonian%20laws%20ancient%20Mesopotamia?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'grecia-classica',
@@ -50,7 +50,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Hélade Clássica e Cidades-Estado',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/ancient%20Athens%20Parthenon%20Greek%20philosophy%20democracy%20Acropolis?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/ancient%20Athens%20Parthenon%20Greek%20philosophy%20democracy%20Acropolis?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'alexandria',
@@ -67,7 +67,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Mundo Helenístico e Mediterrâneo',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/ancient%20Library%20of%20Alexandria%20scrolls%20papyrus%20Egypt%20knowledge?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/ancient%20Library%20of%20Alexandria%20scrolls%20papyrus%20Egypt%20knowledge?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'roma-republica',
@@ -84,7 +84,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Províncias Romanas',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Julius%20Caesar%20Roman%20legion%20crossing%20Rubicon%20river%20ancient%20Rome?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Julius%20Caesar%20Roman%20legion%20crossing%20Rubicon%20river%20ancient%20Rome?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'queda-roma',
@@ -101,7 +101,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Reinos Germânicos na Europa',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/fall%20of%20Rome%20barbarian%20invasion%20ancient%20Roman%20ruins%20dark%20ages?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/fall%20of%20Rome%20barbarian%20invasion%20ancient%20Roman%20ruins%20dark%20ages?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'reiartur',
@@ -118,7 +118,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Bretanha Pós-Romana',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/King%20Arthur%20medieval%20Britain%20Camelot%20castle%20round%20table%20legend?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/King%20Arthur%20medieval%20Britain%20Camelot%20castle%20round%20table%20legend?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'islamismo',
@@ -135,7 +135,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Expansão Árabe e Califados',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/birth%20of%20Islam%20Prophet%20Muhammad%20Hegira%20Medina%20Arabic%20manuscripts%20desert%20caravan?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/birth%20of%20Islam%20Prophet%20Muhammad%20Hegira%20Medina%20Arabic%20manuscripts%20desert%20caravan?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'rota-da-seda-imperio-mongol',
@@ -152,7 +152,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Rota da Seda e Territórios Mongóis',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Silk%20Road%20Mongol%20Empire%20Genghis%20Khan%20nomadic%20horsemen%20desert%20trade?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Silk%20Road%20Mongol%20Empire%20Genghis%20Khan%20nomadic%20horsemen%20desert%20trade?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'constantinopla',
@@ -169,7 +169,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Bósforo e Império Otomano',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Fall%20of%20Constantinople%201453%20Ottoman%20siege%20Byzantine%20walls%20Bosphorus?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Fall%20of%20Constantinople%201453%20Ottoman%20siege%20Byzantine%20walls%20Bosphorus?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'tordesilhas',
@@ -186,7 +186,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Partição de Tordesilhas e Rotas Marítimas',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Treaty%20of%20Tordesillas%201492%20world%20map%20divided%20Spanish%20Portuguese%20ships?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Treaty%20of%20Tordesillas%201492%20world%20map%20divided%20Spanish%20Portuguese%20ships?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'brasil-colonial',
@@ -203,7 +203,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Costa do Brasil e Economia Açucareira',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/arrival%20of%20Portuguese%20in%20Brazil%201500%20colonial%20ships%20tropical%20coast%20indigenous?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/arrival%20of%20Portuguese%20in%20Brazil%201500%20colonial%20ships%20tropical%20coast%20indigenous?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'reforma-protestante',
@@ -220,7 +220,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Europa da Reforma e Imprima de Gutenberg',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Martin%20Luther%2095%20Theses%20Wittenberg%20church%20Protestant%20Reformation%20printing%20press?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Martin%20Luther%2095%20Theses%20Wittenberg%20church%20Protestant%20Reformation%20printing%20press?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'revolucao-industrial',
@@ -237,7 +237,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Gra-Bretanha e a Bacia do Carvão',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/First%20Industrial%20Revolution%20steam%20engines%20coal%20mines%20textile%20factory%20Britain?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/First%20Industrial%20Revolution%20steam%20engines%20coal%20mines%20textile%20factory%20Britain?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'independencia-eua-1776',
@@ -254,7 +254,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'As Treze Colônias Americanas',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Declaration%20of%20Independence%201776%20founding%20fathers%20American%20Revolution%20Philadelphia?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Declaration%20of%20Independence%201776%20founding%20fathers%20American%20Revolution%20Philadelphia?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'revolucao-francesa',
@@ -271,7 +271,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Europa Revolucionária',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/French%20Revolution%201789%20Bastille%20Paris%20liberty%20guillotine%20crowd?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/French%20Revolution%201789%20Bastille%20Paris%20liberty%20guillotine%20crowd?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'brasil-imperio',
@@ -288,7 +288,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Império do Brasil e Vale do Paraíba',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Independence%20of%20Brazil%201822%20Ipiranga%20Dom%20Pedro%20I%20Brazilian%20Empire?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Independence%20of%20Brazil%201822%20Ipiranga%20Dom%20Pedro%20I%20Brazilian%20Empire?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'restauracao-meiji-japao',
@@ -305,7 +305,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Arquipélago Japonês e Era Meiji',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Meiji%20Restoration%201868%20Japan%20samurai%20industrialization%20Tokyo?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Meiji%20Restoration%201868%20Japan%20samurai%20industrialization%20Tokyo?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'primeira-guerra-russa',
@@ -322,7 +322,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Europa em Guerra e Império Russo',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/World%20War%20I%20trenches%20Russian%20Revolution%201917%20soldiers%20Lenin%20USSR?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/World%20War%20I%20trenches%20Russian%20Revolution%201917%20soldiers%20Lenin%20USSR?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'era-vargas',
@@ -339,7 +339,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Brasil da Era Vargas',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Getulio%20Vargas%20Brazil%201930s%20industrialization%20workers%20Brazilian%20government?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Getulio%20Vargas%20Brazil%201930s%20industrialization%20workers%20Brazilian%20government?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'segunda-guerra-holocausto',
@@ -356,7 +356,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Teatro Global da Segunda Guerra',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/World%20War%20II%20Holocaust%20concentration%20camps%20Allied%20soldiers%20Europe?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/World%20War%20II%20Holocaust%20concentration%20camps%20Allied%20soldiers%20Europe?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'descolonizacao-africa-asia',
@@ -373,7 +373,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Ásia, África e o Fim do Apartheid',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/decolonization%20India%20independence%20Gandhi%20Mandela%20apartheid%20end%20Africa%20Asia?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/decolonization%20India%20independence%20Gandhi%20Mandela%20apartheid%20end%20Africa%20Asia?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'direitos-civis-eua-1960',
@@ -390,7 +390,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'EUA e o Sul de Segregação Racial',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Civil%20Rights%20Movement%20Martin%20Luther%20King%20Jr%201960s%20USA%20march%20equality?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Civil%20Rights%20Movement%20Martin%20Luther%20King%20Jr%201960s%20USA%20march%20equality?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'ditadura-militar-brasil',
@@ -407,7 +407,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Brasil e o Cone Sul',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Brazilian%20military%20dictatorship%201964%20protests%20Diretas%20Ja%20redemocratization?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Brazilian%20military%20dictatorship%201964%20protests%20Diretas%20Ja%20redemocratization?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'pouso-lua',
@@ -424,7 +424,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Ordem Bipolar da Guerra Fria',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Apollo%2011%20moon%20landing%201969%20astronaut%20lunar%20surface%20space%20race?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Apollo%2011%20moon%20landing%201969%20astronaut%20lunar%20surface%20space%20race?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'guerra-fria-queda-muro-berlim',
@@ -441,7 +441,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Berlim, Europa e a Ordem Pós-Guerra Fria',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Fall%20of%20Berlin%20Wall%201989%20Cold%20War%20end%20Germany?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Fall%20of%20Berlin%20Wall%201989%20Cold%20War%20end%20Germany?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'mitologia-nordica',
@@ -458,7 +458,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Nove Reinos de Yggdrasil',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Norse%20mythology%20Asgard%20Yggdrasil%20Viking%20gods%20Valhalla%20fantasy?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Norse%20mythology%20Asgard%20Yggdrasil%20Viking%20gods%20Valhalla%20fantasy?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'mitologia-mesoamericana',
@@ -475,7 +475,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'Territórios Sagrados das Américas',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Mesoamerican%20mythology%20Popol%20Vuh%20Mayan%20gods%20Aztec%20sun%20maize?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Mesoamerican%20mythology%20Popol%20Vuh%20Mayan%20gods%20Aztec%20sun%20maize?width=800&height=450&nologo=true&seed=1',
     },
     {
       id: 'guerra-cem-anos',
@@ -491,7 +491,7 @@ export const TIMELINE_STEPS = [
       ],
       mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
       mapLabel: 'França & Inglaterra Medieval',
-      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Hundred%20Years%20War%20medieval%20knights%20France%20England%20Joan%20of%20Arc%20battle?width=1600&height=900&nologo=true&seed=1',
+      backgroundImageUrl: 'https://image.pollinations.ai/prompt/Hundred%20Years%20War%20medieval%20knights%20France%20England%20Joan%20of%20Arc%20battle?width=800&height=450&nologo=true&seed=1',
     }
   ];
 
