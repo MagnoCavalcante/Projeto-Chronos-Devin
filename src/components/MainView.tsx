@@ -665,6 +665,22 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
     }
   }, [initialYear]);
 
+  // Preload current, previous and next era background images so they appear faster
+  useEffect(() => {
+    const preloadImage = (src?: string) => {
+      if (!src) return;
+      const img = new Image();
+      img.src = src;
+    };
+    const steps = mergedTimelineSteps;
+    const urls = [
+      steps[currentTimelineIndex]?.backgroundImageUrl,
+      steps[currentTimelineIndex - 1]?.backgroundImageUrl,
+      steps[currentTimelineIndex + 1]?.backgroundImageUrl,
+    ];
+    urls.forEach(preloadImage);
+  }, [currentTimelineIndex, mergedTimelineSteps]);
+
   const [selectedNodeDetailsId, setSelectedNodeDetailsId] = useState<string | null>(null);
 
   // State for "Enquanto isso no mundo..." Modal & Dossier Request System
@@ -1051,9 +1067,11 @@ export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, ini
                     src={mergedTimelineSteps[currentTimelineIndex].backgroundImageUrl}
                     alt=""
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover opacity-25 sepia-[0.4] transition-opacity duration-700"
+                    loading="eager"
+                    decoding="async"
+                    className="w-full h-full object-cover opacity-[0.45] sepia-[0.35] transition-opacity duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/40 to-white/85" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/65 via-white/20 to-white/70" />
                 </div>
               )}
 
