@@ -375,6 +375,7 @@ export default function AdminPanel({
                 mapUrl: 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?auto=format&fit=crop&w=800&q=80',
                 mapLabel: 'Constantinopla & Bósforo',
                 era: 'Idade Média',
+                backgroundImageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}%20historical%20medieval%20era?width=800&height=450&nologo=true&seed=${Date.now()}`,
                 meanwhile: [
                   { region: 'Europa Ocidental', event: 'Expansão dos reinos medievais e consolidação de feudos.' },
                   { region: 'Oriente Médio', event: 'Intenso fluxo comercial e cultural pela Rota da Seda.' }
