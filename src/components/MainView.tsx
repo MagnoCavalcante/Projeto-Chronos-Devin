@@ -495,12 +495,27 @@ interface MainViewProps {
 export default function MainView({ user, onLogout, onNavigate, onEnterEpoch, initialYear }: MainViewProps) {
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [userState, setUserState] = useState<User>(user);
-  const [masteredCards, setMasteredCards] = useState<string[]>([]);
+  const [masteredCards, setMasteredCards] = useState<string[]>(() => {
+    const saved = localStorage.getItem('chronos_mastered_cards');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
   const [activePeriod, setActivePeriod] = useState<string>('Todos');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedMythology, setSelectedMythology] = useState<string | null>(null);
   const [activeMythologySection, setActiveMythologySection] = useState<string>('Introdução');
   const [selectedMapDetails, setSelectedMapDetails] = useState<boolean>(false);
+
+  // Persist masteredCards to localStorage
+  useEffect(() => {
+    localStorage.setItem('chronos_mastered_cards', JSON.stringify(masteredCards));
+  }, [masteredCards]);
 
   // Infinite Timeline & Global Simultaneous Events State
 
