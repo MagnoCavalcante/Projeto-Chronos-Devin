@@ -31,7 +31,9 @@ import {
   Loader2,
   UserCircle,
   Volume2,
-  Settings
+  Settings,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 import { HistoryCard, EvidenceLevel, CharacterBio } from '../types';
 import GeographicMapView from './GeographicMapView';
@@ -87,6 +89,7 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
   const [selectedVoiceName, setSelectedVoiceName] = useState<string | null>(getStoredVoiceName());
   const [narrationSections, setNarrationSections] = useState<NarrationSection[]>(DEFAULT_NARRATION_SECTIONS);
   const [showNarrationModal, setShowNarrationModal] = useState(false);
+  const [isMapExpanded, setIsMapExpanded] = useState(false);
 
   useEffect(() => {
     getAvailableVoices().then((voices) => {
@@ -869,13 +872,24 @@ export default function ConceptCard({ card, onMasterCard, isMastered }: ConceptC
 
             {activeTab === 'mapa' && (
               <div className="space-y-3">
-                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">
-                  <Globe className="w-4 h-4 text-amber-600" />
-                  <span>Mapa Geográfico Interativo</span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">
+                    <Globe className="w-4 h-4 text-amber-600" />
+                    <span>Mapa Geográfico Interativo</span>
+                  </div>
+                  <button
+                    onClick={() => setIsMapExpanded(!isMapExpanded)}
+                    className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-amber-600 hover:bg-amber-50 hover:border-amber-200 transition-all"
+                    title={isMapExpanded ? 'Reduzir mapa' : 'Expandir mapa para tela inteira'}
+                  >
+                    {isMapExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+                  </button>
                 </div>
                 <GeographicMapView
                   data={getGeoMapDataForTopic(card.id, card.title)}
                   height="300px"
+                  isExpanded={isMapExpanded}
+                  onToggleExpand={() => setIsMapExpanded(!isMapExpanded)}
                 />
                 <p className="text-[11px] font-serif text-slate-500 italic leading-relaxed">
                   {getGeoMapDataForTopic(card.id, card.title).description}
